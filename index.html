@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AZONEWS — Azone International 资讯中心</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#faf8f5;--bg2:#f2ede7;--bg3:#ebe5dd;
+  --card:#ffffff;--card-h:#fdf9f6;
+  --border:#e0d9d0;--border-d:#cdc5ba;
+  --accent:#c44d5a;--accent-dim:#9e3a45;--accent-g:rgba(196,77,90,.1);
+  --gold:#a07840;--gold-g:rgba(160,120,64,.12);
+  --txt:#1c1916;--txt2:#5a534c;--txt3:#9a9089;
+  --green:#2e7d4f;--orange:#c4601a;--blue:#1a5696;--purple:#6b4da0;
+  --red:#c42b2b;--teal:#1a7a6e;
+  --r:10px;--rs:6px;--sh:0 2px 12px rgba(0,0,0,.08);--sh2:0 8px 32px rgba(0,0,0,.12);
+  --t:.18s ease;
+  --font:'Inter','Noto Sans SC',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font-family:var(--font);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+input,select{font-family:inherit}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--border-d);border-radius:3px}
+
+/* ── HEADER ── */
+.hd{position:sticky;top:0;z-index:100;background:rgba(250,248,245,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);box-shadow:0 1px 0 var(--border)}
+.hd-inner{display:flex;align-items:center;height:58px;gap:14px;max-width:1400px;margin:0 auto;padding:0 20px}
+.logo{display:flex;align-items:center;gap:10px;flex-shrink:0;text-decoration:none}
+.logo-m{width:34px;height:34px;background:var(--accent);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:900;color:#fff;letter-spacing:-1px}
+.logo-t{font-size:19px;font-weight:800;letter-spacing:.5px;color:var(--txt)}
+.logo-t em{color:var(--accent);font-style:normal}
+.logo-s{font-size:9px;letter-spacing:1.5px;color:var(--txt3);text-transform:uppercase;margin-top:1px}
+.hd-search{flex:1;max-width:380px;position:relative}
+.hd-search input{width:100%;height:34px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:0 12px 0 34px;color:var(--txt);font-size:13px;outline:none;transition:var(--t)}
+.hd-search input:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px var(--accent-g)}
+.hd-search input::placeholder{color:var(--txt3)}
+.si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--txt3);font-size:14px;pointer-events:none}
+.hd-act{display:flex;align-items:center;gap:6px;flex-shrink:0;margin-left:auto}
+.ibtn{width:34px;height:34px;border-radius:8px;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--txt2);font-size:15px;transition:var(--t);position:relative}
+.ibtn:hover{background:var(--bg3);border-color:var(--border-d);color:var(--txt)}
+.bdg{position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;background:var(--accent);border-radius:8px;font-size:9px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;padding:0 3px;border:2px solid var(--bg)}
+
+/* ── TICKER ── */
+.ticker{background:var(--accent);height:30px;overflow:hidden;display:flex;align-items:center;gap:10px;padding:0 14px}
+.ticker-lbl{font-size:9px;font-weight:800;letter-spacing:2px;color:rgba(255,255,255,.9);text-transform:uppercase;white-space:nowrap;flex-shrink:0}
+.ticker-sep{width:1px;height:14px;background:rgba(255,255,255,.3);flex-shrink:0}
+.ticker-track{overflow:hidden;flex:1}
+.ticker-content{display:flex;gap:48px;animation:ticker 50s linear infinite;white-space:nowrap}
+.ticker-item{font-size:11px;color:rgba(255,255,255,.85);display:flex;align-items:center;gap:7px}
+.tdot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.9);flex-shrink:0}
+.tdot.prep{background:#ffd44a}
+.tdot.pre{background:#7dc4ff}
+.tdot.new{background:#fff}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ── LAYOUT ── */
+.wrap{max-width:1400px;margin:0 auto;padding:0 20px}
+.layout{display:grid;grid-template-columns:210px 1fr;gap:0;min-height:calc(100vh - 89px)}
+
+/* ── SIDEBAR ── */
+.sb{border-right:1px solid var(--border);padding:20px 0;position:sticky;top:89px;height:calc(100vh - 89px);overflow-y:auto;background:var(--bg)}
+.sb-sec{margin-bottom:24px}
+.sb-h{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--txt3);padding:0 16px;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.sb-h::after{content:'';flex:1;height:1px;background:var(--border)}
+.ni{display:flex;align-items:center;gap:8px;padding:8px 16px;font-size:12.5px;color:var(--txt2);transition:var(--t);cursor:pointer;border-left:2px solid transparent}
+.ni:hover{color:var(--txt);background:var(--bg2)}
+.ni.on{color:var(--accent);background:var(--accent-g);border-left-color:var(--accent);font-weight:600}
+.ni-ic{font-size:13px;opacity:.7}
+.ni-ct{margin-left:auto;font-size:10px;padding:1px 5px;background:var(--bg3);border-radius:8px;color:var(--txt3)}
+.ni.on .ni-ct{background:var(--accent-g);color:var(--accent)}
+
+.sf,.scf{padding:0 10px;display:flex;flex-direction:column;gap:2px}
+.sb-btn{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:6px;font-size:12px;color:var(--txt2);transition:var(--t);cursor:pointer}
+.sb-btn:hover{color:var(--txt);background:var(--bg2)}
+.sb-btn.on{background:var(--bg2);color:var(--txt);font-weight:600}
+.sdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.sdot.all{background:var(--txt3)}
+.sdot.stock{background:var(--green)}
+.sdot.pre{background:var(--blue)}
+.sdot.closed{background:var(--txt3);opacity:.5}
+.sdot.sold{background:var(--border-d)}
+.sdot.prep{background:var(--orange);animation:pdot 2s ease infinite}
+@keyframes pdot{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── MAIN ── */
+.main{padding:20px}
+
+/* ── STAT BARS ── */
+.stat-row{display:flex;gap:10px;margin-bottom:18px}
+.stat-card{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;display:flex;align-items:center;gap:10px;transition:var(--t);cursor:pointer}
+.stat-card:hover{border-color:var(--border-d);box-shadow:var(--sh)}
+.stat-card.active{border-color:var(--accent);background:var(--accent-g)}
+.stat-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.stat-dot.stock{background:var(--green);box-shadow:0 0 5px var(--green)}
+.stat-dot.pre{background:var(--blue)}
+.stat-dot.prep{background:var(--orange);animation:pdot 1.5s ease infinite}
+.stat-dot.closed{background:var(--txt3)}
+.stat-dot.sold{background:var(--border-d)}
+.stat-num{font-size:22px;font-weight:800;color:var(--txt);line-height:1}
+.stat-lbl{font-size:11px;color:var(--txt3);margin-top:2px}
+.stat-sub{margin-left:auto;font-size:10px;color:var(--txt3)}
+
+/* ── TOOLBAR ── */
+.tb{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:10px}
+.rc{font-size:12px;color:var(--txt3)}
+.rc span{color:var(--txt2);font-weight:600}
+.tb-r{display:flex;align-items:center;gap:7px}
+.ss{height:30px;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:0 24px 0 9px;color:var(--txt2);font-size:12px;outline:none;appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%239a9089' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center;transition:var(--t)}
+.ss:hover{border-color:var(--border-d)}
+.vt{display:flex;background:var(--card);border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.vb{width:30px;height:30px;display:flex;align-items:center;justify-content:center;color:var(--txt3);font-size:13px;transition:var(--t)}
+.vb:hover{color:var(--txt2);background:var(--bg2)}
+.vb.on{color:var(--accent);background:var(--accent-g)}
+
+/* ── FILTER CHIPS ── */
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.chip{display:flex;align-items:center;gap:4px;padding:3px 8px;background:var(--accent-g);border:1px solid rgba(196,77,90,.25);border-radius:20px;font-size:11px;color:var(--accent);cursor:pointer}
+.chip:hover{background:rgba(196,77,90,.15)}
+
+/* ── PRODUCT GRID ── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:14px}
+.grid.lv{grid-template-columns:1fr;gap:7px}
+
+/* ── CARD ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:all var(--t);cursor:pointer;display:flex;flex-direction:column;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.card:hover{border-color:var(--border-d);box-shadow:var(--sh);transform:translateY(-2px)}
+.card.c-prep{border-color:rgba(196,96,26,.25)}
+.card.c-prep:hover{border-color:var(--orange);box-shadow:0 4px 16px rgba(196,96,26,.12)}
+.card.c-pre{border-color:rgba(26,86,150,.2)}
+.card.c-pre:hover{border-color:var(--blue)}
+
+.cimg{aspect-ratio:3/4;background:var(--bg2);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.cimg img{width:100%;height:100%;object-fit:cover;transition:transform .3s ease}
+.card:hover .cimg img{transform:scale(1.04)}
+.cimg .ph{display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--border-d)}
+.cimg .ph span:first-child{font-size:40px;opacity:.4}
+.cimg .ph .phl{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--txt3);text-align:center;padding:0 10px}
+.ctags{position:absolute;top:7px;left:7px;display:flex;flex-direction:column;gap:3px}
+.t{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:3px}
+.t-prep{background:rgba(196,96,26,.15);color:var(--orange);border:1px solid rgba(196,96,26,.25)}
+.t-pre{background:rgba(26,86,150,.12);color:var(--blue);border:1px solid rgba(26,86,150,.2)}
+.t-closed{background:rgba(90,83,76,.1);color:var(--txt3);border:1px solid rgba(90,83,76,.15)}
+.t-ltd{background:rgba(196,77,90,.12);color:var(--accent);border:1px solid rgba(196,77,90,.2)}
+.cwl{position:absolute;top:7px;right:7px;width:26px;height:26px;border-radius:5px;background:rgba(250,248,245,.85);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;color:var(--txt3);font-size:13px;transition:var(--t);opacity:0;border:1px solid var(--border)}
+.card:hover .cwl,.cwl.on{opacity:1}
+.cwl:hover,.cwl.on{color:var(--accent);background:var(--accent-g);border-color:rgba(196,77,90,.3)}
+
+.cbody{padding:10px 11px;display:flex;flex-direction:column;gap:4px;flex:1}
+.cseries{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gold)}
+.cname{font-size:12.5px;font-weight:600;color:var(--txt);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cmeta{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--txt3)}
+.csc{background:var(--bg2);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-weight:600;color:var(--txt2);font-size:10px}
+
+.cfoot{display:flex;align-items:center;justify-content:space-between;padding:8px 11px;border-top:1px solid var(--border);background:var(--bg)}
+.cprice{font-size:14px;font-weight:700;color:var(--txt)}
+.cprice .y{font-size:10px;color:var(--txt3);margin-right:1px}
+.pill{font-size:9px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;padding:3px 7px;border-radius:20px}
+.pill.stock{background:rgba(46,125,79,.1);color:var(--green);border:1px solid rgba(46,125,79,.2)}
+.pill.prep{background:rgba(196,96,26,.1);color:var(--orange);border:1px solid rgba(196,96,26,.2);animation:ppill 2s ease infinite}
+.pill.pre{background:rgba(26,86,150,.1);color:var(--blue);border:1px solid rgba(26,86,150,.2)}
+.pill.closed{background:rgba(90,83,76,.08);color:var(--txt3);border:1px solid rgba(90,83,76,.12)}
+.pill.sold{background:rgba(90,83,76,.06);color:var(--border-d);border:1px solid rgba(90,83,76,.1)}
+@keyframes ppill{0%,100%{opacity:1}50%{opacity:.6}}
+
+/* ── LIST VIEW ── */
+.grid.lv .card{flex-direction:row}
+.grid.lv .cimg{width:72px;aspect-ratio:unset;height:90px;flex-shrink:0}
+.grid.lv .cimg .ph span:first-child{font-size:24px}
+.grid.lv .cimg .ph .phl{display:none}
+.grid.lv .cbody{flex-direction:row;align-items:center;gap:14px;padding:10px 14px;flex:1}
+.grid.lv .cname{flex:1;-webkit-line-clamp:1;font-size:13px}
+.grid.lv .cseries{display:none}
+.grid.lv .cfoot{border-top:none;border-left:1px solid var(--border);background:none;flex-direction:column;align-items:flex-end;gap:5px;min-width:110px;padding:10px 14px}
+.grid.lv .ctags{flex-direction:row;flex-wrap:wrap}
+
+/* ── EMPTY ── */
+.empty{grid-column:1/-1;padding:80px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px}
+.empty-ic{font-size:44px;opacity:.2}
+.empty h3{font-size:16px;font-weight:600;color:var(--txt2)}
+.empty p{font-size:12px;color:var(--txt3);max-width:260px}
+
+/* ── MODAL ── */
+.moverlay{position:fixed;inset:0;background:rgba(28,25,22,.55);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;animation:fi .15s ease}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+.modal{background:var(--card);border:1px solid var(--border-d);border-radius:14px;width:100%;max-width:660px;max-height:90vh;overflow-y:auto;box-shadow:var(--sh2);animation:su .2s ease;position:relative}
+@keyframes su{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.mclose{position:absolute;top:13px;right:13px;width:30px;height:30px;border-radius:7px;background:var(--bg2);border:1px solid var(--border);color:var(--txt2);font-size:16px;display:flex;align-items:center;justify-content:center;transition:var(--t);z-index:1}
+.mclose:hover{background:var(--bg3);color:var(--txt)}
+.mimg{aspect-ratio:16/9;background:var(--bg2);border-radius:12px 12px 0 0;overflow:hidden;display:flex;align-items:center;justify-content:center;position:relative}
+.mimg img{width:100%;height:100%;object-fit:cover}
+.mimg .mph{font-size:70px;opacity:.12}
+.mbody{padding:20px}
+.m-series{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:7px}
+.m-title{font-size:18px;font-weight:700;line-height:1.35;margin-bottom:14px}
+.m-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:16px}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.mi{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:9px 11px}
+.mi-l{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--txt3);margin-bottom:3px}
+.mi-v{font-size:13px;font-weight:600;color:var(--txt)}
+.mdesc{font-size:12px;line-height:1.7;color:var(--txt2);margin-bottom:16px;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:6px}
+.mact{display:flex;gap:8px}
+.btn-p{flex:1;height:38px;background:var(--accent);color:#fff;border-radius:7px;font-size:12.5px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:5px;transition:var(--t)}
+.btn-p:hover{background:var(--accent-dim);transform:translateY(-1px)}
+.btn-s{height:38px;padding:0 13px;background:var(--bg2);color:var(--txt2);border:1px solid var(--border);border-radius:7px;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:5px;transition:var(--t)}
+.btn-s:hover{color:var(--txt);border-color:var(--border-d)}
+
+/* ── NOTIF PANEL ── */
+.npanel{position:fixed;top:66px;right:14px;width:330px;background:var(--card);border:1px solid var(--border-d);border-radius:var(--r);box-shadow:var(--sh2);z-index:150;animation:sd .18s ease}
+@keyframes sd{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.nh{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border)}
+.nt{font-size:12.5px;font-weight:700}
+.ncl{font-size:11px;color:var(--txt3);cursor:pointer}
+.ncl:hover{color:var(--accent)}
+.nlist{max-height:380px;overflow-y:auto}
+.ni2{display:flex;gap:9px;padding:11px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:var(--t);position:relative}
+.ni2:last-child{border-bottom:none}
+.ni2:hover{background:var(--bg2)}
+.ni2.unread{background:rgba(196,77,90,.02)}
+.ni2.unread::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent)}
+.nic{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.nic.prep{background:rgba(196,96,26,.1);color:var(--orange)}
+.nic.pre{background:rgba(26,86,150,.1);color:var(--blue)}
+.nic.stock{background:rgba(46,125,79,.1);color:var(--green)}
+.nm{font-size:11.5px;color:var(--txt2);line-height:1.45;margin-bottom:3px}
+.ntime{font-size:10px;color:var(--txt3)}
+.nempty{padding:36px 18px;text-align:center;color:var(--txt3);font-size:12px}
+
+/* ── TOAST ── */
+.tcon{position:fixed;top:76px;right:14px;display:flex;flex-direction:column;gap:7px;z-index:300;pointer-events:none}
+.toast{background:var(--card);border:1px solid var(--border-d);border-radius:9px;padding:10px 14px;display:flex;align-items:center;gap:9px;box-shadow:var(--sh2);pointer-events:all;animation:ti .25s ease;max-width:300px}
+@keyframes ti{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+.toast.rm{animation:to .25s ease forwards}
+@keyframes to{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(16px)}}
+.tdot2{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.tdot2.prep{background:var(--orange)}
+.tdot2.pre{background:var(--blue)}
+.tdot2.stock{background:var(--green)}
+.ttxt{font-size:11.5px;color:var(--txt2);line-height:1.4;flex:1}
+.tclose{font-size:15px;color:var(--txt3)}
+.tclose:hover{color:var(--txt)}
+
+/* ── FOOTER ── */
+.ft{border-top:1px solid var(--border);padding:20px;margin-top:32px;display:flex;align-items:center;justify-content:space-between;color:var(--txt3);font-size:11px;gap:12px}
+.ftl{display:flex;gap:16px}
+.ftl a:hover{color:var(--txt2)}
+
+/* ── MOBILE DRAWER ── */
+.drawer-overlay{display:none;position:fixed;inset:0;background:rgba(28,25,22,.45);z-index:300;backdrop-filter:blur(2px)}
+.drawer-overlay.open{display:block}
+.sb-drawer{position:fixed;top:0;left:-280px;width:280px;height:100%;background:var(--bg);z-index:301;overflow-y:auto;transition:transform .28s cubic-bezier(.4,0,.2,1);box-shadow:4px 0 24px rgba(0,0,0,.15);padding-top:60px}
+.sb-drawer.open{transform:translateX(280px)}
+.drawer-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:8px;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--txt2);font-size:16px;cursor:pointer}
+.drawer-close:hover{background:var(--bg3)}
+
+/* ── BOTTOM NAV ── */
+.bnav{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(250,248,245,.97);backdrop-filter:blur(12px);border-top:1px solid var(--border);z-index:200;padding:0 0 env(safe-area-inset-bottom)}
+.bnav-inner{display:flex;align-items:stretch;height:52px}
+.bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--txt3);font-size:10px;font-weight:500;transition:var(--t);cursor:pointer;border:none;background:none;font-family:inherit;position:relative}
+.bnav-btn:active{background:var(--bg2)}
+.bnav-btn.on{color:var(--accent)}
+.bnav-ic{font-size:17px;line-height:1}
+.bnav-bdg{position:absolute;top:6px;right:calc(50% - 16px);min-width:15px;height:15px;background:var(--accent);border-radius:8px;font-size:8px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;padding:0 3px;border:1.5px solid var(--bg)}
+
+/* ── MOBILE SEARCH OVERLAY ── */
+.msearch{display:none;position:fixed;inset:0;background:var(--bg);z-index:350;padding:12px 16px;flex-direction:column;gap:10px}
+.msearch.open{display:flex}
+.msearch-bar{display:flex;align-items:center;gap:9px}
+.msearch input{flex:1;height:40px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:0 14px;color:var(--txt);font-size:15px;outline:none;font-family:inherit}
+.msearch input:focus{border-color:var(--accent);background:#fff}
+.msearch-cancel{font-size:13px;color:var(--accent);white-space:nowrap;cursor:pointer;padding:4px 0}
+.msearch-hints{font-size:12px;color:var(--txt3);padding:4px 0}
+
+/* ── RESPONSIVE ── */
+@media(max-width:860px){
+  .layout{grid-template-columns:1fr}
+  .sb{display:none}
+  .bnav{display:block}
+  .main{padding-bottom:72px}
+  .npanel{top:auto;bottom:60px;right:8px;left:8px;width:auto}
+  .tcon{top:auto;bottom:68px;right:8px;left:8px}
+  .toast{max-width:100%}
+}
+@media(max-width:580px){
+  .hd-search{display:none}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .stat-row{flex-wrap:wrap}
+  .wrap{padding:0 12px}
+  .hd-inner{gap:8px}
+  .modal{border-radius:16px 16px 0 0;position:fixed;bottom:0;left:0;right:0;max-width:100%;max-height:88vh;margin:0}
+  .moverlay{align-items:flex-end;padding:0}
+  @keyframes su{from{opacity:0;transform:translateY(100%)}to{opacity:1;transform:translateY(0)}}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hd">
+  <div class="hd-inner">
+    <a href="#" class="logo">
+      <div class="logo-m">A</div>
+      <div>
+        <div class="logo-t">AZONE<em>NEWS</em></div>
+        <div class="logo-s">アゾン资讯中心</div>
+      </div>
+    </a>
+    <div class="hd-search">
+      <span class="si">⌕</span>
+      <input id="si" type="text" placeholder="搜索产品、系列…（按 / 键）" autocomplete="off"/>
+    </div>
+    <div class="hd-act">
+      <button class="ibtn" id="nbtn" onclick="toggleNotif()" title="通知">
+        🔔<span class="bdg" id="nbdg" style="display:none">0</span>
+      </button>
+      <button class="ibtn" title="收藏夹">
+        ♡<span class="bdg" id="wbdg" style="display:none">0</span>
+      </button>
+      <a href="https://www.azone-int.co.jp/azonet/" target="_blank" rel="noopener">
+        <button class="ibtn" title="前往 Azone 官店">↗</button>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- TICKER -->
+<div class="ticker">
+  <span class="ticker-lbl">实时</span>
+  <div class="ticker-sep"></div>
+  <div class="ticker-track"><div class="ticker-content" id="tc"></div></div>
+</div>
+
+<!-- BODY -->
+<div class="wrap">
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sb">
+  <div class="sb-sec">
+    <div class="sb-h">产品系列</div>
+    <div id="sb-cats"></div>
+  </div>
+  <div class="sb-sec">
+    <div class="sb-h">库存状态</div>
+    <div class="sf" id="sb-status"></div>
+  </div>
+  <div class="sb-sec">
+    <div class="sb-h">比例尺寸</div>
+    <div class="scf" id="sb-scales"></div>
+  </div>
+  <div class="sb-sec" style="padding:0 16px">
+    <div class="sb-h" style="padding:0;margin-bottom:8px">关于本站</div>
+    <p style="font-size:11px;color:var(--txt3);line-height:1.7">
+      AZONEWS 汇总 Azone International 官方商店的产品发售、补货及预约信息。<br/>
+      数据来源：<a href="https://www.azone-int.co.jp/azonet/" target="_blank" style="color:var(--accent-dim)">azone-int.co.jp ↗</a>
+    </p>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <!-- Status quick-stats -->
+  <div class="stat-row" id="stat-row"></div>
+  <!-- Active filter chips -->
+  <div class="chips" id="chips"></div>
+  <!-- Toolbar -->
+  <div class="tb">
+    <div class="rc" id="rc"></div>
+    <div class="tb-r">
+      <select class="ss" id="ss" onchange="onSort(this.value)">
+        <option value="newest">最新优先</option>
+        <option value="status">按库存排序</option>
+        <option value="price-asc">价格从低到高</option>
+        <option value="price-desc">价格从高到低</option>
+        <option value="name">名称排序</option>
+      </select>
+      <div class="vt">
+        <button class="vb on" id="bg" onclick="setView('grid')" title="网格">⊞</button>
+        <button class="vb" id="bl" onclick="setView('list')" title="列表">☰</button>
+      </div>
+    </div>
+  </div>
+  <!-- Grid -->
+  <div class="grid" id="grid"></div>
+  <!-- Footer -->
+  <footer class="ft">
+    <div>© 2026 AZONEWS — 非官方粉丝站，与 Azone International Co., Ltd. 无关联</div>
+    <div class="ftl">
+      <a href="https://www.azone-int.co.jp/azonet/" target="_blank">官方商店 ↗</a>
+      <a href="https://www.azone-int.co.jp/" target="_blank">Azone 官网 ↗</a>
+    </div>
+  </footer>
+</main>
+
+</div><!-- end layout -->
+</div><!-- end wrap -->
+
+<!-- NOTIF PANEL -->
+<div class="npanel" id="npanel" style="display:none">
+  <div class="nh"><span class="nt">通知</span><span class="ncl" onclick="clearNotifs()">全部标为已读</span></div>
+  <div class="nlist" id="nlist"></div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="tcon" id="tcon"></div>
+
+<!-- MOBILE DRAWER OVERLAY -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+
+<!-- MOBILE SIDEBAR DRAWER -->
+<div class="sb-drawer" id="sb-drawer">
+  <button class="drawer-close" onclick="closeDrawer()">×</button>
+  <div class="sb-sec">
+    <div class="sb-h">产品系列</div>
+    <div id="sb-cats-m"></div>
+  </div>
+  <div class="sb-sec">
+    <div class="sb-h">库存状态</div>
+    <div class="sf" id="sb-status-m"></div>
+  </div>
+  <div class="sb-sec">
+    <div class="sb-h">比例尺寸</div>
+    <div class="scf" id="sb-scales-m"></div>
+  </div>
+</div>
+
+<!-- MOBILE SEARCH OVERLAY -->
+<div class="msearch" id="msearch">
+  <div class="msearch-bar">
+    <input id="si-m" type="text" placeholder="搜索产品、系列…" autocomplete="off"/>
+    <span class="msearch-cancel" onclick="closeMSearch()">取消</span>
+  </div>
+  <div class="msearch-hints">输入关键词搜索 102 件产品</div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bnav">
+  <div class="bnav-inner">
+    <button class="bnav-btn on" id="bnav-home" onclick="bnavGo('home')">
+      <span class="bnav-ic">⊞</span>全部
+    </button>
+    <button class="bnav-btn" id="bnav-search" onclick="openMSearch()">
+      <span class="bnav-ic">⌕</span>搜索
+    </button>
+    <button class="bnav-btn" id="bnav-filter" onclick="openDrawer()">
+      <span class="bnav-ic">⊟</span>筛选
+      <span class="bnav-bdg" id="filter-bdg" style="display:none">0</span>
+    </button>
+    <button class="bnav-btn" id="bnav-notif" onclick="toggleNotif()">
+      <span class="bnav-ic">🔔</span>通知
+      <span class="bnav-bdg" id="bnav-nbdg" style="display:none">0</span>
+    </button>
+    <button class="bnav-btn" id="bnav-wl">
+      <span class="bnav-ic">♡</span>收藏
+      <span class="bnav-bdg" id="bnav-wbdg" style="display:none">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- MODAL -->
+<div class="moverlay" id="mo" style="display:none">
+  <div class="modal">
+    <button class="mclose" onclick="closeModal()">×</button>
+    <div id="mc"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// DATA — 102 real products from azone-int.co.jp
+// Image: https://www.azone-int.co.jp/image/{code}_0.jpg
+// ═══════════════════════════════════════════════
+const BASE_IMG = 'https://www.azone-int.co.jp/image/';
+
+// cat: dreamin=からふるDreamin/ルミナス, excute=えっくす系/Melty, alva=Alvastaria/サアラズ,
+//      sugar=SugarCups/DIAS/LilFairy/ミニ, iris=アイリス/Poe-Poe/s*t*j, kikipop=KIKIPOP,
+//      orig=その他オリジナル
+// st: stock/prep/pre/closed/sold
+
+const P = [
+// ── Page 1 ──
+{id:1,n:"からふるDreamin'／めばえ ～A Gift from M.K.（黒猫ver.）～",s:"からふるDreamin'",cat:"dreamin",sc:"1/6",p:24200,st:"prep",img:"4573199853666"},
+{id:2,n:"からふるDreamin'／めばえ ～A Gift from M.K.（白猫ver.）～",s:"からふるDreamin'",cat:"dreamin",sc:"1/6",p:24200,st:"prep",img:"4573199853673"},
+{id:3,n:"1/6 乙女の祈り／まひろ",s:"乙女の祈り",cat:"orig",sc:"1/6",p:20900,st:"pre",img:"4573199853659"},
+{id:4,n:"ルミナス＊ストリート／望月うる ～Pop'n SODA MAID～ Sweet Blue Soda ver.",s:"ルミナス＊ストリート",cat:"dreamin",sc:"1/6",p:19800,st:"closed",img:"4573199853352"},
+{id:5,n:"ルミナス＊ストリート／望月うる ～Pop'n SODA MAID～ Strawberry Soda ver.",s:"ルミナス＊ストリート",cat:"dreamin",sc:"1/6",p:19800,st:"closed",img:"4573199853345"},
+{id:6,n:"Alvastaria ティア ～憩いのひととき～ コーディネイトドールset ver.1.1",s:"Alvastaria",cat:"alva",sc:"1/6",p:11000,st:"sold",img:"4573199853321"},
+{id:7,n:"Alvastaria ティオ ～憩いのひととき～ コーディネイトドールset ver.1.1",s:"Alvastaria",cat:"alva",sc:"1/6",p:11000,st:"sold",img:"4573199853338"},
+{id:8,n:"Pookie Boo BonBon／Swing ORIENTAL ROMANTICA",s:"Pookie Boo BonBon",cat:"orig",sc:"1/6",p:25300,st:"closed",img:"4573199853109"},
+{id:9,n:"えっくす☆きゅーとふぁみりー Mia Loyal Maid Classical Black ver.",s:"えっくす☆きゅーとふぁみりー",cat:"excute",sc:"1/6",p:22000,st:"closed",img:"4573199852898"},
+{id:10,n:"えっくす☆きゅーとふぁみりー Mia Loyal Maid Nocturnal Navy ver.",s:"えっくす☆きゅーとふぁみりー",cat:"excute",sc:"1/6",p:22000,st:"closed",img:"4573199852904"},
+// ── Page 2 ──
+{id:11,n:"SugarCups／マシュマロッタ ～Welcome to Sugar Cup Wonderland！～（FC先行受注分）",s:"SugarCups",cat:"sugar",sc:"1/12",p:26000,st:"closed",img:"2009582000000"},
+{id:12,n:"SugarCups／マシュマロッタ ～Welcome to Sugar Cup Wonderland！～",s:"SugarCups",cat:"sugar",sc:"1/12",p:26000,st:"closed",img:"4573199852669"},
+{id:13,n:"KIKIPOP！×camellia Milky Way",s:"KIKIPOP!",cat:"kikipop",sc:"23cm",p:30000,st:"pre",img:"4573199852515"},
+{id:14,n:"Alvastaria ラヴィ ～憩いのひととき～ コーディネイトドールset",s:"Alvastaria",cat:"alva",sc:"1/6",p:10000,st:"sold",img:"4573199852447"},
+{id:15,n:"Alvastaria マイロ ～憩いのひととき～ コーディネイトドールset",s:"Alvastaria",cat:"alva",sc:"1/6",p:10000,st:"sold",img:"4573199852454"},
+{id:16,n:"Poe-Poe × Iris Collect Yuliya ～Cast a spell～（Navy blue ver.）",s:"Iris Collect",cat:"iris",sc:"1/3",p:68000,st:"sold",img:"4573199852232"},
+{id:17,n:"Poe-Poe × Iris Collect Yuliya ～Cast a spell～（Classic olive ver.）",s:"Iris Collect",cat:"iris",sc:"1/3",p:68000,st:"sold",img:"4573199852249"},
+{id:18,n:"えっくす☆きゅーと 聖ポートルダム女子大附属中等部新制服／みう",s:"えっくす☆きゅーと",cat:"excute",sc:"1/6",p:16000,st:"closed",img:"4573199852171"},
+{id:19,n:"えっくす☆きゅーとふぁみりー SERA／Another Secret Wonderland（Light blue ver.）",s:"えっくす☆きゅーとふぁみりー",cat:"excute",sc:"1/6",p:17000,st:"closed",img:"4573199852201"},
+{id:20,n:"えっくす☆きゅーとふぁみりー SERA／Another Secret Wonderland（Gothic ver.）",s:"えっくす☆きゅーとふぁみりー",cat:"excute",sc:"1/6",p:17000,st:"sold",img:"4573199852218"},
+// ── Page 3 ──
+{id:21,n:"えっくす☆きゅーと 聖ポートルダム女子大附属中等部新制服／ころん",s:"えっくす☆きゅーと",cat:"excute",sc:"1/6",p:16000,st:"closed",img:"4573199851556"},
+{id:22,n:"Alvastaria トルテ ～夢見るアトリエ～ 幻燈茶の制服ver.",s:"Alvastaria",cat:"alva",sc:"1/6",p:18000,st:"sold",img:"4573199851532"},
+{id:23,n:"Alvastaria トルテ ～夢見るアトリエ～ 瑠璃青の制服ver.",s:"Alvastaria",cat:"alva",sc:"1/6",p:18000,st:"sold",img:"4573199851549"},
+{id:24,n:"Pookie Boo BonBon／Pink！Mania Limited Edition",s:"Pookie Boo BonBon",cat:"orig",sc:"1/6",p:22000,st:"sold",img:"4573199851297"},
+{id:25,n:"からふるDreamin'／葉鳥ここね in Wonderland ver.1.2（通常販売ver.）",s:"からふるDreamin'",cat:"dreamin",sc:"1/6",p:21000,st:"sold",img:"4573199851211"},
+{id:26,n:"DIAS／MUGUET×赤いカメラ レム ～Wishing Lamby～",s:"DIAS",cat:"sugar",sc:"1/12",p:25000,st:"closed",img:"4573199850733"},
+{id:27,n:"DIAS／MUGUET×赤いカメラ ネム ～Wishing Lamby～",s:"DIAS",cat:"sugar",sc:"1/12",p:25000,st:"closed",img:"4573199850740"},
+{id:28,n:"からふるDreamin'／朝比奈幸穂 ～A Gift from M.K.～（白猫ver.）",s:"からふるDreamin'",cat:"dreamin",sc:"1/6",p:23000,st:"sold",img:"4573199850467"},
+{id:29,n:"Poe-Poe × Iris Collect petit こもも ～かぷっと中華まんガール！～（Angelic Blue ver.）",s:"Iris Collect petit",cat:"iris",sc:"1/3",p:63000,st:"closed",img:"4573199849980"},
+{id:30,n:"Poe-Poe × Iris Collect petit こもも ～かぷっと中華まんガール！～（Lovely Pink ver.）",s:"Iris Collect petit",cat:"iris",sc:"1/3",p:63000,st:"closed",img:"4573199849997"},
+// ── Page 4 ──
+{id:31,n:"1/6 和遥キナ学校制服コレクション／ゆかり",s:"和遥キナ学校制服",cat:"orig",sc:"1/6",p:19800,st:"sold",img:"4573199849973"},
+{id:32,n:"えっくす☆きゅーと 20th anniv.／Tsukiha ～moi lumi コーデset～",s:"えっくす☆きゅーと",cat:"excute",sc:"1/6",p:16500,st:"sold",img:"4573199849829"},
+{id:33,n:"えっくす☆きゅーとふぁみりー みなみ先生の1日 ～授業参観ver. DX～",s:"えっくす☆きゅーとふぁみりー",cat:"excute",sc:"1/6",p:23100,st:"closed",img:"4573199849348"},
+{id:34,n:"えっくす☆きゅーとふぁみりー みなみ先生の1日 ～授業参観ver.～",s:"えっくす☆きゅーとふぁみりー",cat:"excute",sc:"1/6",p:19800,st:"closed",img:"4573199849355"},
+{id:35,n:"謹賀新年 2026／みら",s:"アゾンオリジナルドール",cat:"orig",sc:"1/6",p:24200,st:"sold",img:"4573199849331"},
+{id:36,n:"からふるDreamin'／このみ in Wonderland（Blue Moon ver.）",s:"からふるDreamin'",cat:"dreamin",sc:"1/6",p:22000,st:"stock",img:"4573199849058"},
+{id:37,n:"からふるDreamin'／このみ in Wonderland（Pink Moon ver.）",s:"からふるDreamin'",cat:"dreamin",sc:"1/6",p:22000,st:"stock",img:"4573199849065"},
+{id:38,n:"s*t*j × Iris Collect petit ほのの ～Magical☆fluffy～（みるきーぶるーver.）",s:"Iris Collect petit",cat:"iris",sc:"1/3",p:79200,st:"closed",img:"4573199849034"},
+{id:39,n:"s*t*j × Iris Collect petit ほのの ～Magical☆fluffy～（みるきーぴんくver.）",s:"Iris Collect petit",cat:"iris",sc:"1/3",p:79200,st:"closed",img:"4573199849041"},
+{id:40,n:"1/6 アイリスコレクトプチ Hal ～Tender Circus～ Nostalgic World ver.",s:"アイリスコレクトプチ",cat:"iris",sc:"1/6",p:22000,st:"sold",img:"4573199849003"},
+// ── Page 5 ──
+{id:41,n:"1/6 アイリスコレクトプチ Leo（レオ）～Tender Circus～ Nostalgic World ver.",s:"アイリスコレクトプチ",cat:"iris",sc:"1/6",p:22000,st:"sold",img:"4573199849010"},
+{id:42,n:"1/6 和遥キナ学校制服コレクション／ゆい",s:"和遥キナ学校制服",cat:"orig",sc:"1/6",p:19800,st:"sold",img:"4573199848488"},
+{id:43,n:"和遥キナ学校制服コレクション／ゆかり（きらめく青春の1ページver.）",s:"和遥キナ学校制服",cat:"orig",sc:"1/3",p:68200,st:"sold",img:"4573199848433"},
+{id:44,n:"1/6 アイリスコレクトプチ Ruchiru／Flowers of Serenity（Blue Myosotis ver.）",s:"アイリスコレクトプチ",cat:"iris",sc:"1/6",p:25300,st:"sold",img:"4573199848310"},
+{id:45,n:"SugarCups／ショコラーラ ～Choco Mint March～",s:"SugarCups",cat:"sugar",sc:"1/12",p:28600,st:"sold",img:"4573199848266"},
+{id:46,n:"サアラズ ア・ラ・モード YUZUHA／Sweet Days コーデset ～ブラックベリーヘア～",s:"サアラズ ア・ラ・モード",cat:"alva",sc:"1/6",p:12100,st:"sold",img:"4573199848259"},
+{id:47,n:"サアラズ ア・ラ・モード MAYA／Sweet Days コーデset ～ベリーブラウンヘア～",s:"サアラズ ア・ラ・モード",cat:"alva",sc:"1/6",p:12100,st:"sold",img:"4573199848150"},
+{id:48,n:"サアラズ ア・ラ・モード LYCEE／Sweet Days コーデset ～ダークブラウンヘア～",s:"サアラズ ア・ラ・モード",cat:"alva",sc:"1/6",p:12100,st:"sold",img:"4573199848167"},
+{id:49,n:"Alvastaria ケイティ ～憩いのひととき～ コーディネイトドールset",s:"Alvastaria",cat:"alva",sc:"1/6",p:11000,st:"sold",img:"4573199848099"},
+{id:50,n:"Alvastaria ニール ～憩いのひととき～ コーディネイトドールset",s:"Alvastaria",cat:"alva",sc:"1/6",p:11000,st:"sold",img:"4573199848105"},
+// ── Page 6 ──
+{id:51,n:"Alvastaria メリル ～憩いのひととき～ コーディネイトドールset",s:"Alvastaria",cat:"alva",sc:"1/6",p:11000,st:"sold",img:"4573199848136"},
+{id:52,n:"Lilia／The nightmare parallel world. ～R-Black ver.～",s:"Alvastaria",cat:"alva",sc:"1/3",p:68200,st:"sold",img:"4573199847337"},
+{id:53,n:"Lilia／The nightmare parallel world. ～P-White ver.～",s:"Alvastaria",cat:"alva",sc:"1/3",p:68200,st:"sold",img:"4573199847344"},
+{id:54,n:"こはる／Poppin'bunny garden（Fancy Rabbit ver.）",s:"アゾンオリジナルドール",cat:"orig",sc:"1/3",p:69300,st:"sold",img:"4573199846156"},
+{id:55,n:"えっくす☆きゅーとふぁみりー Mio／乙女的休日散歩",s:"えっくす☆きゅーとふぁみりー",cat:"excute",sc:"1/6",p:16500,st:"sold",img:"4573199846125"},
+{id:56,n:"えっくす☆きゅーとふぁみりー Fuka／乙女的休日散歩",s:"えっくす☆きゅーとふぁみりー",cat:"excute",sc:"1/6",p:16500,st:"sold",img:"4573199846132"},
+{id:57,n:"F.L.C. × SugarCups／キャンディールル ～My little girl～",s:"SugarCups",cat:"sugar",sc:"1/12",p:24200,st:"sold",img:"4573199845814"},
+{id:58,n:"からふるDreamin'／てまり ～雪見るくまちゃん～",s:"からふるDreamin'",cat:"dreamin",sc:"1/6",p:20900,st:"sold",img:"4573199845791"},
+{id:59,n:"いお／Bunnies tea party コーデset ～Cassis chocolate ver.～",s:"アゾンオリジナルドール",cat:"orig",sc:"1/3",p:68200,st:"sold",img:"4573199845296"},
+{id:60,n:"ルミナス＊ストリート／Mii HUG Mii！（Black Cat ver.）",s:"ルミナス＊ストリート",cat:"dreamin",sc:"1/6",p:17600,st:"sold",img:"4573199844985"},
+// ── Page 7 ──
+{id:61,n:"スミレ／Bunny Queenコーデset（Black Rose ver.）",s:"アゾンオリジナルドール",cat:"orig",sc:"1/3",p:62700,st:"sold",img:"4573199844909"},
+{id:62,n:"スミレ／Bunny Queenコーデset（Lilly White ver.）",s:"アゾンオリジナルドール",cat:"orig",sc:"1/3",p:62700,st:"sold",img:"4573199844916"},
+{id:63,n:"Melty☆Cute／Wicked Sugar Aika（あいか）（Misty girl ver.）",s:"Melty☆Cute",cat:"excute",sc:"1/6",p:17600,st:"sold",img:"4573199844886"},
+{id:64,n:"ミレーネ／『Kina's Fantasy Romances』～デシャール家の堕天使～ver.1.1",s:"アゾンオリジナルドール",cat:"orig",sc:"1/3",p:69300,st:"sold",img:"4573199844305"},
+{id:65,n:"snow drop／ゆい（lovely moment ver.）",s:"snow drop",cat:"orig",sc:"1/3",p:68200,st:"sold",img:"4573199843605"},
+{id:66,n:"Melty☆Cute／Charming Honey Himeno（ひめの）（Icy girl ver.）",s:"Melty☆Cute",cat:"excute",sc:"1/6",p:17600,st:"sold",img:"4573199843544"},
+{id:67,n:"からふるDreamin'／メアリー in Wonderland（Aliceblue ver.）",s:"からふるDreamin'",cat:"dreamin",sc:"1/6",p:20900,st:"sold",img:"4573199843575"},
+{id:68,n:"すずね／My Little Devil",s:"アゾンオリジナルドール",cat:"orig",sc:"1/3",p:68200,st:"sold",img:"4573199843339"},
+{id:69,n:"楓子（ふうこ）／My way of life.（SILVER ver.）",s:"アゾンオリジナルドール",cat:"orig",sc:"1/3",p:68200,st:"sold",img:"4573199843223"},
+{id:70,n:"1/12「Bikini Mates」吉野いるみ ブロンドヘアー・ピンクビキニ",s:"Bikini Mates",cat:"sugar",sc:"1/12",p:8800,st:"stock",img:"4573199843124"},
+// ── Page 8 ──
+{id:71,n:"1/12「Bikini Mates」吉野いるみ ブラックヘアー・ブラックビキニ",s:"Bikini Mates",cat:"sugar",sc:"1/12",p:8800,st:"stock",img:"4573199843148"},
+{id:72,n:"1/12「Bikini Mates」吉野いるみ ブラウンヘアー・ホワイトビキニ",s:"Bikini Mates",cat:"sugar",sc:"1/12",p:8800,st:"stock",img:"4573199843131"},
+{id:73,n:"あんな／My Little Devil",s:"アゾンオリジナルドール",cat:"orig",sc:"1/3",p:68200,st:"sold",img:"4573199842561"},
+{id:74,n:"Melty☆Cute／Dream Maid Raili",s:"Melty☆Cute",cat:"excute",sc:"1/6",p:17600,st:"sold",img:"4573199842356"},
+{id:75,n:"ピコえっくす☆きゅーと Moon Rabbit Raili",s:"えっくす☆きゅーと",cat:"excute",sc:"1/12",p:15400,st:"sold",img:"4573199842158"},
+{id:76,n:"Poe-Poe × Iris Collect 彩音 ティータイム キャラメル",s:"Iris Collect",cat:"iris",sc:"1/3",p:68200,st:"sold",img:"4573199842127"},
+{id:77,n:"Poe-Poe × Iris Collect 彩音 ティータイム チョコレート",s:"Iris Collect",cat:"iris",sc:"1/3",p:68200,st:"sold",img:"4573199842110"},
+{id:78,n:"ルミナス＊ストリート Noella Rouge carmin",s:"ルミナス＊ストリート",cat:"dreamin",sc:"1/6",p:17600,st:"sold",img:"4573199842011"},
+{id:79,n:"Poe-Poe × Iris Collect petit うゆり みずいろ",s:"Iris Collect petit",cat:"iris",sc:"1/3",p:68200,st:"sold",img:"4573199841991"},
+{id:80,n:"Poe-Poe × Iris Collect petit うゆり ももいろ",s:"Iris Collect petit",cat:"iris",sc:"1/3",p:68200,st:"sold",img:"4573199841984"},
+// ── Page 9 ──
+{id:81,n:"和遥キナ学校制服コレクション／まひろ（きらめく青春の1ページver.）",s:"和遥キナ学校制服",cat:"orig",sc:"1/3",p:62000,st:"sold",img:"4573199841717"},
+{id:82,n:"からふるDreamin'／坂下 櫻 ～和遥キナ学校制服コレクション～",s:"からふるDreamin'",cat:"dreamin",sc:"1/6",p:19000,st:"sold",img:"4573199841700"},
+{id:83,n:"Alvastaria レベッカ ～春色のおつかい～（クラシカルver.）",s:"Alvastaria",cat:"alva",sc:"1/6",p:16000,st:"sold",img:"4573199841649"},
+{id:84,n:"s*t*j × Iris Collect petit ふるる ～Fluffy holy kitten.～ くろねこver.",s:"Iris Collect petit",cat:"iris",sc:"1/3",p:60000,st:"sold",img:"4573199840130"},
+{id:85,n:"s*t*j × Iris Collect petit ふるる ～Fluffy holy kitten.～ しろねこver.",s:"Iris Collect petit",cat:"iris",sc:"1/3",p:60000,st:"sold",img:"4573199840147"},
+{id:86,n:"Melty☆Cute／Little Punkish Chiika（ちいか）（Angelic girl ver.）",s:"Melty☆Cute",cat:"excute",sc:"1/6",p:16000,st:"sold",img:"4573199840093"},
+{id:87,n:"プリム ～東方花鳥風月～（HAZAKURAver.）",s:"東方花鳥風月",cat:"orig",sc:"1/6",p:16500,st:"sold",img:"4582119999407"},
+{id:88,n:"Green Eyed Monster／りの",s:"Green Eyed Monster",cat:"orig",sc:"1/3",p:58000,st:"sold",img:"4582119999308"},
+{id:89,n:"Green Eyed Monster／レイラ",s:"Green Eyed Monster",cat:"orig",sc:"1/3",p:58000,st:"sold",img:"4582119999292"},
+{id:90,n:"SugarCups ビスケティーナ ～Charming Gingerman～ Sugar Sugar Party3開催記念",s:"SugarCups",cat:"sugar",sc:"1/12",p:20000,st:"sold",img:"4582119998684"},
+// ── Page 10 ──
+{id:91,n:"かの／大正桜乙女喫茶（ポニーテールヘアver.）",s:"アゾンオリジナルドール",cat:"orig",sc:"1/3",p:67100,st:"sold",img:"4582119998455"},
+{id:92,n:"Lil'Fairy ～冬の地下道から～／ウィル（Black color ver.）",s:"Lil'Fairy",cat:"sugar",sc:"1/12",p:16500,st:"sold",img:"4582119997298"},
+{id:93,n:"ノワ／Happy sunny day（Aozora ver.）",s:"アゾンオリジナルドール",cat:"orig",sc:"1/3",p:63800,st:"sold",img:"4582119996123"},
+{id:94,n:"Melty☆Cute／Sweet Baby Lien（リアン）（Mellow girl ver.）",s:"Melty☆Cute",cat:"excute",sc:"1/6",p:17600,st:"sold",img:"4582119995744"},
+{id:95,n:"Lil'Fairy ～ちいさなお手伝いさん～／ネイリー 7th anniv.（ノーマル口ver.）",s:"Lil'Fairy",cat:"sugar",sc:"1/12",p:14300,st:"sold",img:"4582119993696"},
+{id:96,n:"My Sweet Girl／くれは（ドリーミィホワイトver.）",s:"My Sweet Girl",cat:"orig",sc:"1/3",p:53900,st:"sold",img:"4582119993627"},
+{id:97,n:"赤いカメラ × Time of eternal ELLEN ～Bunnies tea party VII～",s:"Time of eternal",cat:"orig",sc:"1/3",p:55000,st:"sold",img:"4573199928876"},
+{id:98,n:"赤いカメラ × Time of eternal Alice ～Bunnies tea party V～",s:"Time of eternal",cat:"orig",sc:"1/3",p:55000,st:"sold",img:"4573199928883"},
+{id:99,n:"アゾン限定ハニーベア 3体セット esMGホワイト",s:"Honey Bear",cat:"sugar",sc:"7cm",p:6600,st:"stock",img:"2008045000007"},
+{id:100,n:"KIKIPOP! ショコラなメイドさん ～Bitter＆Sweet～ ストロベリーチョコ",s:"KIKIPOP!",cat:"kikipop",sc:"23cm",p:27500,st:"stock",img:"4573199922218"},
+// ── Page 11 ──
+{id:101,n:"KIKIPOP! URAHARA・MY HEART てんしちゃん",s:"KIKIPOP!",cat:"kikipop",sc:"23cm",p:25000,st:"stock",img:"4573199920252"},
+{id:102,n:"『ミミーガーデン博物誌』ワフル「探検服Ver.」一般販売",s:"ミミーガーデン",cat:"sugar",sc:"1/12",p:11000,st:"stock",img:"4573199834979"},
+];
+
+const CATS = [
+  {id:'all',lbl:'全部',ic:'✦'},
+  {id:'dreamin',lbl:"からふる & ルミナス",ic:'🌈'},
+  {id:'excute',lbl:"えっくす☆きゅーと系",ic:'⭐'},
+  {id:'alva',lbl:'Alvastaria & サアラズ',ic:'⚔️'},
+  {id:'sugar',lbl:'SugarCups & ミニドール',ic:'🍬'},
+  {id:'iris',lbl:'アイリス & コラボ',ic:'💎'},
+  {id:'kikipop',lbl:'KIKIPOP!',ic:'🎀'},
+  {id:'orig',lbl:'その他オリジナル',ic:'🌸'},
+];
+
+const STMAP = {stock:'有货',prep:'准备中',pre:'预约受付',closed:'预约截止',sold:'售罄'};
+
+const NOTIFS = [
+  {id:1,pid:36,type:'stock',msg:"からふるDreamin'／このみ in Wonderland（Blue Moon ver.）现已有货",ts:new Date(Date.now()-3*60*1000),read:false},
+  {id:2,pid:37,type:'stock',msg:"からふるDreamin'／このみ in Wonderland（Pink Moon ver.）现已有货",ts:new Date(Date.now()-3*60*1000),read:false},
+  {id:3,pid:13,type:'pre',msg:"KIKIPOP! × camellia Milky Way 预约受付中，请勿错过",ts:new Date(Date.now()-20*60*1000),read:false},
+  {id:4,pid:1,type:'prep',msg:"からふるDreamin'／めばえ（黒猫ver.）正在准备中，即将发售",ts:new Date(Date.now()-2*3600*1000),read:true},
+];
+
+// ── STATE ──
+const S = {cat:'all',st:'all',sc:'all',q:'',sort:'newest',view:'grid',notifOpen:false,notifs:[...NOTIFS],wl:new Set(),sel:null,toasts:[],tid:0};
+
+// ── HELPERS ──
+const fmt = n => '¥' + n.toLocaleString('ja-JP');
+function timeAgo(d){const m=Math.floor((Date.now()-d)/60000);if(m<1)return'刚刚';if(m<60)return m+'分钟前';const h=Math.floor(m/60);if(h<24)return h+'小时前';return Math.floor(h/24)+'天前';}
+function tagHtml(p){
+  const ts=[];
+  if(p.st==='prep')ts.push('<span class="t t-prep">准备中</span>');
+  if(p.st==='pre')ts.push('<span class="t t-pre">预约中</span>');
+  if(p.st==='closed')ts.push('<span class="t t-closed">预约截止</span>');
+  return ts.join('');
+}
+
+// ── FILTER ──
+function getFP(){
+  let ps=[...P];
+  if(S.cat!=='all')ps=ps.filter(x=>x.cat===S.cat);
+  if(S.st!=='all')ps=ps.filter(x=>x.st===S.st);
+  if(S.sc!=='all')ps=ps.filter(x=>x.sc===S.sc);
+  if(S.q){const q=S.q.toLowerCase();ps=ps.filter(x=>x.n.toLowerCase().includes(q)||x.s.toLowerCase().includes(q));}
+  ps.sort((a,b)=>{
+    if(S.sort==='newest')return b.id-a.id;
+    if(S.sort==='price-asc')return a.p-b.p;
+    if(S.sort==='price-desc')return b.p-a.p;
+    if(S.sort==='name')return a.n.localeCompare(b.n,'ja');
+    if(S.sort==='status'){const o={stock:0,prep:1,pre:2,closed:3,sold:4};return(o[a.st]??9)-(o[b.st]??9);}
+    return 0;
+  });
+  return ps;
+}
+
+// ── RENDER CARD ──
+function card(p){
+  const cl=['card'];
+  if(p.st==='prep')cl.push('c-prep');
+  if(p.st==='pre')cl.push('c-pre');
+  const imgUrl = BASE_IMG + p.img + '_0.jpg';
+  return`<div class="${cl.join(' ')}" onclick="openModal(${p.id})">
+    <div class="cimg">
+      <img src="${imgUrl}" alt="${p.n}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'"/>
+      <div class="ph" style="display:none"><span>🎎</span><span class="phl">${p.s}</span></div>
+      <div class="ctags">${tagHtml(p)}</div>
+      <button class="cwl ${S.wl.has(p.id)?'on':''}" onclick="toggleWL(event,${p.id})">${S.wl.has(p.id)?'♥':'♡'}</button>
+    </div>
+    <div class="cbody">
+      <div class="cseries">${p.s}</div>
+      <div class="cname">${p.n}</div>
+      <div class="cmeta"><span class="csc">${p.sc}</span></div>
+    </div>
+    <div class="cfoot">
+      <div class="cprice">${fmt(p.p)}</div>
+      <span class="pill ${p.st}">${STMAP[p.st]}</span>
+    </div>
+  </div>`;
+}
+
+// ── RENDER ALL ──
+function renderAll(){
+  const fp = getFP();
+  // stat counts
+  const sc2 = {};
+  ['stock','prep','pre','closed','sold'].forEach(k=>{sc2[k]=P.filter(x=>x.st===k).length;});
+  const statItems=[
+    {k:'stock',l:'有货',c:'stock'},
+    {k:'prep',l:'准备中',c:'prep'},
+    {k:'pre',l:'预约受付',c:'pre'},
+    {k:'closed',l:'预约截止',c:'closed'},
+    {k:'sold',l:'售罄',c:'sold'},
+  ];
+  document.getElementById('stat-row').innerHTML=statItems.map(si=>`
+    <div class="stat-card ${S.st===si.k?'active':''}" onclick="setSt('${si.k}')">
+      <div class="stat-dot ${si.c}"></div>
+      <div><div class="stat-num">${sc2[si.k]||0}</div><div class="stat-lbl">${si.l}</div></div>
+    </div>`).join('');
+  // chips
+  const chips=[];
+  if(S.cat!=='all'){const c=CATS.find(x=>x.id===S.cat);chips.push(`<div class="chip" onclick="setCat('all')">${c?.lbl} ×</div>`);}
+  if(S.st!=='all')chips.push(`<div class="chip" onclick="setSt('all')">${STMAP[S.st]} ×</div>`);
+  if(S.sc!=='all')chips.push(`<div class="chip" onclick="setSc('all')">${S.sc} ×</div>`);
+  if(S.q)chips.push(`<div class="chip" onclick="clearQ()">"${S.q}" ×</div>`);
+  document.getElementById('chips').innerHTML=chips.join('');
+  // count
+  document.getElementById('rc').innerHTML=`显示 <span>${fp.length}</span> / <span>${P.length}</span> 件产品`;
+  // badges
+  const ur=S.notifs.filter(n=>!n.read).length;
+  const nb=document.getElementById('nbdg');nb.textContent=ur;nb.style.display=ur?'flex':'none';
+  const wb=document.getElementById('wbdg');wb.textContent=S.wl.size;wb.style.display=S.wl.size?'flex':'none';
+  // sort + view
+  document.getElementById('ss').value=S.sort;
+  document.getElementById('bg').classList.toggle('on',S.view==='grid');
+  document.getElementById('bl').classList.toggle('on',S.view==='list');
+  // grid
+  const g=document.getElementById('grid');
+  g.className='grid'+(S.view==='list'?' lv':'');
+  g.innerHTML=fp.length?fp.map(card).join(''):`<div class="empty"><div class="empty-ic">🔍</div><h3>未找到相关产品</h3><p>请尝试调整筛选条件或搜索关键词</p></div>`;
+}
+
+// ── SIDEBAR ──
+function renderSB(){
+  const cc={all:P.length};CATS.slice(1).forEach(c=>{cc[c.id]=P.filter(x=>x.cat===c.id).length;});
+  document.getElementById('sb-cats').innerHTML=CATS.map(c=>`<div class="ni ${S.cat===c.id?'on':''}" onclick="setCat('${c.id}')"><span class="ni-ic">${c.ic}</span><span>${c.lbl}</span><span class="ni-ct">${cc[c.id]||0}</span></div>`).join('');
+  const stItems=[{k:'all',l:'全部状态',d:'all'},{k:'stock',l:'有货',d:'stock'},{k:'prep',l:'准备中',d:'prep'},{k:'pre',l:'预约受付',d:'pre'},{k:'closed',l:'预约截止',d:'closed'},{k:'sold',l:'售罄',d:'sold'}];
+  const sc3={all:P.length};['stock','prep','pre','closed','sold'].forEach(k=>{sc3[k]=P.filter(x=>x.st===k).length;});
+  document.getElementById('sb-status').innerHTML=stItems.map(s=>`<div class="sb-btn ${S.st===s.k?'on':''}" onclick="setSt('${s.k}')"><span class="sdot ${s.d}"></span>${s.l}<span style="margin-left:auto;font-size:10px;color:var(--txt3)">${sc3[s.k]||0}</span></div>`).join('');
+  const scales=[...new Set(P.map(x=>x.sc))].sort((a,b)=>{const o={'1/3':0,'1/6':1,'1/12':2,'23cm':3,'7cm':4};return(o[a]??9)-(o[b]??9);});
+  document.getElementById('sb-scales').innerHTML=[`<div class="sb-btn ${S.sc==='all'?'on':''}" onclick="setSc('all')"><span>▪</span>全部尺寸<span style="margin-left:auto;font-size:10px;color:var(--txt3)">${P.length}</span></div>`,...scales.map(sc=>`<div class="sb-btn ${S.sc===sc?'on':''}" onclick="setSc('${sc}')"><span>▫</span>${sc}<span style="margin-left:auto;font-size:10px;color:var(--txt3)">${P.filter(x=>x.sc===sc).length}</span></div>`)].join('');
+}
+
+// ── TICKER ──
+function renderTicker(){
+  const prepItems=P.filter(x=>x.st==='prep').map(x=>`<span class="ticker-item"><span class="tdot prep"></span>准备中 · ${x.n}</span>`);
+  const preItems=P.filter(x=>x.st==='pre').map(x=>`<span class="ticker-item"><span class="tdot pre"></span>预约受付 · ${x.n}</span>`);
+  const stockItems=P.filter(x=>x.st==='stock').slice(0,5).map(x=>`<span class="ticker-item"><span class="tdot new"></span>有货 · ${x.n}</span>`);
+  const all=[...prepItems,...preItems,...stockItems];
+  const d=[...all,...all];
+  document.getElementById('tc').innerHTML=d.join('');
+}
+
+// ── NOTIF ──
+function renderNotif(){
+  const p=document.getElementById('npanel');
+  p.style.display=S.notifOpen?'block':'none';
+  if(!S.notifOpen)return;
+  document.getElementById('nlist').innerHTML=S.notifs.length?S.notifs.map(n=>`
+    <div class="ni2 ${n.read?'':'unread'}" onclick="markRead(${n.id})">
+      <div class="nic ${n.type}">${n.type==='stock'?'✓':n.type==='prep'?'⏳':'🔔'}</div>
+      <div><div class="nm">${n.msg}</div><div class="ntime">${timeAgo(n.ts)}</div></div>
+    </div>`).join(''):`<div class="nempty">暂无通知</div>`;
+}
+
+// ── MODAL ──
+function renderModal(){
+  const o=document.getElementById('mo');
+  if(!S.sel){o.style.display='none';document.body.style.overflow='';return;}
+  o.style.display='flex';document.body.style.overflow='hidden';
+  const p=S.sel;
+  const imgUrl=BASE_IMG+p.img+'_0.jpg';
+  const btnLbl={stock:'在 Azone 官店查看',prep:'在 Azone 官店查看',pre:'前往预约',closed:'查看详情',sold:'查看详情'}[p.st]||'查看详情';
+  document.getElementById('mc').innerHTML=`
+    <div class="mimg">
+      <img src="${imgUrl}" alt="${p.n}" onerror="this.style.display='none';this.nextSibling.style.display='block'"/>
+      <span class="mph" style="display:none">🎎</span>
+    </div>
+    <div class="mbody">
+      <div class="m-series">${p.s}</div>
+      <div class="m-title">${p.n}</div>
+      <div class="m-tags">${tagHtml(p)}<span class="pill ${p.st}">${STMAP[p.st]}</span></div>
+      <div class="mgrid">
+        <div class="mi"><div class="mi-l">比例尺寸</div><div class="mi-v">${p.sc}</div></div>
+        <div class="mi"><div class="mi-l">含税价格</div><div class="mi-v">${fmt(p.p)}</div></div>
+        <div class="mi"><div class="mi-l">系列</div><div class="mi-v" style="font-size:12px">${p.s}</div></div>
+        <div class="mi"><div class="mi-l">库存状态</div><div class="mi-v"><span class="pill ${p.st}">${STMAP[p.st]}</span></div></div>
+      </div>
+      <div class="mact">
+        <button class="btn-p" onclick="window.open('https://www.azone-int.co.jp/azonet/item/${p.img}','_blank')">↗ ${btnLbl}</button>
+        <button class="btn-s" onclick="toggleWLModal(${p.id})">${S.wl.has(p.id)?'♥ 已收藏':'♡ 加入收藏'}</button>
+        <button class="btn-s" onclick="closeModal()">关闭</button>
+      </div>
+    </div>`;
+}
+
+// ── TOAST ──
+function toast(msg,type='stock'){const id=++S.tid;S.toasts.push({id,msg,type});renderToasts();setTimeout(()=>rmToast(id),5000);}
+function rmToast(id){const el=document.getElementById('t'+id);if(el){el.classList.add('rm');setTimeout(()=>{S.toasts=S.toasts.filter(x=>x.id!==id);renderToasts();},280);}}
+function renderToasts(){document.getElementById('tcon').innerHTML=S.toasts.map(t=>`<div class="toast" id="t${t.id}"><div class="tdot2 ${t.type}"></div><div class="ttxt">${t.msg}</div><button class="tclose" onclick="rmToast(${t.id})">×</button></div>`).join('');}
+
+// ── ACTIONS ──
+function setCat(v){S.cat=v;renderSB();renderAll();}
+function setSt(v){S.st=v;renderSB();renderAll();}
+function setSc(v){S.sc=v;renderSB();renderAll();}
+function clearQ(){S.q='';document.getElementById('si').value='';renderAll();}
+function onSort(v){S.sort=v;renderAll();}
+function setView(v){S.view=v;renderAll();}
+function openModal(id){S.sel=P.find(x=>x.id===id);renderModal();}
+function closeModal(){S.sel=null;renderModal();}
+function toggleNotif(){S.notifOpen=!S.notifOpen;renderNotif();if(S.notifOpen)setTimeout(()=>document.addEventListener('click',outNotif,{once:true}),0);}
+function outNotif(e){if(!document.getElementById('npanel').contains(e.target)&&!document.getElementById('nbtn').contains(e.target)){S.notifOpen=false;renderNotif();}else if(S.notifOpen)document.addEventListener('click',outNotif,{once:true});}
+function markRead(id){const n=S.notifs.find(x=>x.id===id);if(n)n.read=true;renderNotif();renderAll();}
+function clearNotifs(){S.notifs.forEach(n=>n.read=true);renderNotif();renderAll();}
+function toggleWL(e,id){e.stopPropagation();if(S.wl.has(id)){S.wl.delete(id);}else{S.wl.add(id);const p=P.find(x=>x.id===id);toast(`已收藏：${p.n.substring(0,24)}…`,'pre');}renderAll();}
+function toggleWLModal(id){if(S.wl.has(id)){S.wl.delete(id);}else{S.wl.add(id);toast('已加入收藏夹','pre');}renderModal();renderAll();}
+
+// ── MOBILE DRAWER ──
+function openDrawer(){
+  document.getElementById('sb-drawer').classList.add('open');
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeDrawer(){
+  document.getElementById('sb-drawer').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+// ── MOBILE SEARCH ──
+function openMSearch(){
+  document.getElementById('msearch').classList.add('open');
+  setTimeout(()=>document.getElementById('si-m').focus(),50);
+}
+function closeMSearch(){
+  document.getElementById('msearch').classList.remove('open');
+  S.q='';
+  document.getElementById('si-m').value='';
+  renderAll();
+}
+
+// ── BOTTOM NAV ──
+function bnavGo(tab){
+  ['home','search','filter','notif','wl'].forEach(t=>{
+    document.getElementById('bnav-'+t)?.classList.toggle('on',t===tab);
+  });
+}
+
+// ── SYNC MOBILE SIDEBAR ──
+function renderSBMobile(){
+  const cc={all:P.length};CATS.slice(1).forEach(c=>{cc[c.id]=P.filter(x=>x.cat===c.id).length;});
+  const catsEl=document.getElementById('sb-cats-m');
+  const statusEl=document.getElementById('sb-status-m');
+  const scalesEl=document.getElementById('sb-scales-m');
+  if(!catsEl)return;
+  catsEl.innerHTML=CATS.map(c=>`<div class="ni ${S.cat===c.id?'on':''}" onclick="setCatM('${c.id}')"><span class="ni-ic">${c.ic}</span><span>${c.lbl}</span><span class="ni-ct">${cc[c.id]||0}</span></div>`).join('');
+  const stItems=[{k:'all',l:'全部状态',d:'all'},{k:'stock',l:'有货',d:'stock'},{k:'prep',l:'准备中',d:'prep'},{k:'pre',l:'预约受付',d:'pre'},{k:'closed',l:'预约截止',d:'closed'},{k:'sold',l:'售罄',d:'sold'}];
+  const sc3={all:P.length};['stock','prep','pre','closed','sold'].forEach(k=>{sc3[k]=P.filter(x=>x.st===k).length;});
+  statusEl.innerHTML=stItems.map(s=>`<div class="sb-btn ${S.st===s.k?'on':''}" onclick="setStM('${s.k}')"><span class="sdot ${s.d}"></span>${s.l}<span style="margin-left:auto;font-size:10px;color:var(--txt3)">${sc3[s.k]||0}</span></div>`).join('');
+  const scales=[...new Set(P.map(x=>x.sc))].sort((a,b)=>{const o={'1/3':0,'1/6':1,'1/12':2,'23cm':3,'7cm':4};return(o[a]??9)-(o[b]??9);});
+  scalesEl.innerHTML=[`<div class="sb-btn ${S.sc==='all'?'on':''}" onclick="setScM('all')"><span>▪</span>全部尺寸<span style="margin-left:auto;font-size:10px;color:var(--txt3)">${P.length}</span></div>`,...scales.map(sc=>`<div class="sb-btn ${S.sc===sc?'on':''}" onclick="setScM('${sc}')"><span>▫</span>${sc}<span style="margin-left:auto;font-size:10px;color:var(--txt3)">${P.filter(x=>x.sc===sc).length}</span></div>`)].join('');
+  // filter badge
+  const activeFilters=(S.cat!=='all'?1:0)+(S.st!=='all'?1:0)+(S.sc!=='all'?1:0);
+  const fb=document.getElementById('filter-bdg');
+  if(fb){fb.textContent=activeFilters;fb.style.display=activeFilters?'flex':'none';}
+  // bottom nav badges
+  const ur=S.notifs.filter(n=>!n.read).length;
+  const bnb=document.getElementById('bnav-nbdg');if(bnb){bnb.textContent=ur;bnb.style.display=ur?'flex':'none';}
+  const bwb=document.getElementById('bnav-wbdg');if(bwb){bwb.textContent=S.wl.size;bwb.style.display=S.wl.size?'flex':'none';}
+}
+
+function setCatM(v){S.cat=v;renderSB();renderSBMobile();renderAll();}
+function setStM(v){S.st=v;renderSB();renderSBMobile();renderAll();}
+function setScM(v){S.sc=v;renderSB();renderSBMobile();renderAll();}
+
+// override setCat/setSt/setSc to also update mobile
+const _setCat=setCat,_setSt=setSt,_setSc=setSc;
+setCat=v=>{_setCat(v);renderSBMobile();};
+setSt=v=>{_setSt(v);renderSBMobile();};
+setSc=v=>{_setSc(v);renderSBMobile();};
+
+let qt;
+document.addEventListener('DOMContentLoaded',()=>{
+  renderTicker();renderSB();renderAll();renderNotif();renderSBMobile();
+  // desktop search
+  document.getElementById('si').addEventListener('input',e=>{clearTimeout(qt);qt=setTimeout(()=>{S.q=e.target.value.trim();renderAll();},200);});
+  // mobile search
+  document.getElementById('si-m').addEventListener('input',e=>{clearTimeout(qt);qt=setTimeout(()=>{S.q=e.target.value.trim();renderAll();},200);});
+  document.getElementById('mo').addEventListener('click',e=>{if(e.target===document.getElementById('mo'))closeModal();});
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape'){
+      if(S.sel)closeModal();
+      if(S.notifOpen){S.notifOpen=false;renderNotif();}
+      if(document.getElementById('sb-drawer').classList.contains('open'))closeDrawer();
+      if(document.getElementById('msearch').classList.contains('open'))closeMSearch();
+    }
+    if(e.key==='/'&&!['INPUT','TEXTAREA'].includes(e.target.tagName)){e.preventDefault();document.getElementById('si').focus();}
+  });
+  // demo notifications
+  setTimeout(()=>toast("からふるDreamin'／このみ in Wonderland（Blue Moon）现在有货！",'stock'),1500);
+  setTimeout(()=>toast('KIKIPOP! × camellia Milky Way 预约受付中，点击了解详情','pre'),8000);
+});
+</script>
+</body>
+</html>
