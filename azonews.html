@@ -475,131 +475,15 @@ input,select{font-family:inherit}
 
 <script>
 // ═══════════════════════════════════════════════
-// DATA — 102 real products from azone-int.co.jp
+// DATA — loaded from products.json (auto-updated daily)
 // Image: https://www.azone-int.co.jp/image/{code}_0.jpg
 // ═══════════════════════════════════════════════
 const BASE_IMG = 'https://www.azone-int.co.jp/image/';
 
-// cat: dreamin=からふるDreamin/ルミナス, excute=えっくす系/Melty, alva=Alvastaria/サアラズ,
-//      sugar=SugarCups/DIAS/LilFairy/ミニ, iris=アイリス/Poe-Poe/s*t*j, kikipop=KIKIPOP,
-//      orig=その他オリジナル
-// st: stock/prep/pre/closed/sold
+// 将从 products.json 加载，此处为初始占位
+let P = [];
 
-const P = [
-// ── Page 1 ──
-{id:1,n:"からふるDreamin'／めばえ ～A Gift from M.K.（黒猫ver.）～",s:"からふるDreamin'",cat:"dreamin",sc:"1/6",p:24200,st:"prep",img:"4573199853666"},
-{id:2,n:"からふるDreamin'／めばえ ～A Gift from M.K.（白猫ver.）～",s:"からふるDreamin'",cat:"dreamin",sc:"1/6",p:24200,st:"prep",img:"4573199853673"},
-{id:3,n:"1/6 乙女の祈り／まひろ",s:"乙女の祈り",cat:"orig",sc:"1/6",p:20900,st:"pre",img:"4573199853659"},
-{id:4,n:"ルミナス＊ストリート／望月うる ～Pop'n SODA MAID～ Sweet Blue Soda ver.",s:"ルミナス＊ストリート",cat:"dreamin",sc:"1/6",p:19800,st:"closed",img:"4573199853352"},
-{id:5,n:"ルミナス＊ストリート／望月うる ～Pop'n SODA MAID～ Strawberry Soda ver.",s:"ルミナス＊ストリート",cat:"dreamin",sc:"1/6",p:19800,st:"closed",img:"4573199853345"},
-{id:6,n:"Alvastaria ティア ～憩いのひととき～ コーディネイトドールset ver.1.1",s:"Alvastaria",cat:"alva",sc:"1/6",p:11000,st:"sold",img:"4573199853321"},
-{id:7,n:"Alvastaria ティオ ～憩いのひととき～ コーディネイトドールset ver.1.1",s:"Alvastaria",cat:"alva",sc:"1/6",p:11000,st:"sold",img:"4573199853338"},
-{id:8,n:"Pookie Boo BonBon／Swing ORIENTAL ROMANTICA",s:"Pookie Boo BonBon",cat:"orig",sc:"1/6",p:25300,st:"closed",img:"4573199853109"},
-{id:9,n:"えっくす☆きゅーとふぁみりー Mia Loyal Maid Classical Black ver.",s:"えっくす☆きゅーとふぁみりー",cat:"excute",sc:"1/6",p:22000,st:"closed",img:"4573199852898"},
-{id:10,n:"えっくす☆きゅーとふぁみりー Mia Loyal Maid Nocturnal Navy ver.",s:"えっくす☆きゅーとふぁみりー",cat:"excute",sc:"1/6",p:22000,st:"closed",img:"4573199852904"},
-// ── Page 2 ──
-{id:11,n:"SugarCups／マシュマロッタ ～Welcome to Sugar Cup Wonderland！～（FC先行受注分）",s:"SugarCups",cat:"sugar",sc:"1/12",p:26000,st:"closed",img:"2009582000000"},
-{id:12,n:"SugarCups／マシュマロッタ ～Welcome to Sugar Cup Wonderland！～",s:"SugarCups",cat:"sugar",sc:"1/12",p:26000,st:"closed",img:"4573199852669"},
-{id:13,n:"KIKIPOP！×camellia Milky Way",s:"KIKIPOP!",cat:"kikipop",sc:"23cm",p:30000,st:"pre",img:"4573199852515"},
-{id:14,n:"Alvastaria ラヴィ ～憩いのひととき～ コーディネイトドールset",s:"Alvastaria",cat:"alva",sc:"1/6",p:10000,st:"sold",img:"4573199852447"},
-{id:15,n:"Alvastaria マイロ ～憩いのひととき～ コーディネイトドールset",s:"Alvastaria",cat:"alva",sc:"1/6",p:10000,st:"sold",img:"4573199852454"},
-{id:16,n:"Poe-Poe × Iris Collect Yuliya ～Cast a spell～（Navy blue ver.）",s:"Iris Collect",cat:"iris",sc:"1/3",p:68000,st:"sold",img:"4573199852232"},
-{id:17,n:"Poe-Poe × Iris Collect Yuliya ～Cast a spell～（Classic olive ver.）",s:"Iris Collect",cat:"iris",sc:"1/3",p:68000,st:"sold",img:"4573199852249"},
-{id:18,n:"えっくす☆きゅーと 聖ポートルダム女子大附属中等部新制服／みう",s:"えっくす☆きゅーと",cat:"excute",sc:"1/6",p:16000,st:"closed",img:"4573199852171"},
-{id:19,n:"えっくす☆きゅーとふぁみりー SERA／Another Secret Wonderland（Light blue ver.）",s:"えっくす☆きゅーとふぁみりー",cat:"excute",sc:"1/6",p:17000,st:"closed",img:"4573199852201"},
-{id:20,n:"えっくす☆きゅーとふぁみりー SERA／Another Secret Wonderland（Gothic ver.）",s:"えっくす☆きゅーとふぁみりー",cat:"excute",sc:"1/6",p:17000,st:"sold",img:"4573199852218"},
-// ── Page 3 ──
-{id:21,n:"えっくす☆きゅーと 聖ポートルダム女子大附属中等部新制服／ころん",s:"えっくす☆きゅーと",cat:"excute",sc:"1/6",p:16000,st:"closed",img:"4573199851556"},
-{id:22,n:"Alvastaria トルテ ～夢見るアトリエ～ 幻燈茶の制服ver.",s:"Alvastaria",cat:"alva",sc:"1/6",p:18000,st:"sold",img:"4573199851532"},
-{id:23,n:"Alvastaria トルテ ～夢見るアトリエ～ 瑠璃青の制服ver.",s:"Alvastaria",cat:"alva",sc:"1/6",p:18000,st:"sold",img:"4573199851549"},
-{id:24,n:"Pookie Boo BonBon／Pink！Mania Limited Edition",s:"Pookie Boo BonBon",cat:"orig",sc:"1/6",p:22000,st:"sold",img:"4573199851297"},
-{id:25,n:"からふるDreamin'／葉鳥ここね in Wonderland ver.1.2（通常販売ver.）",s:"からふるDreamin'",cat:"dreamin",sc:"1/6",p:21000,st:"sold",img:"4573199851211"},
-{id:26,n:"DIAS／MUGUET×赤いカメラ レム ～Wishing Lamby～",s:"DIAS",cat:"sugar",sc:"1/12",p:25000,st:"closed",img:"4573199850733"},
-{id:27,n:"DIAS／MUGUET×赤いカメラ ネム ～Wishing Lamby～",s:"DIAS",cat:"sugar",sc:"1/12",p:25000,st:"closed",img:"4573199850740"},
-{id:28,n:"からふるDreamin'／朝比奈幸穂 ～A Gift from M.K.～（白猫ver.）",s:"からふるDreamin'",cat:"dreamin",sc:"1/6",p:23000,st:"sold",img:"4573199850467"},
-{id:29,n:"Poe-Poe × Iris Collect petit こもも ～かぷっと中華まんガール！～（Angelic Blue ver.）",s:"Iris Collect petit",cat:"iris",sc:"1/3",p:63000,st:"closed",img:"4573199849980"},
-{id:30,n:"Poe-Poe × Iris Collect petit こもも ～かぷっと中華まんガール！～（Lovely Pink ver.）",s:"Iris Collect petit",cat:"iris",sc:"1/3",p:63000,st:"closed",img:"4573199849997"},
-// ── Page 4 ──
-{id:31,n:"1/6 和遥キナ学校制服コレクション／ゆかり",s:"和遥キナ学校制服",cat:"orig",sc:"1/6",p:19800,st:"sold",img:"4573199849973"},
-{id:32,n:"えっくす☆きゅーと 20th anniv.／Tsukiha ～moi lumi コーデset～",s:"えっくす☆きゅーと",cat:"excute",sc:"1/6",p:16500,st:"sold",img:"4573199849829"},
-{id:33,n:"えっくす☆きゅーとふぁみりー みなみ先生の1日 ～授業参観ver. DX～",s:"えっくす☆きゅーとふぁみりー",cat:"excute",sc:"1/6",p:23100,st:"closed",img:"4573199849348"},
-{id:34,n:"えっくす☆きゅーとふぁみりー みなみ先生の1日 ～授業参観ver.～",s:"えっくす☆きゅーとふぁみりー",cat:"excute",sc:"1/6",p:19800,st:"closed",img:"4573199849355"},
-{id:35,n:"謹賀新年 2026／みら",s:"アゾンオリジナルドール",cat:"orig",sc:"1/6",p:24200,st:"sold",img:"4573199849331"},
-{id:36,n:"からふるDreamin'／このみ in Wonderland（Blue Moon ver.）",s:"からふるDreamin'",cat:"dreamin",sc:"1/6",p:22000,st:"stock",img:"4573199849058"},
-{id:37,n:"からふるDreamin'／このみ in Wonderland（Pink Moon ver.）",s:"からふるDreamin'",cat:"dreamin",sc:"1/6",p:22000,st:"stock",img:"4573199849065"},
-{id:38,n:"s*t*j × Iris Collect petit ほのの ～Magical☆fluffy～（みるきーぶるーver.）",s:"Iris Collect petit",cat:"iris",sc:"1/3",p:79200,st:"closed",img:"4573199849034"},
-{id:39,n:"s*t*j × Iris Collect petit ほのの ～Magical☆fluffy～（みるきーぴんくver.）",s:"Iris Collect petit",cat:"iris",sc:"1/3",p:79200,st:"closed",img:"4573199849041"},
-{id:40,n:"1/6 アイリスコレクトプチ Hal ～Tender Circus～ Nostalgic World ver.",s:"アイリスコレクトプチ",cat:"iris",sc:"1/6",p:22000,st:"sold",img:"4573199849003"},
-// ── Page 5 ──
-{id:41,n:"1/6 アイリスコレクトプチ Leo（レオ）～Tender Circus～ Nostalgic World ver.",s:"アイリスコレクトプチ",cat:"iris",sc:"1/6",p:22000,st:"sold",img:"4573199849010"},
-{id:42,n:"1/6 和遥キナ学校制服コレクション／ゆい",s:"和遥キナ学校制服",cat:"orig",sc:"1/6",p:19800,st:"sold",img:"4573199848488"},
-{id:43,n:"和遥キナ学校制服コレクション／ゆかり（きらめく青春の1ページver.）",s:"和遥キナ学校制服",cat:"orig",sc:"1/3",p:68200,st:"sold",img:"4573199848433"},
-{id:44,n:"1/6 アイリスコレクトプチ Ruchiru／Flowers of Serenity（Blue Myosotis ver.）",s:"アイリスコレクトプチ",cat:"iris",sc:"1/6",p:25300,st:"sold",img:"4573199848310"},
-{id:45,n:"SugarCups／ショコラーラ ～Choco Mint March～",s:"SugarCups",cat:"sugar",sc:"1/12",p:28600,st:"sold",img:"4573199848266"},
-{id:46,n:"サアラズ ア・ラ・モード YUZUHA／Sweet Days コーデset ～ブラックベリーヘア～",s:"サアラズ ア・ラ・モード",cat:"alva",sc:"1/6",p:12100,st:"sold",img:"4573199848259"},
-{id:47,n:"サアラズ ア・ラ・モード MAYA／Sweet Days コーデset ～ベリーブラウンヘア～",s:"サアラズ ア・ラ・モード",cat:"alva",sc:"1/6",p:12100,st:"sold",img:"4573199848150"},
-{id:48,n:"サアラズ ア・ラ・モード LYCEE／Sweet Days コーデset ～ダークブラウンヘア～",s:"サアラズ ア・ラ・モード",cat:"alva",sc:"1/6",p:12100,st:"sold",img:"4573199848167"},
-{id:49,n:"Alvastaria ケイティ ～憩いのひととき～ コーディネイトドールset",s:"Alvastaria",cat:"alva",sc:"1/6",p:11000,st:"sold",img:"4573199848099"},
-{id:50,n:"Alvastaria ニール ～憩いのひととき～ コーディネイトドールset",s:"Alvastaria",cat:"alva",sc:"1/6",p:11000,st:"sold",img:"4573199848105"},
-// ── Page 6 ──
-{id:51,n:"Alvastaria メリル ～憩いのひととき～ コーディネイトドールset",s:"Alvastaria",cat:"alva",sc:"1/6",p:11000,st:"sold",img:"4573199848136"},
-{id:52,n:"Lilia／The nightmare parallel world. ～R-Black ver.～",s:"Alvastaria",cat:"alva",sc:"1/3",p:68200,st:"sold",img:"4573199847337"},
-{id:53,n:"Lilia／The nightmare parallel world. ～P-White ver.～",s:"Alvastaria",cat:"alva",sc:"1/3",p:68200,st:"sold",img:"4573199847344"},
-{id:54,n:"こはる／Poppin'bunny garden（Fancy Rabbit ver.）",s:"アゾンオリジナルドール",cat:"orig",sc:"1/3",p:69300,st:"sold",img:"4573199846156"},
-{id:55,n:"えっくす☆きゅーとふぁみりー Mio／乙女的休日散歩",s:"えっくす☆きゅーとふぁみりー",cat:"excute",sc:"1/6",p:16500,st:"sold",img:"4573199846125"},
-{id:56,n:"えっくす☆きゅーとふぁみりー Fuka／乙女的休日散歩",s:"えっくす☆きゅーとふぁみりー",cat:"excute",sc:"1/6",p:16500,st:"sold",img:"4573199846132"},
-{id:57,n:"F.L.C. × SugarCups／キャンディールル ～My little girl～",s:"SugarCups",cat:"sugar",sc:"1/12",p:24200,st:"sold",img:"4573199845814"},
-{id:58,n:"からふるDreamin'／てまり ～雪見るくまちゃん～",s:"からふるDreamin'",cat:"dreamin",sc:"1/6",p:20900,st:"sold",img:"4573199845791"},
-{id:59,n:"いお／Bunnies tea party コーデset ～Cassis chocolate ver.～",s:"アゾンオリジナルドール",cat:"orig",sc:"1/3",p:68200,st:"sold",img:"4573199845296"},
-{id:60,n:"ルミナス＊ストリート／Mii HUG Mii！（Black Cat ver.）",s:"ルミナス＊ストリート",cat:"dreamin",sc:"1/6",p:17600,st:"sold",img:"4573199844985"},
-// ── Page 7 ──
-{id:61,n:"スミレ／Bunny Queenコーデset（Black Rose ver.）",s:"アゾンオリジナルドール",cat:"orig",sc:"1/3",p:62700,st:"sold",img:"4573199844909"},
-{id:62,n:"スミレ／Bunny Queenコーデset（Lilly White ver.）",s:"アゾンオリジナルドール",cat:"orig",sc:"1/3",p:62700,st:"sold",img:"4573199844916"},
-{id:63,n:"Melty☆Cute／Wicked Sugar Aika（あいか）（Misty girl ver.）",s:"Melty☆Cute",cat:"excute",sc:"1/6",p:17600,st:"sold",img:"4573199844886"},
-{id:64,n:"ミレーネ／『Kina's Fantasy Romances』～デシャール家の堕天使～ver.1.1",s:"アゾンオリジナルドール",cat:"orig",sc:"1/3",p:69300,st:"sold",img:"4573199844305"},
-{id:65,n:"snow drop／ゆい（lovely moment ver.）",s:"snow drop",cat:"orig",sc:"1/3",p:68200,st:"sold",img:"4573199843605"},
-{id:66,n:"Melty☆Cute／Charming Honey Himeno（ひめの）（Icy girl ver.）",s:"Melty☆Cute",cat:"excute",sc:"1/6",p:17600,st:"sold",img:"4573199843544"},
-{id:67,n:"からふるDreamin'／メアリー in Wonderland（Aliceblue ver.）",s:"からふるDreamin'",cat:"dreamin",sc:"1/6",p:20900,st:"sold",img:"4573199843575"},
-{id:68,n:"すずね／My Little Devil",s:"アゾンオリジナルドール",cat:"orig",sc:"1/3",p:68200,st:"sold",img:"4573199843339"},
-{id:69,n:"楓子（ふうこ）／My way of life.（SILVER ver.）",s:"アゾンオリジナルドール",cat:"orig",sc:"1/3",p:68200,st:"sold",img:"4573199843223"},
-{id:70,n:"1/12「Bikini Mates」吉野いるみ ブロンドヘアー・ピンクビキニ",s:"Bikini Mates",cat:"sugar",sc:"1/12",p:8800,st:"stock",img:"4573199843124"},
-// ── Page 8 ──
-{id:71,n:"1/12「Bikini Mates」吉野いるみ ブラックヘアー・ブラックビキニ",s:"Bikini Mates",cat:"sugar",sc:"1/12",p:8800,st:"stock",img:"4573199843148"},
-{id:72,n:"1/12「Bikini Mates」吉野いるみ ブラウンヘアー・ホワイトビキニ",s:"Bikini Mates",cat:"sugar",sc:"1/12",p:8800,st:"stock",img:"4573199843131"},
-{id:73,n:"あんな／My Little Devil",s:"アゾンオリジナルドール",cat:"orig",sc:"1/3",p:68200,st:"sold",img:"4573199842561"},
-{id:74,n:"Melty☆Cute／Dream Maid Raili",s:"Melty☆Cute",cat:"excute",sc:"1/6",p:17600,st:"sold",img:"4573199842356"},
-{id:75,n:"ピコえっくす☆きゅーと Moon Rabbit Raili",s:"えっくす☆きゅーと",cat:"excute",sc:"1/12",p:15400,st:"sold",img:"4573199842158"},
-{id:76,n:"Poe-Poe × Iris Collect 彩音 ティータイム キャラメル",s:"Iris Collect",cat:"iris",sc:"1/3",p:68200,st:"sold",img:"4573199842127"},
-{id:77,n:"Poe-Poe × Iris Collect 彩音 ティータイム チョコレート",s:"Iris Collect",cat:"iris",sc:"1/3",p:68200,st:"sold",img:"4573199842110"},
-{id:78,n:"ルミナス＊ストリート Noella Rouge carmin",s:"ルミナス＊ストリート",cat:"dreamin",sc:"1/6",p:17600,st:"sold",img:"4573199842011"},
-{id:79,n:"Poe-Poe × Iris Collect petit うゆり みずいろ",s:"Iris Collect petit",cat:"iris",sc:"1/3",p:68200,st:"sold",img:"4573199841991"},
-{id:80,n:"Poe-Poe × Iris Collect petit うゆり ももいろ",s:"Iris Collect petit",cat:"iris",sc:"1/3",p:68200,st:"sold",img:"4573199841984"},
-// ── Page 9 ──
-{id:81,n:"和遥キナ学校制服コレクション／まひろ（きらめく青春の1ページver.）",s:"和遥キナ学校制服",cat:"orig",sc:"1/3",p:62000,st:"sold",img:"4573199841717"},
-{id:82,n:"からふるDreamin'／坂下 櫻 ～和遥キナ学校制服コレクション～",s:"からふるDreamin'",cat:"dreamin",sc:"1/6",p:19000,st:"sold",img:"4573199841700"},
-{id:83,n:"Alvastaria レベッカ ～春色のおつかい～（クラシカルver.）",s:"Alvastaria",cat:"alva",sc:"1/6",p:16000,st:"sold",img:"4573199841649"},
-{id:84,n:"s*t*j × Iris Collect petit ふるる ～Fluffy holy kitten.～ くろねこver.",s:"Iris Collect petit",cat:"iris",sc:"1/3",p:60000,st:"sold",img:"4573199840130"},
-{id:85,n:"s*t*j × Iris Collect petit ふるる ～Fluffy holy kitten.～ しろねこver.",s:"Iris Collect petit",cat:"iris",sc:"1/3",p:60000,st:"sold",img:"4573199840147"},
-{id:86,n:"Melty☆Cute／Little Punkish Chiika（ちいか）（Angelic girl ver.）",s:"Melty☆Cute",cat:"excute",sc:"1/6",p:16000,st:"sold",img:"4573199840093"},
-{id:87,n:"プリム ～東方花鳥風月～（HAZAKURAver.）",s:"東方花鳥風月",cat:"orig",sc:"1/6",p:16500,st:"sold",img:"4582119999407"},
-{id:88,n:"Green Eyed Monster／りの",s:"Green Eyed Monster",cat:"orig",sc:"1/3",p:58000,st:"sold",img:"4582119999308"},
-{id:89,n:"Green Eyed Monster／レイラ",s:"Green Eyed Monster",cat:"orig",sc:"1/3",p:58000,st:"sold",img:"4582119999292"},
-{id:90,n:"SugarCups ビスケティーナ ～Charming Gingerman～ Sugar Sugar Party3開催記念",s:"SugarCups",cat:"sugar",sc:"1/12",p:20000,st:"sold",img:"4582119998684"},
-// ── Page 10 ──
-{id:91,n:"かの／大正桜乙女喫茶（ポニーテールヘアver.）",s:"アゾンオリジナルドール",cat:"orig",sc:"1/3",p:67100,st:"sold",img:"4582119998455"},
-{id:92,n:"Lil'Fairy ～冬の地下道から～／ウィル（Black color ver.）",s:"Lil'Fairy",cat:"sugar",sc:"1/12",p:16500,st:"sold",img:"4582119997298"},
-{id:93,n:"ノワ／Happy sunny day（Aozora ver.）",s:"アゾンオリジナルドール",cat:"orig",sc:"1/3",p:63800,st:"sold",img:"4582119996123"},
-{id:94,n:"Melty☆Cute／Sweet Baby Lien（リアン）（Mellow girl ver.）",s:"Melty☆Cute",cat:"excute",sc:"1/6",p:17600,st:"sold",img:"4582119995744"},
-{id:95,n:"Lil'Fairy ～ちいさなお手伝いさん～／ネイリー 7th anniv.（ノーマル口ver.）",s:"Lil'Fairy",cat:"sugar",sc:"1/12",p:14300,st:"sold",img:"4582119993696"},
-{id:96,n:"My Sweet Girl／くれは（ドリーミィホワイトver.）",s:"My Sweet Girl",cat:"orig",sc:"1/3",p:53900,st:"sold",img:"4582119993627"},
-{id:97,n:"赤いカメラ × Time of eternal ELLEN ～Bunnies tea party VII～",s:"Time of eternal",cat:"orig",sc:"1/3",p:55000,st:"sold",img:"4573199928876"},
-{id:98,n:"赤いカメラ × Time of eternal Alice ～Bunnies tea party V～",s:"Time of eternal",cat:"orig",sc:"1/3",p:55000,st:"sold",img:"4573199928883"},
-{id:99,n:"アゾン限定ハニーベア 3体セット esMGホワイト",s:"Honey Bear",cat:"sugar",sc:"7cm",p:6600,st:"stock",img:"2008045000007"},
-{id:100,n:"KIKIPOP! ショコラなメイドさん ～Bitter＆Sweet～ ストロベリーチョコ",s:"KIKIPOP!",cat:"kikipop",sc:"23cm",p:27500,st:"stock",img:"4573199922218"},
-// ── Page 11 ──
-{id:101,n:"KIKIPOP! URAHARA・MY HEART てんしちゃん",s:"KIKIPOP!",cat:"kikipop",sc:"23cm",p:25000,st:"stock",img:"4573199920252"},
-{id:102,n:"『ミミーガーデン博物誌』ワフル「探検服Ver.」一般販売",s:"ミミーガーデン",cat:"sugar",sc:"1/12",p:11000,st:"stock",img:"4573199834979"},
-];
+
 
 const CATS = [
   {id:'all',lbl:'全部',ic:'✦'},
@@ -868,12 +752,24 @@ setCat=v=>{_setCat(v);renderSBMobile();};
 setSt=v=>{_setSt(v);renderSBMobile();};
 setSc=v=>{_setSc(v);renderSBMobile();};
 
+// 将 products.json 字段映射为页面所用格式
+function mapProduct(raw, i) {
+  return {
+    id: raw.id || i + 1,
+    n: raw.name || '',
+    s: raw.series || '',
+    cat: raw.category || 'orig',
+    sc: raw.scale || '1/6',
+    p: raw.price || 0,
+    st: raw.status || 'closed',
+    img: raw.img || '',
+  };
+}
+
 let qt;
 document.addEventListener('DOMContentLoaded',()=>{
-  renderTicker();renderSB();renderAll();renderNotif();renderSBMobile();
-  // desktop search
+  // 注册事件（不依赖产品数据）
   document.getElementById('si').addEventListener('input',e=>{clearTimeout(qt);qt=setTimeout(()=>{S.q=e.target.value.trim();renderAll();},200);});
-  // mobile search
   document.getElementById('si-m').addEventListener('input',e=>{clearTimeout(qt);qt=setTimeout(()=>{S.q=e.target.value.trim();renderAll();},200);});
   document.getElementById('mo').addEventListener('click',e=>{if(e.target===document.getElementById('mo'))closeModal();});
   document.addEventListener('keydown',e=>{
@@ -885,10 +781,28 @@ document.addEventListener('DOMContentLoaded',()=>{
     }
     if(e.key==='/'&&!['INPUT','TEXTAREA'].includes(e.target.tagName)){e.preventDefault();document.getElementById('si').focus();}
   });
+
+  // 加载产品数据后初始化页面
+  fetch('products.json?_=' + Date.now())
+    .then(r => { if(!r.ok) throw new Error(r.status); return r.json(); })
+    .then(data => {
+      P = data.map(mapProduct);
+      console.log('Loaded', P.length, 'products from products.json');
+      initPage();
+    })
+    .catch(err => {
+      console.warn('products.json load failed:', err);
+      P = [];
+      initPage();
+    });
+});
+
+function initPage() {
+  renderTicker();renderSB();renderAll();renderNotif();renderSBMobile();
   // demo notifications
   setTimeout(()=>toast("からふるDreamin'／このみ in Wonderland（Blue Moon）现在有货！",'stock'),1500);
   setTimeout(()=>toast('KIKIPOP! × camellia Milky Way 预约受付中，点击了解详情','pre'),8000);
-});
+}
 </script>
 </body>
 </html>
