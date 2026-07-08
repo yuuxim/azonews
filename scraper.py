@@ -11,9 +11,30 @@ from urllib.error import URLError, HTTPError
 
 PRODUCTS_FILE = os.path.join(os.path.dirname(__file__), "products.json")
 
-# 只抓取两个目标分类
+# アゾンオリジナルドール 的各子系列全部映射到 category="doll"，series 保留子系列名
+# ピュアニーモボディ 映射到 category="body"
+# 抓取顺序：子系列优先，cat 103 放最后补漏（已存在的 barcode 不会被覆盖）
 CATEGORIES = [
-    (103,  "doll", "アゾンオリジナルドール"),
+    # ── アゾンオリジナルドール 子系列 ──
+    (1198, "doll", "からふるDreamin'"),
+    (1129, "doll", "ルミナス＊ストリート"),
+    (101,  "doll", "えっくす☆きゅーと"),
+    (715,  "doll", "アルヴァスタリア"),
+    (377,  "doll", "サアラズ ア・ラ・モード"),
+    (549,  "doll", "KIKIPOP"),
+    (1520, "doll", "ビキニメイツ"),
+    (1497, "doll", "ディアス"),
+    (1078, "doll", "シュガーカップス"),
+    (486,  "doll", "リルフェアリー"),
+    (877,  "doll", "ミミーガーデン"),
+    (953,  "doll", "アイリスコレクトプチ"),
+    (721,  "doll", "アイリスコレクト"),
+    (498,  "doll", "ハピネスクローバー"),
+    (393,  "doll", "ブラックレイヴン"),
+    (374,  "doll", "エレン"),
+    (104,  "doll", "キャラクタードール"),
+    (103,  "doll", "アゾンオリジナルドール"),  # 最后补漏，避免遗漏未分类产品
+    # ── ピュアニーモボディ ──
     (482,  "body", "ピュアニーモボディ"),
 ]
 
@@ -25,40 +46,25 @@ HEADERS = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
 }
 
-# 状态关键词（日文/英文 → 内部状态）优先级从高到低
-# 先检查"结束/售罄"再检查"有货"，防止误判
+# 分类页用的状态提示关键词（仅用于 status_hint，以 parse_status 为准）
 STATUS_MAP = [
-    # 售罄（最高优先级）
-    ("SOLDOUT",             "sold"),
-    ("完売",                "sold"),
-    ("売り切れ",            "sold"),
-    ("在庫なし",            "sold"),
-    ("品切れ",              "sold"),
-    # 预约/受注截止
-    ("受注終了",            "closed"),
-    ("予約終了",            "closed"),
-    ("受付終了",            "closed"),
-    ("販売終了",            "closed"),
-    # 预约受付中
-    ("受注受付中",          "pre"),
-    ("予約受付中",          "pre"),
-    ("受注受付",            "pre"),
-    ("予約受付",            "pre"),
-    # 准备中/即将发售
-    ("近日予約開始",        "prep"),
-    ("準備中",              "prep"),
-    ("近日発売",            "prep"),
-    ("発売予定",            "prep"),
-    # 有货（购物车 = 最可靠标志）
-    ("カートに入れる",      "stock"),
-    ("買い物カゴに入れる",  "stock"),
-    ("cart/add",            "stock"),
-    ("addcart",             "stock"),
-    ("在庫あり",            "stock"),
-    ("在庫：",              "stock"),
-    ("在庫数",              "stock"),
-    ("ご購入はこちら",      "stock"),
-    ("数量",                "stock"),   # 数量输入框 = 可购买
+    ('stock_maru',   'stock'),
+    ('stock_batu',   'sold'),
+    ('SOLD OUT',     'sold'),
+    ('SOLDOUT',      'sold'),
+    ('完売',         'sold'),
+    ('在庫無し',     'sold'),
+    ('在庫なし',     'sold'),
+    ('受注終了',     'closed'),
+    ('予約終了',     'closed'),
+    ('受注受付中',   'pre'),
+    ('予約受付中',   'pre'),
+    ('近日予約開始', 'prep'),
+    ('準備中',       'prep'),
+    ('近日発売',     'prep'),
+    ('カートに入れる', 'stock'),
+    ('在庫あり',     'stock'),
+    ('販売中',       'stock'),
 ]
 
 def fetch(url):
@@ -87,62 +93,69 @@ def fetch(url):
         return None
 
 def parse_status(html):
-    """从产品页面 HTML 判断库存状态（多策略）"""
+    """从产品页面 HTML 判断库存状态"""
 
-    # ── 策略1：JSON-LD schema.org（最可靠，不依赖 JS 渲染）──
-    # 匹配 "availability": "http://schema.org/InStock" 等格式
-    schema_avail = re.search(
-        r'"availability"\s*:\s*"([^"]+)"', html, re.IGNORECASE
-    )
-    if schema_avail:
-        av = schema_avail.group(1).lower()
+    # ── 策略1：Azone 专用 CSS 类（最可靠）──
+    # <span class="stock_icon stock_maru"></span> = ○ = 有货
+    # <span class="stock_icon stock_batu"></span> = × = 无货/售罄
+    if 'stock_maru' in html:
+        return 'stock'
+    if 'stock_batu' in html:
+        # 还需区分 sold 和 closed：看页面是否有受注/预约截止文字
+        for kw in ('受注終了', '予約終了', '受付終了', '販売終了'):
+            if kw in html:
+                return 'closed'
+        return 'sold'
+
+    # ── 策略2：关键词匹配（含漢字/平假名两种写法）──
+    STATUS_MAP_EXTENDED = [
+        # sold
+        ('SOLD OUT',        'sold'),   # 有空格版本
+        ('SOLDOUT',         'sold'),
+        ('完売',            'sold'),
+        ('売り切れ',        'sold'),
+        ('在庫無し',        'sold'),   # 漢字 無
+        ('在庫なし',        'sold'),   # 平假名 なし
+        ('品切れ',          'sold'),
+        # closed
+        ('受注終了',        'closed'),
+        ('予約終了',        'closed'),
+        ('受付終了',        'closed'),
+        ('販売終了',        'closed'),
+        # pre-order open
+        ('受注受付中',      'pre'),
+        ('予約受付中',      'pre'),
+        ('受注受付',        'pre'),
+        ('予約受付',        'pre'),
+        # prep / coming soon
+        ('近日予約開始',    'prep'),
+        ('準備中',          'prep'),
+        ('近日発売',        'prep'),
+        ('発売予定',        'prep'),
+        # stock
+        ('カートに入れる',  'stock'),
+        ('買い物カゴに入れる', 'stock'),
+        ('在庫あり',        'stock'),
+        ('販売中',          'stock'),
+    ]
+    for kw, st in STATUS_MAP_EXTENDED:
+        if kw in html:
+            return st
+
+    # ── 策略3：JSON-LD schema.org ──
+    m = re.search(r'"availability"\s*:\s*"([^"]+)"', html, re.IGNORECASE)
+    if m:
+        av = m.group(1).lower()
         if 'instock' in av:
             return 'stock'
-        if 'outofstock' in av or 'discontinued' in av or 'soldout' in av:
+        if 'outofstock' in av or 'discontinued' in av:
             return 'sold'
-        if 'preorder' in av or 'presale' in av:
+        if 'preorder' in av:
             return 'pre'
         if 'comingsoon' in av:
             return 'prep'
-        if 'onlineonly' in av:
-            return 'stock'
 
-    # ── 策略2：关键词匹配（静态文字）──
-    for jp, en in STATUS_MAP:
-        if jp in html:
-            return en
-
-    # ── 策略3：日文 ○ 在庫記号（○ = 有货，× = 没货）──
-    # 在庫状況：○  /  在庫:○
-    if re.search(r'在庫.{0,30}[○◯]', html):
-        return 'stock'
-    if re.search(r'[○◯].{0,10}在庫', html):
-        return 'stock'
-    # 販売中 = on sale
-    if '販売中' in html:
-        return 'stock'
-
-    # ── 策略4：购买表单检测 ──
-    if re.search(r'<form[^>]+action[^>]*/(?:cart|order|purchase|buy)', html, re.IGNORECASE):
-        return 'stock'
-    if re.search(r'name=["\'](?:qty|quantity|CartItem|cart_qty)["\']', html, re.IGNORECASE):
-        return 'stock'
-    if re.search(r'(?:value|>)\s*(?:購入する|カゴに入れる|注文する)', html):
-        return 'stock'
-
-    # ── 策略5：Open Graph / meta ──
-    og_avail = re.search(
-        r'<meta[^>]+property=["\']product:availability["\'][^>]+content=["\']([^"\']+)["\']',
-        html, re.IGNORECASE
-    )
-    if og_avail:
-        av = og_avail.group(1).lower()
-        if 'instock' in av or 'in stock' in av:
-            return 'stock'
-        if 'outofstock' in av or 'out of stock' in av:
-            return 'sold'
-
-    return "closed"
+    return 'closed'
 
 
 def parse_price_from_page(html):

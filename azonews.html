@@ -77,6 +77,8 @@ input,select{font-family:inherit}
 .ni-ic{font-size:13px;opacity:.7}
 .ni-ct{margin-left:auto;font-size:10px;padding:1px 5px;background:var(--bg3);border-radius:8px;color:var(--txt3)}
 .ni.on .ni-ct{background:var(--accent-g);color:var(--accent)}
+.ni-sub{padding-left:26px;border-left:2px solid var(--border);margin-left:14px;font-size:11.5px}
+.ni-sub.on{border-left-color:var(--accent)}
 
 .sf,.scf{padding:0 10px;display:flex;flex-direction:column;gap:2px}
 .sb-btn{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:6px;font-size:12px;color:var(--txt2);transition:var(--t);cursor:pointer}
@@ -502,9 +504,9 @@ let P = [];
 
 
 const CATS = [
-  {id:'all',  lbl:'全部',     ic:'✦'},
-  {id:'doll', lbl:'原创娃娃',  ic:'🎎'},
-  {id:'body', lbl:'素体',     ic:'🪆'},
+  {id:'all',  lbl:'全部',                   ic:'✦'},
+  {id:'doll', lbl:'アゾンオリジナルドール',   ic:'🎎'},
+  {id:'body', lbl:'ピュアニーモボディ',       ic:'🪆'},
 ];
 
 const STMAP = {stock:'有货',prep:'准备中',pre:'预约受付',closed:'预约截止',sold:'售罄'};
@@ -513,7 +515,7 @@ const STMAP = {stock:'有货',prep:'准备中',pre:'预约受付',closed:'预约
 const NOTIFS = [];
 
 // ── STATE ──
-const S = {cat:'all',st:'all',sc:'all',q:'',sort:'newest',view:'grid',notifOpen:false,wlOpen:false,notifs:[...NOTIFS],wl:new Set(),sel:null,toasts:[],tid:0};
+const S = {cat:'all',series:'all',st:'all',sc:'all',q:'',sort:'newest',view:'grid',notifOpen:false,wlOpen:false,notifs:[...NOTIFS],wl:new Set(),sel:null,toasts:[],tid:0};
 
 // ── HELPERS ──
 const fmt = n => '¥' + n.toLocaleString('ja-JP');
@@ -530,6 +532,7 @@ function tagHtml(p){
 function getFP(){
   let ps=[...P];
   if(S.cat!=='all')ps=ps.filter(x=>x.cat===S.cat);
+  if(S.series!=='all')ps=ps.filter(x=>x.s===S.series);
   if(S.st!=='all')ps=ps.filter(x=>x.st===S.st);
   if(S.sc!=='all')ps=ps.filter(x=>x.sc===S.sc);
   if(S.q){const q=S.q.toLowerCase();ps=ps.filter(x=>x.n.toLowerCase().includes(q)||x.s.toLowerCase().includes(q));}
@@ -590,6 +593,7 @@ function renderAll(){
   // chips
   const chips=[];
   if(S.cat!=='all'){const c=CATS.find(x=>x.id===S.cat);chips.push(`<div class="chip" onclick="setCat('all')">${c?.lbl} ×</div>`);}
+  if(S.series!=='all')chips.push(`<div class="chip" onclick="setSeries('all')">${S.series} ×</div>`);
   if(S.st!=='all')chips.push(`<div class="chip" onclick="setSt('all')">${STMAP[S.st]} ×</div>`);
   if(S.sc!=='all')chips.push(`<div class="chip" onclick="setSc('all')">${S.sc} ×</div>`);
   if(S.q)chips.push(`<div class="chip" onclick="clearQ()">"${S.q}" ×</div>`);
@@ -615,7 +619,17 @@ function renderAll(){
 // ── SIDEBAR ──
 function renderSB(){
   const cc={all:P.length};CATS.slice(1).forEach(c=>{cc[c.id]=P.filter(x=>x.cat===c.id).length;});
-  document.getElementById('sb-cats').innerHTML=CATS.map(c=>`<div class="ni ${S.cat===c.id?'on':''}" onclick="setCat('${c.id}')"><span class="ni-ic">${c.ic}</span><span>${c.lbl}</span><span class="ni-ct">${cc[c.id]||0}</span></div>`).join('');
+  // 第一级分类
+  let catsHtml = CATS.map(c=>`<div class="ni ${S.cat===c.id&&S.series==='all'?'on':''}" onclick="setCat('${c.id}')">`+
+    `<span class="ni-ic">${c.ic}</span><span>${c.lbl}</span><span class="ni-ct">${cc[c.id]||0}</span></div>`).join('');
+  // 第二级：娃娃子系列（仅在选中 doll 时展开）
+  if(S.cat==='doll'){
+    const seriesList=[...new Set(P.filter(x=>x.cat==='doll'&&x.s).map(x=>x.s))].sort((a,b)=>a.localeCompare(b,'ja'));
+    const seriesCount={};seriesList.forEach(s=>{seriesCount[s]=P.filter(x=>x.s===s).length;});
+    catsHtml += seriesList.map(s=>`<div class="ni ni-sub ${S.series===s?'on':''}" onclick="setSeries('${s.replace(/'/g,"\\'")}')"><span class="ni-ic" style="font-size:10px">└</span><span style="font-size:11.5px">${s}</span><span class="ni-ct">${seriesCount[s]||0}</span></div>`).join('');
+  }
+  document.getElementById('sb-cats').innerHTML=catsHtml;
+
   const stItems=[{k:'all',l:'全部状态',d:'all'},{k:'stock',l:'有货',d:'stock'},{k:'prep',l:'准备中',d:'prep'},{k:'pre',l:'预约受付',d:'pre'},{k:'closed',l:'预约截止',d:'closed'},{k:'sold',l:'售罄',d:'sold'}];
   const sc3={all:P.length};['stock','prep','pre','closed','sold'].forEach(k=>{sc3[k]=P.filter(x=>x.st===k).length;});
   document.getElementById('sb-status').innerHTML=stItems.map(s=>`<div class="sb-btn ${S.st===s.k?'on':''}" onclick="setSt('${s.k}')"><span class="sdot ${s.d}"></span>${s.l}<span style="margin-left:auto;font-size:10px;color:var(--txt3)">${sc3[s.k]||0}</span></div>`).join('');
@@ -702,7 +716,8 @@ function rmToast(id){const el=document.getElementById('t'+id);if(el){el.classLis
 function renderToasts(){document.getElementById('tcon').innerHTML=S.toasts.map(t=>`<div class="toast" id="t${t.id}"><div class="tdot2 ${t.type}"></div><div class="ttxt">${t.msg}</div><button class="tclose" onclick="rmToast(${t.id})">×</button></div>`).join('');}
 
 // ── ACTIONS ──
-function setCat(v){S.cat=v;renderSB();renderAll();}
+function setCat(v){S.cat=v;S.series='all';renderSB();renderAll();}
+function setSeries(v){S.series=v;renderSB();renderAll();}
 function setSt(v){S.st=v;renderSB();renderAll();}
 function setSc(v){S.sc=v;renderSB();renderAll();}
 function clearQ(){S.q='';document.getElementById('si').value='';renderAll();}
