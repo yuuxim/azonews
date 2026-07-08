@@ -356,7 +356,7 @@
     "category": "dreamin",
     "scale": "1/6",
     "price": 22000,
-    "status": "stock",
+    "status": "closed",
     "img": "4573199849058"
   },
   {
@@ -366,7 +366,7 @@
     "category": "dreamin",
     "scale": "1/6",
     "price": 22000,
-    "status": "stock",
+    "status": "closed",
     "img": "4573199849065"
   },
   {
@@ -696,7 +696,7 @@
     "category": "sugar",
     "scale": "1/12",
     "price": 8800,
-    "status": "stock",
+    "status": "closed",
     "img": "4573199843124"
   },
   {
@@ -706,7 +706,7 @@
     "category": "sugar",
     "scale": "1/12",
     "price": 8800,
-    "status": "stock",
+    "status": "closed",
     "img": "4573199843148"
   },
   {
@@ -716,7 +716,7 @@
     "category": "sugar",
     "scale": "1/12",
     "price": 8800,
-    "status": "stock",
+    "status": "closed",
     "img": "4573199843131"
   },
   {
@@ -986,7 +986,7 @@
     "category": "sugar",
     "scale": "7cm",
     "price": 6600,
-    "status": "stock",
+    "status": "closed",
     "img": "2008045000007"
   },
   {
@@ -996,7 +996,7 @@
     "category": "kikipop",
     "scale": "23cm",
     "price": 27500,
-    "status": "stock",
+    "status": "closed",
     "img": "4573199922218"
   },
   {
@@ -1006,7 +1006,7 @@
     "category": "kikipop",
     "scale": "23cm",
     "price": 25000,
-    "status": "stock",
+    "status": "closed",
     "img": "4573199920252"
   },
   {
@@ -1016,7 +1016,227 @@
     "category": "sugar",
     "scale": "1/12",
     "price": 11000,
-    "status": "stock",
+    "status": "closed",
     "img": "4573199834979"
+  },
+  {
+    "id": 103,
+    "name": "",
+    "series": "サアラズ ア・ラ・モード",
+    "category": "alva",
+    "scale": "1/6",
+    "price": 0,
+    "status": "closed",
+    "img": "4573199848532"
+  },
+  {
+    "id": 104,
+    "name": "",
+    "series": "サアラズ ア・ラ・モード",
+    "category": "alva",
+    "scale": "1/6",
+    "price": 0,
+    "status": "closed",
+    "img": "4573199848556"
+  },
+  {
+    "id": 105,
+    "name": "",
+    "series": "KIKIPOP",
+    "category": "kikipop",
+    "scale": "1/6",
+    "price": 0,
+    "status": "closed",
+    "img": "4573199850870"
+  },
+  {
+    "id": 106,
+    "name": "",
+    "series": "KIKIPOP",
+    "category": "kikipop",
+    "scale": "1/6",
+    "price": 0,
+    "status": "closed",
+    "img": "4573199850863"
+  },
+  {
+    "id": 107,
+    "name": "",
+    "series": "KIKIPOP",
+    "category": "kikipop",
+    "scale": "1/6",
+    "price": 0,
+    "status": "closed",
+    "img": "4573199848457"
+  },
+  {
+    "id": 108,
+    "name": "",
+    "series": "KIKIPOP",
+    "category": "kikipop",
+    "scale": "1/6",
+    "price": 0,
+    "status": "closed",
+    "img": "4573199848440"
+  },
+  {
+    "id": 109,
+    "name": "",
+    "series": "KIKIPOP",
+    "category": "kikipop",
+    "scale": "1/6",
+    "price": 0,
+    "status": "closed",
+    "img": "4573199848471"
+  },
+  {
+    "id": 110,
+    "name": "",
+    "series": "KIKIPOP",
+    "category": "kikipop",
+    "scale": "1/6",
+    "price": 0,
+    "status": "closed",
+    "img": "4573199848464"
+  },
+  {
+    "id": 111,
+    "name": "",
+    "series": "ビキニメイツ",
+    "category": "sugar",
+    "scale": "1/6",
+    "price": 0,
+    "status": "closed",
+    "img": "4573199848600"
+  },
+  {
+    "id": 112,
+    "name": "",
+    "series": "ビキニメイツ",
+    "category": "sugar",
+    "scale": "1/6",
+    "price": 0,
+    "status": "closed",
+    "img": "4573199848594"
+  },
+  {
+    "id": 113,
+    "name": "",
+    "series": "ビキニメイツ",
+    "category": "sugar",
+    "scale": "1/6",
+    "price": 0,
+    "status": "closed",
+    "img": "4573199840772"
+  },
+  {
+    "id": 114,
+    "name": "",
+    "series": "リルフェアリー",
+    "category": "sugar",
+    "scale": "1/6",
+    "price": 0,
+    "status": "closed",
+    "img": "9784798610580"
+  },
+  {
+    "id": 115,
+    "name": "",
+    "series": "ミミーガーデン",
+    "category": "sugar",
+    "scale": "1/6",
+    "price": 0,
+    "status": "closed",
+    "img": "4573199847368"
+  },
+  {
+    "id": 116,
+    "name": "",
+    "series": "ミミーガーデン",
+    "category": "sugar",
+    "scale": "1/6",
+    "price": 0,
+    "status": "closed",
+    "img": "4573199847009"
+  },
+  {
+    "id": 117,
+    "name": "",
+    "series": "ミミーガーデン",
+    "category": "sugar",
+    "scale": "1/6",
+    "price": 0,
+    "status": "closed",
+    "img": "4573199847290"
+  },
+  {
+    "id": 118,
+    "name": "",
+    "series": "ミミーガーデン",
+    "category": "sugar",
+    "scale": "1/6",
+    "price": 0,
+    "status": "closed",
+    "img": "4573199847047"
+  },
+  {
+    "id": 119,
+    "name": "",
+    "series": "ミミーガーデン",
+    "category": "sugar",
+    "scale": "1/6",
+    "price": 0,
+    "status": "closed",
+    "img": "4573199846996"
+  },
+  {
+    "id": 120,
+    "name": "",
+    "series": "ミミーガーデン",
+    "category": "sugar",
+    "scale": "1/6",
+    "price": 0,
+    "status": "closed",
+    "img": "4573199847306"
+  },
+  {
+    "id": 121,
+    "name": "",
+    "series": "ミミーガーデン",
+    "category": "sugar",
+    "scale": "1/6",
+    "price": 0,
+    "status": "closed",
+    "img": "4573199847016"
+  },
+  {
+    "id": 122,
+    "name": "",
+    "series": "ミミーガーデン",
+    "category": "sugar",
+    "scale": "1/6",
+    "price": 0,
+    "status": "closed",
+    "img": "4573199847023"
+  },
+  {
+    "id": 123,
+    "name": "",
+    "series": "ミミーガーデン",
+    "category": "sugar",
+    "scale": "1/6",
+    "price": 0,
+    "status": "closed",
+    "img": "4573199847269"
+  },
+  {
+    "id": 124,
+    "name": "",
+    "series": "ミミーガーデン",
+    "category": "sugar",
+    "scale": "1/6",
+    "price": 0,
+    "status": "closed",
+    "img": "4573199847283"
   }
 ]
