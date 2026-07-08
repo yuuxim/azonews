@@ -1,295 +1,252 @@
 #!/usr/bin/env python3
 """
-AZONEWS Scraper
-自动抓取 Azone International 官方商店的产品数据，更新 products.json
+AZONEWS Scraper v2
+通过分类页面抓取 Azone International 产品数据，更新 products.json
+主页产品是 AJAX 动态加载的，改为直接抓各分类页面
 """
 
-import json
-import re
-import time
-import os
+import json, re, time, os
 from urllib.request import urlopen, Request
 from urllib.error import URLError, HTTPError
-from html.parser import HTMLParser
 
-BASE_URL = "https://www.azone-int.co.jp/azonet/"
 PRODUCTS_FILE = os.path.join(os.path.dirname(__file__), "products.json")
-MAX_PAGES = 20  # 最多抓取页数
+
+# 从官网侧边栏提取的所有分类 ID 及名称
+CATEGORIES = [
+    (103,  "orig",    "アゾンオリジナルドール"),
+    (1198, "dreamin", "からふるDreamin'"),
+    (101,  "excute",  "えっくす☆きゅーと"),
+    (1129, "dreamin", "ルミナスストリート"),
+    (377,  "alva",    "サアラズ ア・ラ・モード"),
+    (715,  "alva",    "アルヴァスタリア"),
+    (549,  "kikipop", "KIKIPOP"),
+    (1520, "sugar",   "ビキニメイツ"),
+    (1497, "sugar",   "ディアス"),
+    (1078, "sugar",   "シュガーカップス"),
+    (486,  "sugar",   "リルフェアリー"),
+    (877,  "sugar",   "ミミーガーデン"),
+    (953,  "iris",    "アイリスコレクトプチ"),
+    (721,  "iris",    "アイリスコレクト"),
+    (498,  "iris",    "ハピネスクローバー"),
+]
+
+BASE = "https://www.azone-int.co.jp/azonet"
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    "Accept-Language": "ja,zh-CN;q=0.9,en;q=0.8",
+    "Accept-Language": "ja,zh-CN;q=0.9",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
 }
 
-# 系列名到分类的映射
-SERIES_TO_CAT = {
-    "からふるDreamin": "dreamin", "ルミナス": "dreamin",
-    "えっくす☆きゅーと": "excute", "Melty": "excute", "ピコえっくす": "excute",
-    "Alvastaria": "alva", "サアラズ": "alva",
-    "SugarCups": "sugar", "Lil'Fairy": "sugar", "DIAS": "sugar",
-    "LilFairy": "sugar", "ミミーガーデン": "sugar", "Bikini Mates": "sugar",
-    "Honey Bear": "sugar", "ハニーベア": "sugar",
-    "Iris Collect": "iris", "アイリスコレクト": "iris",
-    "Poe-Poe": "iris", "s*t*j": "iris",
-    "KIKIPOP": "kikipop",
-}
+# 状态关键词（日文 → 英文）
+STATUS_MAP = [
+    ("在庫あり",     "stock"),
+    ("受注受付中",   "pre"),
+    ("予約受付中",   "pre"),
+    ("近日予約開始", "prep"),
+    ("準備中",       "prep"),
+    ("受注終了",     "closed"),
+    ("予約終了",     "closed"),
+    ("SOLDOUT",      "sold"),
+    ("完売",         "sold"),
+    ("売り切れ",     "sold"),
+]
 
-# 库存状态关键词映射
-STATUS_KEYWORDS = {
-    "在庫あり": "stock",
-    "受注受付中": "pre",
-    "予約受付中": "pre",
-    "近日予約開始": "prep",
-    "準備中": "prep",
-    "受注終了": "closed",
-    "予約終了": "closed",
-    "完売": "sold",
-    "売り切れ": "sold",
-    "SOLDOUT": "sold",
-}
+def fetch(url):
+    try:
+        req = Request(url, headers=HEADERS)
+        with urlopen(req, timeout=20) as r:
+            raw = r.read()
+            # 检测编码
+            for enc in ("utf-8", "cp932", "euc-jp"):
+                try:
+                    return raw.decode(enc)
+                except UnicodeDecodeError:
+                    continue
+            return raw.decode("utf-8", errors="replace")
+    except Exception as e:
+        print(f"    [fetch error] {url}: {e}")
+        return None
 
-
-def guess_cat(series_name):
-    for key, cat in SERIES_TO_CAT.items():
-        if key in series_name:
-            return cat
-    return "orig"
-
-
-def parse_status(text):
-    for jp, en in STATUS_KEYWORDS.items():
-        if jp in text:
+def parse_status(html):
+    for jp, en in STATUS_MAP:
+        if jp in html:
             return en
     return "closed"
 
+def scrape_category(cat_id, cat_key, cat_name):
+    """抓取一个分类的所有页面，返回产品列表"""
+    products = []
+    page = 1
+    while True:
+        url = f"{BASE}/category/all/{cat_id}" if page == 1 else f"{BASE}/category/all/{cat_id}?page={page}"
+        print(f"  [{cat_name}] page {page} → {url}")
+        html = fetch(url)
+        if not html:
+            break
 
-def fetch(url):
-    req = Request(url, headers=HEADERS)
-    try:
-        with urlopen(req, timeout=15) as resp:
-            charset = "utf-8"
-            ct = resp.headers.get("Content-Type", "")
-            m = re.search(r"charset=([^\s;]+)", ct)
-            if m:
-                charset = m.group(1).lower().replace("shift_jis", "cp932")
-            return resp.read().decode(charset, errors="replace")
-    except (HTTPError, URLError) as e:
-        print(f"  [ERROR] {url}: {e}")
-        return None
+        # 提取产品条目：找所有指向 /item/{barcode} 的链接
+        items = re.findall(
+            r'<a[^>]+href="[^"]*?/item/(\d{7,13})"[^>]*>(.*?)</a>',
+            html, re.DOTALL
+        )
 
+        # 也直接从 img src 提取 barcode
+        img_barcodes = set(re.findall(r'/image/(\d{7,13})_', html))
 
-class AzoneParser(HTMLParser):
-    """解析 Azone 商店列表页，提取产品信息"""
+        found = {}
 
-    def __init__(self):
-        super().__init__()
-        self.products = []
-        self._in_item = False
-        self._in_name = False
-        self._in_price = False
-        self._in_status = False
-        self._cur = {}
-        self._depth = 0
-        self._item_depth = 0
+        # 从链接中提取产品信息
+        for barcode, inner in items:
+            if barcode in found:
+                continue
+            # 尝试从 inner HTML 找图片和名称
+            img_m = re.search(r'<img[^>]+src="[^"]*?/image/(\d{7,13})_', inner)
+            name_m = re.search(r'alt="([^"]{5,})"', inner)
+            img_code = img_m.group(1) if img_m else barcode
+            name = name_m.group(1) if name_m else ""
+            found[barcode] = {"img": img_code, "name": name}
 
-    def handle_starttag(self, tag, attrs):
-        attrs = dict(attrs)
-        cls = attrs.get("class", "")
-        self._depth += 1
+        # 补充从 img 直接找到的 barcode
+        for bc in img_barcodes:
+            if bc not in found:
+                found[bc] = {"img": bc, "name": ""}
 
-        # 产品卡片容器（根据实际 HTML 可能需要调整）
-        if tag == "div" and any(k in cls for k in ["item_block", "item-block", "product_item", "product-item", "itemBox"]):
-            self._in_item = True
-            self._item_depth = self._depth
-            self._cur = {}
+        # 如果啥都没找到，跳出
+        if not found:
+            # 尝试备用选择器：提取所有产品卡片
+            # Azone 产品卡通常在 <div class="col-xs-..."> 里包含图片链接
+            alt_items = re.findall(r'alt="([^"]{5,})"[^>]*>.*?href="[^"]*?/item/(\d{7,13})"', html)
+            for name, barcode in alt_items:
+                if barcode not in found:
+                    found[barcode] = {"img": barcode, "name": name}
 
-        if not self._in_item:
-            return
+        if not found:
+            print(f"    → 0 products (end or parsing failed)")
+            break
 
-        # 产品图片（含 barcode）
-        if tag == "img":
-            src = attrs.get("src", "")
-            m = re.search(r"/image/(\d{13})_", src)
-            if m:
-                self._cur["img"] = m.group(1)
-            # alt 作为名称备用
-            if not self._cur.get("name") and attrs.get("alt"):
-                self._cur["name"] = attrs["alt"].strip()
+        # 判断是否有下一页
+        has_next = (f"page={page+1}" in html or f"page%3D{page+1}" in html)
 
-        # 产品链接（含 barcode）
-        if tag == "a":
-            href = attrs.get("href", "")
-            m = re.search(r"/item/(\d{13})", href)
-            if m and not self._cur.get("img"):
-                self._cur["img"] = m.group(1)
-
-        # 价格
-        if tag in ("span", "p", "div") and any(k in cls for k in ["price", "item_price"]):
-            self._in_price = True
-
-        # 状态
-        if tag in ("span", "p", "div") and any(k in cls for k in ["status", "stock", "item_status", "label"]):
-            self._in_status = True
-
-        # 名称
-        if tag in ("h3", "h4", "p", "span") and any(k in cls for k in ["name", "item_name", "title", "item_title"]):
-            self._in_name = True
-
-    def handle_endtag(self, tag):
-        if self._in_item and self._depth == self._item_depth:
-            # 结束一个产品块
-            if self._cur.get("img") and self._cur.get("name"):
-                self.products.append(dict(self._cur))
-            self._in_item = False
-            self._cur = {}
-        self._depth -= 1
-        self._in_name = False
-        self._in_price = False
-        self._in_status = False
-
-    def handle_data(self, data):
-        data = data.strip()
-        if not data or not self._in_item:
-            return
-        if self._in_name and not self._cur.get("name"):
-            self._cur["name"] = data
-        if self._in_price:
-            m = re.search(r"[\d,]+", data)
-            if m:
-                try:
-                    self._cur["price"] = int(m.group().replace(",", ""))
-                except ValueError:
-                    pass
-        if self._in_status:
-            s = parse_status(data)
-            if s != "closed" or not self._cur.get("status"):
-                self._cur["status"] = s
-
-
-def scrape_page(page_num):
-    """抓取一页产品列表"""
-    url = BASE_URL if page_num == 1 else f"{BASE_URL}?p={page_num}"
-    print(f"  Fetching page {page_num}: {url}")
-    html = fetch(url)
-    if not html:
-        return [], False
-
-    # 检查是否有下一页
-    has_next = f"?p={page_num + 1}" in html or f"page={page_num + 1}" in html
-
-    parser = AzoneParser()
-    parser.feed(html)
-
-    # 从 img src 中直接提取 barcode（更可靠的补充方法）
-    barcodes = re.findall(r'/image/(\d{13})_0\.jpg', html)
-    names_raw = re.findall(r'alt="([^"]{10,})"', html)
-
-    # 尝试提取价格和状态
-    prices = [int(p.replace(",", "")) for p in re.findall(r'([\d,]+)円', html)]
-    statuses_raw = []
-    for jp, en in STATUS_KEYWORDS.items():
-        if jp in html:
-            statuses_raw.append(en)
-
-    products = parser.products
-
-    # 如果 HTML parser 没抓到，退回 regex 方法
-    if not products and barcodes:
-        print(f"    Fallback to regex extraction: {len(barcodes)} barcodes found")
-        for i, bc in enumerate(barcodes):
-            name = names_raw[i] if i < len(names_raw) else f"Product {bc}"
-            price = prices[i] if i < len(prices) else 0
+        for barcode, info in found.items():
             products.append({
-                "img": bc,
-                "name": name,
-                "price": price,
-                "status": "closed",
+                "img": info["img"],
+                "name": info["name"],
+                "category": cat_key,
+                "series": cat_name,
             })
 
-    print(f"    Found {len(products)} products on page {page_num}")
-    return products, has_next
+        print(f"    → {len(found)} products found")
 
+        if not has_next:
+            break
+        page += 1
+        time.sleep(1.2)
 
-def enrich_product(p, existing_map):
-    """补全产品信息（系列、分类等）"""
-    img = p.get("img", "")
-    existing = existing_map.get(img, {})
+    return products
 
-    # 系列：优先用已有数据
-    series = existing.get("series") or p.get("series", "")
-    category = existing.get("category") or guess_cat(series) or "orig"
-
-    # 尝试从名称猜系列
-    name = p.get("name", "")
-    if not series:
-        for key in SERIES_TO_CAT:
-            if key in name:
-                series = key
-                break
-
-    return {
-        "id": existing.get("id") or 0,
-        "name": name or existing.get("name", ""),
-        "series": series or existing.get("series", ""),
-        "category": category,
-        "scale": existing.get("scale", "1/6"),
-        "price": p.get("price") or existing.get("price", 0),
-        "status": p.get("status") or existing.get("status", "closed"),
-        "img": img,
-    }
-
+def check_product_status(barcode, existing_status):
+    """访问单个产品页面，获取最新库存状态"""
+    url = f"{BASE}/item/{barcode}"
+    html = fetch(url)
+    if not html:
+        return existing_status
+    return parse_status(html)
 
 def run():
-    print("=== AZONEWS Scraper ===")
+    print("=== AZONEWS Scraper v2 ===\n")
 
-    # 加载现有数据（作为备用和补充）
-    existing_products = []
+    # 加载现有数据
+    existing = []
     if os.path.exists(PRODUCTS_FILE):
         with open(PRODUCTS_FILE, "r", encoding="utf-8") as f:
-            existing_products = json.load(f)
-        print(f"Loaded {len(existing_products)} existing products")
-    existing_map = {p["img"]: p for p in existing_products}
+            existing = json.load(f)
+    existing_map = {p["img"]: p for p in existing}
+    print(f"Existing products: {len(existing)}\n")
 
-    all_raw = []
-    for page in range(1, MAX_PAGES + 1):
-        items, has_next = scrape_page(page)
-        all_raw.extend(items)
-        if not has_next or not items:
-            print(f"  No more pages after page {page}")
-            break
-        time.sleep(1.5)  # 礼貌性延迟，避免频繁请求
+    # 第一步：从分类页抓取产品列表
+    all_scraped = {}
+    for cat_id, cat_key, cat_name in CATEGORIES:
+        items = scrape_category(cat_id, cat_key, cat_name)
+        for item in items:
+            bc = item["img"]
+            if bc not in all_scraped:
+                all_scraped[bc] = item
+        time.sleep(1.5)
 
-    print(f"\nTotal raw products scraped: {len(all_raw)}")
+    print(f"\nTotal unique products from categories: {len(all_scraped)}")
 
-    if not all_raw:
-        print("WARNING: Scraping returned 0 products. Keeping existing data unchanged.")
+    if not all_scraped:
+        print("WARNING: Category scraping returned 0 products.")
+        print("Falling back to checking status of existing products individually...\n")
+
+        # 备用方案：逐一检查现有产品的状态页面
+        updated = 0
+        for p in existing:
+            old_st = p.get("status", "closed")
+            new_st = check_product_status(p["img"], old_st)
+            if new_st != old_st:
+                print(f"  Status changed: {p['img']} {old_st} → {new_st}")
+                p["status"] = new_st
+                updated += 1
+            time.sleep(0.8)
+
+        if updated > 0:
+            with open(PRODUCTS_FILE, "w", encoding="utf-8") as f:
+                json.dump(existing, f, ensure_ascii=False, indent=2)
+            print(f"\n✓ Updated {updated} product statuses in products.json")
+        else:
+            print("\nNo status changes detected. products.json unchanged.")
         return
 
-    # 去重（按 img barcode）
-    seen = {}
-    for p in all_raw:
-        if p.get("img") and p["img"] not in seen:
-            seen[p["img"]] = p
+    # 第二步：合并新抓取数据与现有数据
+    merged = {}
 
-    # 补全信息
-    products = []
-    for i, (img, p) in enumerate(seen.items(), 1):
-        enriched = enrich_product(p, existing_map)
-        enriched["id"] = i
-        products.append(enriched)
+    # 先放入现有数据
+    for p in existing:
+        merged[p["img"]] = dict(p)
 
-    # 保存
+    # 更新/添加从分类页抓到的产品
+    for bc, scraped in all_scraped.items():
+        if bc in merged:
+            # 已有产品：更新名称（如果抓到了更好的）
+            if scraped.get("name") and not merged[bc].get("name"):
+                merged[bc]["name"] = scraped["name"]
+        else:
+            # 新产品：加入
+            merged[bc] = {
+                "id": 0,
+                "name": scraped.get("name", ""),
+                "series": scraped.get("series", ""),
+                "category": scraped.get("category", "orig"),
+                "scale": "1/6",
+                "price": 0,
+                "status": "closed",
+                "img": bc,
+            }
+
+    # 第三步：逐一检查在售产品的状态（仅检查 stock/prep/pre 的，节省请求数）
+    active = [p for p in merged.values() if p.get("status") in ("stock", "prep", "pre", "closed")]
+    print(f"\nChecking status for {len(active)} active products...")
+    for i, p in enumerate(active[:50], 1):  # 每次最多检查50个，避免太慢
+        new_st = check_product_status(p["img"], p["status"])
+        if new_st != p["status"]:
+            print(f"  [{i}] {p['img']}: {p['status']} → {new_st}")
+            merged[p["img"]]["status"] = new_st
+        time.sleep(0.8)
+
+    # 重新编号并排序
+    final = sorted(merged.values(), key=lambda x: x.get("id") or 9999)
+    for i, p in enumerate(final, 1):
+        p["id"] = i
+
     with open(PRODUCTS_FILE, "w", encoding="utf-8") as f:
-        json.dump(products, f, ensure_ascii=False, indent=2)
+        json.dump(final, f, ensure_ascii=False, indent=2)
 
-    print(f"\n✓ Saved {len(products)} products to products.json")
-
-    # 统计
     from collections import Counter
-    status_counts = Counter(p["status"] for p in products)
-    print("Status breakdown:", dict(status_counts))
-
+    status_counts = Counter(p["status"] for p in final)
+    print(f"\n✓ Saved {len(final)} products to products.json")
+    print("Status:", dict(status_counts))
 
 if __name__ == "__main__":
     run()
