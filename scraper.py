@@ -126,23 +126,42 @@ def parse_status(html):
 
 
 def parse_price_from_page(html):
-    """从产品页提取价格（含税日元）"""
-    # JSON-LD schema 最可靠
-    m = re.search(r'"price"\s*:\s*"?(\d[\d,]*)"?', html)
-    if m:
+    """从产品页提取含税价格（日元）"""
+    def to_int(s):
         try:
-            return int(m.group(1).replace(',', ''))
+            v = int(s.replace(',', '').replace('，', ''))
+            return v if 500 <= v <= 500000 else 0
         except Exception:
-            pass
-    # 含税表示：¥12,100（税込）
-    m = re.search(r'[¥￥]([\d,]+)(?:\s*[（(]税込[）)])?', html)
+            return 0
+
+    # 1. JSON-LD schema（最可靠）
+    m = re.search(r'"price"\s*:\s*"?([\d,]+)"?', html)
     if m:
-        try:
-            price = int(m.group(1).replace(',', ''))
-            if 1000 <= price <= 200000:   # 合理范围
-                return price
-        except Exception:
-            pass
+        v = to_int(m.group(1))
+        if v:
+            return v
+
+    # 2. 含税价格各种日文写法
+    patterns = [
+        r'税込(?:価格)?[：:\s]*[¥￥]?\s*([\d,]+)\s*円?',   # 税込価格：22,000円
+        r'[¥￥]\s*([\d,]+)\s*[（(]税込[）)]',               # ¥22,000（税込）
+        r'([\d,]+)\s*円\s*[（(]税込[）)]',                   # 22,000円（税込）
+        r'税込\s*[¥￥]?\s*([\d,]+)',                         # 税込¥22,000
+        r'お支払い金額[：:]\s*[¥￥]?\s*([\d,]+)',            # お支払い金額：22,000
+    ]
+    for pat in patterns:
+        m = re.search(pat, html)
+        if m:
+            v = to_int(m.group(1))
+            if v:
+                return v
+
+    # 3. 通用 ¥数字（兜底）
+    for m in re.finditer(r'[¥￥]([\d,]{4,7})', html):
+        v = to_int(m.group(1))
+        if v:
+            return v
+
     return 0
 
 def parse_name_from_page(html):
@@ -173,7 +192,8 @@ def scrape_category(cat_id, cat_key, cat_name):
     products = []
     page = 1
     while True:
-        url = f"{BASE}/category/all/{cat_id}" if page == 1 else f"{BASE}/category/all/{cat_id}?page={page}"
+        # Azone 分页为路径形式：/category/all/103/1、/103/2 ...
+        url = f"{BASE}/category/all/{cat_id}/{page}"
         print(f"  [{cat_name}] page {page} → {url}")
         html = fetch(url)
         if not html:
@@ -219,7 +239,12 @@ def scrape_category(cat_id, cat_key, cat_name):
             print(f"    → 0 products (end or parsing failed)")
             break
 
-        has_next = (f"page={page+1}" in html or f"page%3D{page+1}" in html)
+        # 检查是否存在下一页的路径链接
+        has_next = (
+            f"/category/all/{cat_id}/{page+1}" in html or
+            f"page={page+1}" in html or
+            f"page%3D{page+1}" in html
+        )
 
         for barcode, info in found.items():
             products.append({
