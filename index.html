@@ -213,8 +213,8 @@ input,select{font-family:inherit}
 .btn-s{height:38px;padding:0 13px;background:var(--bg2);color:var(--txt2);border:1px solid var(--border);border-radius:7px;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:5px;transition:var(--t)}
 .btn-s:hover{color:var(--txt);border-color:var(--border-d)}
 
-/* ── NOTIF PANEL ── */
-.npanel{position:fixed;top:66px;right:14px;width:330px;background:var(--card);border:1px solid var(--border-d);border-radius:var(--r);box-shadow:var(--sh2);z-index:150;animation:sd .18s ease}
+/* ── NOTIF / WISHLIST PANEL ── */
+.npanel,.wlpanel{position:fixed;top:66px;right:14px;width:330px;background:var(--card);border:1px solid var(--border-d);border-radius:var(--r);box-shadow:var(--sh2);z-index:150;animation:sd .18s ease}
 @keyframes sd{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 .nh{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border)}
 .nt{font-size:12.5px;font-weight:700}
@@ -233,6 +233,16 @@ input,select{font-family:inherit}
 .nm{font-size:11.5px;color:var(--txt2);line-height:1.45;margin-bottom:3px}
 .ntime{font-size:10px;color:var(--txt3)}
 .nempty{padding:36px 18px;text-align:center;color:var(--txt3);font-size:12px}
+/* wishlist panel items */
+.wli{display:flex;gap:9px;padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:var(--t);align-items:center}
+.wli:last-child{border-bottom:none}
+.wli:hover{background:var(--bg2)}
+.wli-img{width:38px;height:48px;border-radius:4px;object-fit:cover;background:var(--bg2);flex-shrink:0}
+.wli-body{flex:1;min-width:0}
+.wli-name{font-size:11.5px;font-weight:600;color:var(--txt);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.wli-meta{display:flex;align-items:center;gap:5px;margin-top:3px}
+.wli-rm{width:24px;height:24px;border-radius:5px;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--txt3);flex-shrink:0;transition:var(--t)}
+.wli-rm:hover{background:rgba(196,77,90,.1);color:var(--accent);border-color:rgba(196,77,90,.3)}
 
 /* ── TOAST ── */
 .tcon{position:fixed;top:76px;right:14px;display:flex;flex-direction:column;gap:7px;z-index:300;pointer-events:none}
@@ -285,7 +295,7 @@ input,select{font-family:inherit}
   .sb{display:none}
   .bnav{display:block}
   .main{padding-bottom:72px}
-  .npanel{top:auto;bottom:60px;right:8px;left:8px;width:auto}
+  .npanel,.wlpanel{top:auto;bottom:60px;right:8px;left:8px;width:auto}
   .tcon{top:auto;bottom:68px;right:8px;left:8px}
   .toast{max-width:100%}
 }
@@ -321,7 +331,7 @@ input,select{font-family:inherit}
       <button class="ibtn" id="nbtn" onclick="toggleNotif()" title="通知">
         🔔<span class="bdg" id="nbdg" style="display:none">0</span>
       </button>
-      <button class="ibtn" title="收藏夹">
+      <button class="ibtn" id="wlbtn" onclick="toggleWishlist()" title="收藏夹">
         ♡<span class="bdg" id="wbdg" style="display:none">0</span>
       </button>
       <a href="https://www.azone-int.co.jp/azonet/" target="_blank" rel="noopener">
@@ -409,6 +419,12 @@ input,select{font-family:inherit}
   <div class="nlist" id="nlist"></div>
 </div>
 
+<!-- WISHLIST PANEL -->
+<div class="wlpanel" id="wlpanel" style="display:none">
+  <div class="nh"><span class="nt">♥ 收藏夹</span><span class="ncl" onclick="clearWishlist()">清空收藏</span></div>
+  <div class="nlist" id="wllist"></div>
+</div>
+
 <!-- TOAST CONTAINER -->
 <div class="tcon" id="tcon"></div>
 
@@ -458,7 +474,7 @@ input,select{font-family:inherit}
       <span class="bnav-ic">🔔</span>通知
       <span class="bnav-bdg" id="bnav-nbdg" style="display:none">0</span>
     </button>
-    <button class="bnav-btn" id="bnav-wl">
+    <button class="bnav-btn" id="bnav-wl" onclick="toggleWishlist()">
       <span class="bnav-ic">♡</span>收藏
       <span class="bnav-bdg" id="bnav-wbdg" style="display:none">0</span>
     </button>
@@ -486,29 +502,18 @@ let P = [];
 
 
 const CATS = [
-  {id:'all',lbl:'全部',ic:'✦'},
-  {id:'dreamin',lbl:"からふる & ルミナス",ic:'🌈'},
-  {id:'excute',lbl:"えっくす☆きゅーと系",ic:'⭐'},
-  {id:'alva',lbl:'Alvastaria & サアラズ',ic:'⚔️'},
-  {id:'sugar',lbl:'SugarCups & ミニドール',ic:'🍬'},
-  {id:'iris',lbl:'アイリス & コラボ',ic:'💎'},
-  {id:'kikipop',lbl:'KIKIPOP!',ic:'🎀'},
-  {id:'orig',lbl:'その他オリジナル',ic:'🌸'},
-  {id:'body',lbl:'ボディ・素体',ic:'🪆'},
-  {id:'clothing',lbl:'衣装・アクセサリー',ic:'👗'},
+  {id:'all',  lbl:'全部',     ic:'✦'},
+  {id:'doll', lbl:'原创娃娃',  ic:'🎎'},
+  {id:'body', lbl:'素体',     ic:'🪆'},
 ];
 
 const STMAP = {stock:'有货',prep:'准备中',pre:'预约受付',closed:'预约截止',sold:'售罄'};
 
-const NOTIFS = [
-  {id:1,pid:36,type:'stock',msg:"からふるDreamin'／このみ in Wonderland（Blue Moon ver.）现已有货",ts:new Date(Date.now()-3*60*1000),read:false},
-  {id:2,pid:37,type:'stock',msg:"からふるDreamin'／このみ in Wonderland（Pink Moon ver.）现已有货",ts:new Date(Date.now()-3*60*1000),read:false},
-  {id:3,pid:13,type:'pre',msg:"KIKIPOP! × camellia Milky Way 预约受付中，请勿错过",ts:new Date(Date.now()-20*60*1000),read:false},
-  {id:4,pid:1,type:'prep',msg:"からふるDreamin'／めばえ（黒猫ver.）正在准备中，即将发售",ts:new Date(Date.now()-2*3600*1000),read:true},
-];
+// 通知数据由 buildNotifs() 在产品加载后动态生成，确保 pid 指向真实产品
+const NOTIFS = [];
 
 // ── STATE ──
-const S = {cat:'all',st:'all',sc:'all',q:'',sort:'newest',view:'grid',notifOpen:false,notifs:[...NOTIFS],wl:new Set(),sel:null,toasts:[],tid:0};
+const S = {cat:'all',st:'all',sc:'all',q:'',sort:'newest',view:'grid',notifOpen:false,wlOpen:false,notifs:[...NOTIFS],wl:new Set(),sel:null,toasts:[],tid:0};
 
 // ── HELPERS ──
 const fmt = n => '¥' + n.toLocaleString('ja-JP');
@@ -554,7 +559,7 @@ function card(p){
     </div>
     <div class="cbody">
       <div class="cseries">${p.s}</div>
-      <div class="cname">${p.n}</div>
+      <div class="cname">${p.n||'<span style="color:var(--txt3);font-style:italic">（名称未取得）</span>'}</div>
       <div class="cmeta"><span class="csc">${p.sc}</span></div>
     </div>
     <div class="cfoot">
@@ -595,6 +600,8 @@ function renderAll(){
   const ur=S.notifs.filter(n=>!n.read).length;
   const nb=document.getElementById('nbdg');nb.textContent=ur;nb.style.display=ur?'flex':'none';
   const wb=document.getElementById('wbdg');wb.textContent=S.wl.size;wb.style.display=S.wl.size?'flex':'none';
+  // wishlist panel (keep in sync when open)
+  if(S.wlOpen)renderWishlist();
   // sort + view
   document.getElementById('ss').value=S.sort;
   document.getElementById('bg').classList.toggle('on',S.view==='grid');
@@ -632,11 +639,31 @@ function renderNotif(){
   p.style.display=S.notifOpen?'block':'none';
   if(!S.notifOpen)return;
   document.getElementById('nlist').innerHTML=S.notifs.length?S.notifs.map(n=>`
-    <div class="ni2 ${n.read?'':'unread'}" onclick="markRead(${n.id})">
+    <div class="ni2 ${n.read?'':'unread'}" onclick="clickNotif(${n.id})">
       <div class="nic ${n.type}">${n.type==='stock'?'✓':n.type==='prep'?'⏳':'🔔'}</div>
       <div><div class="nm">${n.msg}</div><div class="ntime">${timeAgo(n.ts)}</div></div>
     </div>`).join(''):`<div class="nempty">暂无通知</div>`;
 }
+
+// ── WISHLIST PANEL ──
+function renderWishlist(){
+  const panel=document.getElementById('wlpanel');
+  panel.style.display=S.wlOpen?'block':'none';
+  if(!S.wlOpen)return;
+  const items=[...S.wl].map(id=>P.find(x=>x.id===id)).filter(Boolean);
+  document.getElementById('wllist').innerHTML=items.length?items.map(p=>`
+    <div class="wli" onclick="openFromWL(${p.id})">
+      <img class="wli-img" src="${BASE_IMG}${p.img}_0.jpg" alt="${p.n}" onerror="this.src=''"/>
+      <div class="wli-body">
+        <div class="wli-name">${p.n||'（名称未取得）'}</div>
+        <div class="wli-meta"><span class="pill ${p.st}" style="font-size:9px">${STMAP[p.st]}</span></div>
+      </div>
+      <button class="wli-rm" onclick="rmWL(event,${p.id})" title="移除">×</button>
+    </div>`).join(''):`<div class="nempty">收藏夹为空<br/>点击产品卡片上的 ♡ 按钮即可收藏</div>`;
+}
+function openFromWL(id){S.wlOpen=false;renderWishlist();openModal(id);}
+function rmWL(e,id){e.stopPropagation();S.wl.delete(id);renderWishlist();renderAll();}
+function clearWishlist(){S.wl.clear();renderWishlist();renderAll();}
 
 // ── MODAL ──
 function renderModal(){
@@ -683,11 +710,46 @@ function onSort(v){S.sort=v;renderAll();}
 function setView(v){S.view=v;renderAll();}
 function openModal(id){S.sel=P.find(x=>x.id===id);renderModal();}
 function closeModal(){S.sel=null;renderModal();}
-function toggleNotif(){S.notifOpen=!S.notifOpen;renderNotif();if(S.notifOpen)setTimeout(()=>document.addEventListener('click',outNotif,{once:true}),0);}
-function outNotif(e){if(!document.getElementById('npanel').contains(e.target)&&!document.getElementById('nbtn').contains(e.target)){S.notifOpen=false;renderNotif();}else if(S.notifOpen)document.addEventListener('click',outNotif,{once:true});}
-function markRead(id){const n=S.notifs.find(x=>x.id===id);if(n)n.read=true;renderNotif();renderAll();}
+function toggleNotif(){
+  S.notifOpen=!S.notifOpen;
+  if(S.notifOpen){S.wlOpen=false;renderWishlist();}
+  renderNotif();
+  if(S.notifOpen)setTimeout(()=>document.addEventListener('click',outNotif,{once:true}),0);
+}
+function outNotif(e){
+  if(!document.getElementById('npanel').contains(e.target)&&!document.getElementById('nbtn').contains(e.target)){S.notifOpen=false;renderNotif();}
+  else if(S.notifOpen)document.addEventListener('click',outNotif,{once:true});
+}
+function clickNotif(id){
+  const n=S.notifs.find(x=>x.id===id);
+  if(!n)return;
+  n.read=true;
+  S.notifOpen=false;
+  renderNotif();
+  renderAll();
+  // 若通知关联了产品，打开产品详情
+  if(n.pid){openModal(n.pid);}
+}
+function markRead(id){clickNotif(id);}
 function clearNotifs(){S.notifs.forEach(n=>n.read=true);renderNotif();renderAll();}
-function toggleWL(e,id){e.stopPropagation();if(S.wl.has(id)){S.wl.delete(id);}else{S.wl.add(id);const p=P.find(x=>x.id===id);toast(`已收藏：${p.n.substring(0,24)}…`,'pre');}renderAll();}
+function toggleWishlist(){
+  S.wlOpen=!S.wlOpen;
+  if(S.wlOpen){S.notifOpen=false;renderNotif();}
+  renderWishlist();
+  if(S.wlOpen)setTimeout(()=>document.addEventListener('click',outWishlist,{once:true}),0);
+}
+function outWishlist(e){
+  const panel=document.getElementById('wlpanel');
+  const btn=document.getElementById('wlbtn');
+  if(panel&&btn&&!panel.contains(e.target)&&!btn.contains(e.target)){S.wlOpen=false;renderWishlist();}
+  else if(S.wlOpen)document.addEventListener('click',outWishlist,{once:true});
+}
+function toggleWL(e,id){
+  e.stopPropagation();
+  if(S.wl.has(id)){S.wl.delete(id);}
+  else{S.wl.add(id);const p=P.find(x=>x.id===id);toast(`已收藏：${(p.n||'产品').substring(0,24)}`,'pre');}
+  renderAll();
+}
 function toggleWLModal(id){if(S.wl.has(id)){S.wl.delete(id);}else{S.wl.add(id);toast('已加入收藏夹','pre');}renderModal();renderAll();}
 
 // ── MOBILE DRAWER ──
@@ -754,16 +816,25 @@ setCat=v=>{_setCat(v);renderSBMobile();};
 setSt=v=>{_setSt(v);renderSBMobile();};
 setSc=v=>{_setSc(v);renderSBMobile();};
 
+// 旧分类 key → 新分类 key（兼容旧版 products.json）
+// clothing / 其余未知分类不映射，会被下方 filter 过滤掉
+const CAT_REMAP = {
+  orig:'doll', dreamin:'doll', excute:'doll', alva:'doll',
+  sugar:'doll', iris:'doll',   kikipop:'doll',
+  body:'body',
+};
+
 // 将 products.json 字段映射为页面所用格式
 function mapProduct(raw, i) {
+  const rawCat = raw.category || 'doll';
   return {
-    id: raw.id || i + 1,
-    n: raw.name || '',
-    s: raw.series || '',
-    cat: raw.category || 'orig',
-    sc: raw.scale || '1/6',
-    p: raw.price || 0,
-    st: raw.status || 'closed',
+    id:  raw.id || i + 1,
+    n:   raw.name || '',
+    s:   raw.series || '',
+    cat: CAT_REMAP[rawCat] || rawCat,
+    sc:  raw.scale || '1/6',
+    p:   raw.price || 0,
+    st:  raw.status || 'closed',
     img: raw.img || '',
   };
 }
@@ -778,6 +849,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(e.key==='Escape'){
       if(S.sel)closeModal();
       if(S.notifOpen){S.notifOpen=false;renderNotif();}
+      if(S.wlOpen){S.wlOpen=false;renderWishlist();}
       if(document.getElementById('sb-drawer').classList.contains('open'))closeDrawer();
       if(document.getElementById('msearch').classList.contains('open'))closeMSearch();
     }
@@ -788,8 +860,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   fetch('products.json?_=' + Date.now())
     .then(r => { if(!r.ok) throw new Error(r.status); return r.json(); })
     .then(data => {
-      P = data.map(mapProduct);
-      console.log('Loaded', P.length, 'products from products.json');
+      P = data.map(mapProduct).filter(x => x.cat === 'doll' || x.cat === 'body');
+      console.log('Loaded', P.length, 'products (doll+body) from products.json');
       initPage();
     })
     .catch(err => {
@@ -799,11 +871,42 @@ document.addEventListener('DOMContentLoaded',()=>{
     });
 });
 
+// 根据真实产品数据动态生成通知列表（确保 pid 可点击跳转）
+function buildNotifs() {
+  const now = Date.now();
+  const list = [];
+  let nid = 1;
+  const rnd = max => Math.floor(Math.random() * max);
+
+  P.filter(x => x.st === 'stock').slice(0, 3).forEach(p => {
+    list.push({id:nid++, pid:p.id, type:'stock',
+      msg:`${(p.n||'新品').substring(0,32)} 现已有货`,
+      ts:new Date(now - rnd(30)*60*1000), read:false});
+  });
+  P.filter(x => x.st === 'pre').slice(0, 2).forEach(p => {
+    list.push({id:nid++, pid:p.id, type:'pre',
+      msg:`${(p.n||'新品').substring(0,32)} 预约受付中`,
+      ts:new Date(now - (30+rnd(60))*60*1000), read:false});
+  });
+  P.filter(x => x.st === 'prep').slice(0, 2).forEach(p => {
+    list.push({id:nid++, pid:p.id, type:'prep',
+      msg:`${(p.n||'新品').substring(0,32)} 即将发售`,
+      ts:new Date(now - (2+rnd(4))*3600*1000), read:true});
+  });
+  // 若完全没有活跃产品也给一条占位
+  if(!list.length) list.push({id:1, pid:null, type:'stock',
+    msg:'暂无最新动态，等待数据更新…', ts:new Date(now-3600*1000), read:true});
+  return list;
+}
+
 function initPage() {
+  S.notifs = buildNotifs();
   renderTicker();renderSB();renderAll();renderNotif();renderSBMobile();
-  // demo notifications
-  setTimeout(()=>toast("からふるDreamin'／このみ in Wonderland（Blue Moon）现在有货！",'stock'),1500);
-  setTimeout(()=>toast('KIKIPOP! × camellia Milky Way 预约受付中，点击了解详情','pre'),8000);
+  // toast 也用真实产品
+  const stockP = P.find(x=>x.st==='stock');
+  const preP   = P.find(x=>x.st==='pre');
+  if(stockP) setTimeout(()=>toast(`${(stockP.n||'新品').substring(0,24)} 现已有货！`,'stock'),1500);
+  if(preP)   setTimeout(()=>toast(`${(preP.n||'新品').substring(0,24)} 预约受付中`,'pre'),8000);
 }
 </script>
 </body>
