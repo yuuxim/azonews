@@ -13,6 +13,7 @@ PRODUCTS_FILE = os.path.join(os.path.dirname(__file__), "products.json")
 
 # 从官网侧边栏提取的所有分类 ID 及名称
 CATEGORIES = [
+    # ── ドール ──
     (103,  "orig",    "アゾンオリジナルドール"),
     (1198, "dreamin", "からふるDreamin'"),
     (101,  "excute",  "えっくす☆きゅーと"),
@@ -28,6 +29,22 @@ CATEGORIES = [
     (953,  "iris",    "アイリスコレクトプチ"),
     (721,  "iris",    "アイリスコレクト"),
     (498,  "iris",    "ハピネスクローバー"),
+    (393,  "orig",    "ブラックレイヴン"),
+    (374,  "orig",    "エレン"),
+    (104,  "orig",    "キャラクタードール"),
+    # ── ボディ ──
+    (482,  "body",    "ピュアニーモボディ"),
+    (483,  "body",    "ピコニーモボディ"),
+    (102,  "body",    "ピュアニーモドール"),
+    (430,  "body",    "ピコニーモドール"),
+    (166,  "body",    "1/3ドール"),
+    # ── 衣装・アクセサリー ──
+    (416,  "clothing","ピコニーモ用衣装"),
+    (125,  "clothing","ピュアニーモS用衣装"),
+    (126,  "clothing","ピュアニーモM用衣装"),
+    (124,  "clothing","ピュアニーモXS用衣装"),
+    (36,   "clothing","45cm・50cm用衣装"),
+    (21,   "clothing","アクセサリー"),
 ]
 
 BASE = "https://www.azone-int.co.jp/azonet"
@@ -38,18 +55,30 @@ HEADERS = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
 }
 
-# 状态关键词（日文 → 英文）
+# 状态关键词（日文 → 英文）优先级从高到低
 STATUS_MAP = [
-    ("在庫あり",     "stock"),
-    ("受注受付中",   "pre"),
-    ("予約受付中",   "pre"),
-    ("近日予約開始", "prep"),
-    ("準備中",       "prep"),
-    ("受注終了",     "closed"),
-    ("予約終了",     "closed"),
-    ("SOLDOUT",      "sold"),
-    ("完売",         "sold"),
-    ("売り切れ",     "sold"),
+    # 售罄（优先判断，防止误判）
+    ("SOLDOUT",        "sold"),
+    ("完売",           "sold"),
+    ("売り切れ",       "sold"),
+    ("在庫なし",       "sold"),
+    # 预约已截止
+    ("受注終了",       "closed"),
+    ("予約終了",       "closed"),
+    ("受付終了",       "closed"),
+    # 预约/受注受付中
+    ("受注受付中",     "pre"),
+    ("予約受付中",     "pre"),
+    ("受注受付",       "pre"),
+    # 准备中
+    ("近日予約開始",   "prep"),
+    ("準備中",         "prep"),
+    ("近日発売",       "prep"),
+    # 有货（购物车按钮 = 最可靠的有货标志）
+    ("カートに入れる", "stock"),
+    ("cart/add",       "stock"),
+    ("在庫あり",       "stock"),
+    ("在庫：",         "stock"),
 ]
 
 def fetch(url):
