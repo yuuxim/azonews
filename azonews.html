@@ -537,7 +537,7 @@ function getFP(){
   if(S.sc!=='all')ps=ps.filter(x=>x.sc===S.sc);
   if(S.q){const q=S.q.toLowerCase();ps=ps.filter(x=>x.n.toLowerCase().includes(q)||x.s.toLowerCase().includes(q));}
   ps.sort((a,b)=>{
-    if(S.sort==='newest')return b.id-a.id;
+    if(S.sort==='newest')return parseInt(b.img||0)-parseInt(a.img||0);
     if(S.sort==='price-asc')return a.p-b.p;
     if(S.sort==='price-desc')return b.p-a.p;
     if(S.sort==='name')return a.n.localeCompare(b.n,'ja');
@@ -616,17 +616,33 @@ function renderAll(){
   g.innerHTML=fp.length?fp.map(card).join(''):`<div class="empty"><div class="empty-ic">🔍</div><h3>未找到相关产品</h3><p>请尝试调整筛选条件或搜索关键词</p></div>`;
 }
 
+// 子系列排列顺序（与官网一致）
+const SERIES_ORDER = [
+  "からふるDreamin'","ルミナス＊ストリート","えっくす☆きゅーと","アルヴァスタリア",
+  "サアラズ ア・ラ・モード","KIKIPOP","ビキニメイツ","ディアス","シュガーカップス",
+  "リルフェアリー","ミミーガーデン","アイリスコレクトプチ","アイリスコレクト",
+  "ハピネスクローバー","ブラックレイヴン","エレン","キャラクタードール","アゾンオリジナルドール"
+];
+function seriesSort(a,b){
+  const ia=SERIES_ORDER.indexOf(a),ib=SERIES_ORDER.indexOf(b);
+  if(ia>=0&&ib>=0)return ia-ib;
+  if(ia>=0)return -1;
+  if(ib>=0)return 1;
+  return a.localeCompare(b,'ja');
+}
+
 // ── SIDEBAR ──
 function renderSB(){
   const cc={all:P.length};CATS.slice(1).forEach(c=>{cc[c.id]=P.filter(x=>x.cat===c.id).length;});
-  // 第一级分类
-  let catsHtml = CATS.map(c=>`<div class="ni ${S.cat===c.id&&S.series==='all'?'on':''}" onclick="setCat('${c.id}')">`+
-    `<span class="ni-ic">${c.ic}</span><span>${c.lbl}</span><span class="ni-ct">${cc[c.id]||0}</span></div>`).join('');
-  // 第二级：娃娃子系列（仅在选中 doll 时展开）
-  if(S.cat==='doll'){
-    const seriesList=[...new Set(P.filter(x=>x.cat==='doll'&&x.s).map(x=>x.s))].sort((a,b)=>a.localeCompare(b,'ja'));
-    const seriesCount={};seriesList.forEach(s=>{seriesCount[s]=P.filter(x=>x.s===s).length;});
-    catsHtml += seriesList.map(s=>`<div class="ni ni-sub ${S.series===s?'on':''}" onclick="setSeries('${s.replace(/'/g,"\\'")}')"><span class="ni-ic" style="font-size:10px">└</span><span style="font-size:11.5px">${s}</span><span class="ni-ct">${seriesCount[s]||0}</span></div>`).join('');
+  // 第一级+第二级（子系列紧跟在 doll 后面，在 body 之前）
+  let catsHtml = '';
+  for(const c of CATS){
+    catsHtml += `<div class="ni ${S.cat===c.id&&S.series==='all'?'on':''}" onclick="setCat('${c.id}')"><span class="ni-ic">${c.ic}</span><span>${c.lbl}</span><span class="ni-ct">${cc[c.id]||0}</span></div>`;
+    if(c.id==='doll'&&S.cat==='doll'){
+      const seriesList=[...new Set(P.filter(x=>x.cat==='doll'&&x.s).map(x=>x.s))].sort(seriesSort);
+      const seriesCount={};seriesList.forEach(s=>{seriesCount[s]=P.filter(x=>x.s===s).length;});
+      catsHtml += seriesList.map(s=>`<div class="ni ni-sub ${S.series===s?'on':''}" onclick="setSeries('${s.replace(/'/g,"\\'")}')"><span class="ni-ic" style="font-size:10px">└</span><span style="font-size:11.5px">${s}</span><span class="ni-ct">${seriesCount[s]||0}</span></div>`).join('');
+    }
   }
   document.getElementById('sb-cats').innerHTML=catsHtml;
 
