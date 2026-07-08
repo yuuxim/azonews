@@ -390,10 +390,24 @@ def run():
     for p in existing:
         merged[p["img"]] = dict(p)
 
+    # 顶级分类名（不作为子系列覆盖依据）
+    TOP_LEVEL_NAMES = {"アゾンオリジナルドール", "ピュアニーモボディ"}
+
     for bc, scraped in all_scraped.items():
         if bc in merged:
             if scraped.get("name") and not merged[bc].get("name"):
                 merged[bc]["name"] = scraped["name"]
+            # 始终以最新抓取的分类/系列为准（子系列名优先于顶级分类名）
+            new_series = scraped.get("series", "")
+            old_series = merged[bc].get("series", "")
+            if new_series and (
+                not old_series
+                or old_series in TOP_LEVEL_NAMES      # 旧的是顶级名 → 用子系列名覆盖
+                or new_series not in TOP_LEVEL_NAMES  # 新的是子系列名 → 覆盖
+            ):
+                merged[bc]["series"] = new_series
+            if scraped.get("category"):
+                merged[bc]["category"] = scraped["category"]
             # 若分类页已有状态提示，更新
             if scraped.get("status_hint") and merged[bc].get("status") == "closed":
                 merged[bc]["status"] = scraped["status_hint"]
