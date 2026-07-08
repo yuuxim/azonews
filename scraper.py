@@ -68,7 +68,17 @@ def fetch(url):
             raw = r.read()
             for enc in ("utf-8", "cp932", "euc-jp"):
                 try:
-                    return raw.decode(enc)
+                    html = raw.decode(enc)
+                    # 统一处理 HTML 实体，方便后续关键词匹配
+                    html = (html
+                        .replace('&yen;', '¥')
+                        .replace('&#165;', '¥')
+                        .replace('&#x00A5;', '¥')
+                        .replace('&#xA5;', '¥')
+                        .replace('&amp;', '&')
+                        .replace('&nbsp;', ' ')
+                    )
+                    return html
                 except UnicodeDecodeError:
                     continue
             return raw.decode("utf-8", errors="replace")
@@ -102,7 +112,17 @@ def parse_status(html):
         if jp in html:
             return en
 
-    # ── 策略3：购买表单检测 ──
+    # ── 策略3：日文 ○ 在庫記号（○ = 有货，× = 没货）──
+    # 在庫状況：○  /  在庫:○
+    if re.search(r'在庫.{0,30}[○◯]', html):
+        return 'stock'
+    if re.search(r'[○◯].{0,10}在庫', html):
+        return 'stock'
+    # 販売中 = on sale
+    if '販売中' in html:
+        return 'stock'
+
+    # ── 策略4：购买表单检测 ──
     if re.search(r'<form[^>]+action[^>]*/(?:cart|order|purchase|buy)', html, re.IGNORECASE):
         return 'stock'
     if re.search(r'name=["\'](?:qty|quantity|CartItem|cart_qty)["\']', html, re.IGNORECASE):
@@ -110,7 +130,7 @@ def parse_status(html):
     if re.search(r'(?:value|>)\s*(?:購入する|カゴに入れる|注文する)', html):
         return 'stock'
 
-    # ── 策略4：Open Graph / meta ──
+    # ── 策略5：Open Graph / meta ──
     og_avail = re.search(
         r'<meta[^>]+property=["\']product:availability["\'][^>]+content=["\']([^"\']+)["\']',
         html, re.IGNORECASE
@@ -129,25 +149,27 @@ def parse_price_from_page(html):
     """从产品页提取含税价格（日元）"""
     def to_int(s):
         try:
-            v = int(s.replace(',', '').replace('，', ''))
+            v = int(str(s).replace(',', '').replace('，', '').replace(' ', ''))
             return v if 500 <= v <= 500000 else 0
         except Exception:
             return 0
 
     # 1. JSON-LD schema（最可靠）
-    m = re.search(r'"price"\s*:\s*"?([\d,]+)"?', html)
-    if m:
-        v = to_int(m.group(1))
+    for m in re.finditer(r'"price"\s*:\s*"?([\d,\.]+)"?', html):
+        v = to_int(m.group(1).split('.')[0])
         if v:
             return v
 
-    # 2. 含税价格各种日文写法
+    # 2. 含税価格 — 日文各种写法（¥ 已在 fetch 时从 &yen; 转换）
     patterns = [
-        r'税込(?:価格)?[：:\s]*[¥￥]?\s*([\d,]+)\s*円?',   # 税込価格：22,000円
-        r'[¥￥]\s*([\d,]+)\s*[（(]税込[）)]',               # ¥22,000（税込）
-        r'([\d,]+)\s*円\s*[（(]税込[）)]',                   # 22,000円（税込）
-        r'税込\s*[¥￥]?\s*([\d,]+)',                         # 税込¥22,000
-        r'お支払い金額[：:]\s*[¥￥]?\s*([\d,]+)',            # お支払い金額：22,000
+        r'税込(?:価格)?[：:]\s*¥?\s*([\d,]+)\s*円?',     # 税込価格：22,000 / 税込：¥22,000
+        r'¥\s*([\d,]+)\s*[（(]税込[）)]',                  # ¥22,000（税込）
+        r'([\d,]+)\s*円\s*[（(]税込[）)]',                  # 22,000円（税込）
+        r'税込\s*¥?\s*([\d,]+)',                            # 税込22,000
+        r'含税[価格]*[：:]\s*¥?\s*([\d,]+)',               # 含税価格：22,000
+        r'お支払い金額[：:]\s*¥?\s*([\d,]+)',              # お支払い金額：22,000
+        r'販売価格[：:]\s*¥?\s*([\d,]+)',                   # 販売価格：22,000
+        r'価格[：:]\s*¥?\s*([\d,]+)\s*円',                 # 価格：22,000円
     ]
     for pat in patterns:
         m = re.search(pat, html)
@@ -156,8 +178,14 @@ def parse_price_from_page(html):
             if v:
                 return v
 
-    # 3. 通用 ¥数字（兜底）
-    for m in re.finditer(r'[¥￥]([\d,]{4,7})', html):
+    # 3. ¥数字（兜底，&yen; 已经被转换为 ¥）
+    for m in re.finditer(r'¥\s*([\d,]{4,7})', html):
+        v = to_int(m.group(1))
+        if v:
+            return v
+
+    # 4. 数字+円（最宽松兜底）
+    for m in re.finditer(r'([\d,]{5,7})\s*円', html):
         v = to_int(m.group(1))
         if v:
             return v
@@ -271,8 +299,24 @@ def check_product_status(barcode, existing_status, existing_price=0):
     html = fetch(url)
     if not html:
         return existing_status, "", existing_price
-    price = parse_price_from_page(html) or existing_price
-    return parse_status(html), parse_name_from_page(html), price
+
+    status = parse_status(html)
+    price  = parse_price_from_page(html) or existing_price
+    name   = parse_name_from_page(html)
+
+    # ── 调试输出（仅对第一个产品打印原始 HTML 片段，帮助排查）──
+    if getattr(check_product_status, '_debug_done', False) is False:
+        check_product_status._debug_done = True
+        print(f"\n[DEBUG] barcode={barcode}  status={status}  price={price}")
+        # 打印 在庫/price/cart 相关片段
+        for kw in ['在庫', '円', '¥', 'price', 'cart', 'availability', 'InStock', 'カート', '販売']:
+            idx = html.find(kw)
+            if idx >= 0:
+                snippet = html[max(0,idx-60):idx+100].replace('\n',' ')
+                print(f"  [{kw}] ...{snippet}...")
+        print()
+
+    return status, name, price
 
 def run():
     print("=== AZONEWS Scraper v3 ===\n")
