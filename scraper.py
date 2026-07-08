@@ -158,6 +158,22 @@ def parse_status(html):
     return 'closed'
 
 
+def detect_scale(name, series=""):
+    """从产品名称/系列推断比例尺"""
+    if '1／12' in name or '1/12' in name:
+        return '1/12'
+    if '1／3' in name or '1/3' in name:
+        return '1/3'
+    if '23cm' in name or '２３ｃｍ' in name:
+        return '23cm'
+    if '27cm' in name or '２７ｃｍ' in name:
+        return '27cm'
+    if '7cm' in name:
+        return '7cm'
+    if 'ピコニーモ' in name or series == 'ピコニーモボディ':
+        return '1/12'
+    return '1/6'
+
 def parse_price_from_page(html):
     """从产品页提取含税价格（日元）"""
     def to_int(s):
@@ -412,12 +428,14 @@ def run():
             if scraped.get("status_hint") and merged[bc].get("status") == "closed":
                 merged[bc]["status"] = scraped["status_hint"]
         else:
+            _name = scraped.get("name", "")
+            _series = scraped.get("series", "")
             merged[bc] = {
                 "id":       0,
-                "name":     scraped.get("name", ""),
-                "series":   scraped.get("series", ""),
+                "name":     _name,
+                "series":   _series,
                 "category": scraped.get("category", "doll"),
-                "scale":    "1/6",
+                "scale":    detect_scale(_name, _series),
                 "price":    0,
                 "status":   scraped.get("status_hint") or "closed",
                 "img":      bc,
@@ -437,6 +455,10 @@ def run():
             changed.append(f"status {old_st}→{new_st}")
         if new_name and not old_name:
             merged[p["img"]]["name"] = new_name
+            # 顺便用新名称更新 scale
+            new_scale = detect_scale(new_name, merged[p["img"]].get("series",""))
+            if new_scale != merged[p["img"]].get("scale","1/6"):
+                merged[p["img"]]["scale"] = new_scale
             changed.append("name found")
         if new_price and not merged[p["img"]].get("price"):
             merged[p["img"]]["price"] = new_price

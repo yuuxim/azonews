@@ -104,7 +104,7 @@
     "name": "1／12 ピコニーモD 弟",
     "series": "ピコニーモボディ",
     "category": "body",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 3080,
     "status": "stock",
     "img": "4573199848051"
@@ -114,7 +114,7 @@
     "name": "ピコニーモD ハンドパーツ／手足中",
     "series": "ピコニーモボディ",
     "category": "body",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 1100,
     "status": "sold",
     "img": "4573199842387"
@@ -124,7 +124,7 @@
     "name": "ピコニーモD ハンドパーツ／手足小",
     "series": "ピコニーモボディ",
     "category": "body",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 1100,
     "status": "sold",
     "img": "4573199842394"
@@ -134,7 +134,7 @@
     "name": "1／12 ピコニーモS 女の子 LLバスト",
     "series": "ピコニーモボディ",
     "category": "body",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 3080,
     "status": "stock",
     "img": "4573199841540"
@@ -144,7 +144,7 @@
     "name": "1／12 ピコニーモM 女の子",
     "series": "ピコニーモボディ",
     "category": "body",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 3080,
     "status": "stock",
     "img": "4573199841601"
@@ -154,7 +154,7 @@
     "name": "1／12 ピコニーモS 女の子",
     "series": "ピコニーモボディ",
     "category": "body",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 3080,
     "status": "sold",
     "img": "4573199841533"
@@ -164,7 +164,7 @@
     "name": "1／12 ピコニーモS 女の子 3Lバスト",
     "series": "ピコニーモボディ",
     "category": "body",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 3080,
     "status": "sold",
     "img": "4573199841557"
@@ -174,7 +174,7 @@
     "name": "1／12 ピコニーモM 女の子",
     "series": "ピコニーモボディ",
     "category": "body",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 3080,
     "status": "sold",
     "img": "4573199841564"
@@ -184,7 +184,7 @@
     "name": "1／12 ピコニーモM 女の子 LLバスト",
     "series": "ピコニーモボディ",
     "category": "body",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 3080,
     "status": "sold",
     "img": "4573199841571"
@@ -194,7 +194,7 @@
     "name": "1／12 ピコニーモD 妹",
     "series": "ピコニーモボディ",
     "category": "body",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 3080,
     "status": "sold",
     "img": "4573199841588"
@@ -894,7 +894,7 @@
     "name": "1／12 「Bikini Mates」吉野いるみ ブロンドヘアー・ピンクビキニ",
     "series": "ビキニメイツ",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 8800,
     "status": "stock",
     "img": "4573199843124"
@@ -904,7 +904,7 @@
     "name": "1／12 「Bikini Mates」吉野いるみ ブラックヘアー・ブラックビキニ",
     "series": "ビキニメイツ",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 8800,
     "status": "stock",
     "img": "4573199843148"
@@ -914,7 +914,7 @@
     "name": "1／12 「Bikini Mates」吉野いるみ ブラウンヘアー・ホワイトビキニ",
     "series": "ビキニメイツ",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 8800,
     "status": "stock",
     "img": "4573199843131"
@@ -1684,7 +1684,7 @@
     "name": "1／12 「Bikini Mates」吉野いるみ用 ブラックヘアーパーツセット",
     "series": "ビキニメイツ",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 1980,
     "status": "stock",
     "img": "4573199848600"
@@ -1694,7 +1694,7 @@
     "name": "1／12 「Bikini Mates」吉野いるみ用 ブロンドヘアーパーツセット",
     "series": "ビキニメイツ",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 1980,
     "status": "stock",
     "img": "4573199848594"
@@ -1704,7 +1704,7 @@
     "name": "1／12 「Bikini Mates」吉野いるみ用 ブラウンヘアーパーツセット",
     "series": "ビキニメイツ",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 1980,
     "status": "stock",
     "img": "4573199840772"
@@ -1724,7 +1724,7 @@
     "name": "1／12 ピコD 『ミミーガーデン博物誌』旅する鞄",
     "series": "ミミーガーデン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 2750,
     "status": "sold",
     "img": "4573199847368"
@@ -1734,7 +1734,7 @@
     "name": "1／12 ピコD 『ミミーガーデン博物誌』ソックス（アゾンダイレクトストア限定販売）",
     "series": "ミミーガーデン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 660,
     "status": "stock",
     "img": "4573199847009"
@@ -1744,7 +1744,7 @@
     "name": "1／12 ピコD 『ミミーガーデン博物誌』ビジューシューズ",
     "series": "ミミーガーデン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 1650,
     "status": "stock",
     "img": "4573199847290"
@@ -1754,7 +1754,7 @@
     "name": "1／12 ピコD 『ミミーガーデン博物誌』ソックス",
     "series": "ミミーガーデン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 660,
     "status": "stock",
     "img": "4573199847047"
@@ -1764,7 +1764,7 @@
     "name": "1／12 ピコD 『ミミーガーデン博物誌』ミャム探検衣装set（アゾンダイレクトストア限定販売）",
     "series": "ミミーガーデン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 6600,
     "status": "stock",
     "img": "4573199846996"
@@ -1774,7 +1774,7 @@
     "name": "1／12 ピコD 『ミミーガーデン博物誌』ルゥリア衣装set",
     "series": "ミミーガーデン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 8800,
     "status": "stock",
     "img": "4573199847306"
@@ -1784,7 +1784,7 @@
     "name": "1／12 ピコD 『ミミーガーデン博物誌』エンジニアブーツ",
     "series": "ミミーガーデン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 1870,
     "status": "stock",
     "img": "4573199847016"
@@ -1794,7 +1794,7 @@
     "name": "1／12 ピコD 『ミミーガーデン博物誌』エンジニアブーツ",
     "series": "ミミーガーデン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 1870,
     "status": "stock",
     "img": "4573199847023"
@@ -1804,7 +1804,7 @@
     "name": "1／12 ピコD 『ミミーガーデン博物誌』マリス衣装＆シッポset（アゾンダイレクトストア限定販売）",
     "series": "ミミーガーデン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 6600,
     "status": "stock",
     "img": "4573199847269"
@@ -1814,7 +1814,7 @@
     "name": "1／12 ピコD 『ミミーガーデン博物誌』ビジューシューズ",
     "series": "ミミーガーデン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 1650,
     "status": "stock",
     "img": "4573199847283"
@@ -1824,7 +1824,7 @@
     "name": "1／12 ピコD 『ミミーガーデン博物誌』レースアップブーツ",
     "series": "ミミーガーデン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 1870,
     "status": "stock",
     "img": "4573199847054"
@@ -1834,7 +1834,7 @@
     "name": "1／12 ピコD 『ミミーガーデン博物誌』マリス衣装＆シッポset（アゾンダイレクトストア限定販売）",
     "series": "ミミーガーデン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 6600,
     "status": "stock",
     "img": "4573199847276"
@@ -1844,7 +1844,7 @@
     "name": "1／12 ピコD 『ミミーガーデン博物誌』リボンレースアップショートブーツ",
     "series": "ミミーガーデン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 1870,
     "status": "stock",
     "img": "4573199847313"
@@ -1854,7 +1854,7 @@
     "name": "1／12 ピコD 『ミミーガーデン博物誌』ショルダーバッグ（アゾンダイレクトストア限定販売）",
     "series": "ミミーガーデン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 2750,
     "status": "prep",
     "img": "4573199846989"
@@ -1864,7 +1864,7 @@
     "name": "1／12 ピコD 『ミミーガーデン博物誌』ワフル探検衣装set",
     "series": "ミミーガーデン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 6600,
     "status": "sold",
     "img": "4573199846972"
@@ -1874,7 +1874,7 @@
     "name": "1／12 ピコD 『ミミーガーデン博物誌』ライア衣装＆シッポset（アゾンダイレクトストア限定販売）",
     "series": "ミミーガーデン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 6600,
     "status": "sold",
     "img": "4573199847221"
@@ -1884,7 +1884,7 @@
     "name": "1／12 ピコD 『ミミーガーデン博物誌』オーバーニーソックス（アゾンダイレクトストア限定販売）",
     "series": "ミミーガーデン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 660,
     "status": "sold",
     "img": "4573199847238"
@@ -1894,7 +1894,7 @@
     "name": "1／12 ピコD 『ミミーガーデン博物誌』ツートンショルダーバッグ（アゾンダイレクトストア限定販売）",
     "series": "ミミーガーデン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 2750,
     "status": "sold",
     "img": "4573199847245"
@@ -1904,7 +1904,7 @@
     "name": "1／12 ピコD 『ミミーガーデン博物誌』ツートンレースアップブーツ（アゾンダイレクトストア限定販売）",
     "series": "ミミーガーデン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 1870,
     "status": "sold",
     "img": "4573199847252"
@@ -1914,7 +1914,7 @@
     "name": "1／12『BlackRaven』ヘッドパーツset ～シェイラ 女剣士の正義と心得～",
     "series": "ブラックレイヴン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 3300,
     "status": "stock",
     "img": "4573199845111"
@@ -1924,7 +1924,7 @@
     "name": "1／12『BlackRaven』ヘッドパーツset ～リリア Misty Gold Edition．～",
     "series": "ブラックレイヴン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 3520,
     "status": "stock",
     "img": "4573199845074"
@@ -1934,7 +1934,7 @@
     "name": "1／12『BlackRaven』ヘッドパーツset ～ルルナ Misty Gold Edition．～（アゾンダイレクトストア限定商品）",
     "series": "ブラックレイヴン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 3300,
     "status": "stock",
     "img": "4573199845067"
@@ -1944,7 +1944,7 @@
     "name": "1／12『BlackRaven』ヘッドパーツset ～リリア Black shadow Edition．～",
     "series": "ブラックレイヴン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 3850,
     "status": "stock",
     "img": "4573199845081"
@@ -1954,7 +1954,7 @@
     "name": "1／12『BlackRaven』ヘッドパーツset ～カテリナ 変わり者とその守護者～",
     "series": "ブラックレイヴン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 3300,
     "status": "stock",
     "img": "4573199845104"
@@ -1964,7 +1964,7 @@
     "name": "「1／12デーモニックツヴァイト（ABS製）」Lilia BlackRavenII～The Darkness full of city～",
     "series": "ブラックレイヴン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 2970,
     "status": "stock",
     "img": "4573199845050"
@@ -1974,7 +1974,7 @@
     "name": "「1／12 Lilia BlackRavenII ドレスset」～The Darkness full of city～",
     "series": "ブラックレイヴン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 6600,
     "status": "sold",
     "img": "4573199845029"
@@ -1984,7 +1984,7 @@
     "name": "「1／12 Lilia BlackRavenII ショーツ」～The Darkness full of city～",
     "series": "ブラックレイヴン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 660,
     "status": "sold",
     "img": "4573199845036"
@@ -1994,7 +1994,7 @@
     "name": "「1／12 Lilia BlackRavenII ブーツ（ソフビ製）」～The Darkness full of city～",
     "series": "ブラックレイヴン",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 1650,
     "status": "sold",
     "img": "4573199845043"
@@ -2044,7 +2044,7 @@
     "name": "ピコニーモキャラクターズ　TVアニメ「ローゼンメイデン」真紅",
     "series": "キャラクタードール",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 33000,
     "status": "closed",
     "img": "4573199852591"
@@ -2054,7 +2054,7 @@
     "name": "1／3アナザーリアリスティックキャラクターズ No．027 TVアニメ「無職転生II ～異世界行ったら本気だす～」 エリス・ボレアス・グレイラット",
     "series": "キャラクタードール",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/3",
     "price": 69300,
     "status": "closed",
     "img": "4573199852225"
@@ -2114,7 +2114,7 @@
     "name": "1／3 アナザーリアリスティックキャラクターズNo.025 TVアニメ「この素晴らしい世界に爆焔を！」めぐみん",
     "series": "キャラクタードール",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/3",
     "price": 66000,
     "status": "closed",
     "img": "4573199848174"
@@ -2134,7 +2134,7 @@
     "name": "1／12 アサルトリリィ「百合ヶ丘女学院／安藤鶴紗」衣装set",
     "series": "キャラクタードール",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 4400,
     "status": "stock",
     "img": "4573199847122"
@@ -2254,7 +2254,7 @@
     "name": "1／12アサルトリリィシリーズNo.071『アサルトリリィ』菱田治（ひしだ　はる）",
     "series": "キャラクタードール",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 11000,
     "status": "pre",
     "img": "4582119998257"
@@ -2264,7 +2264,7 @@
     "name": "『アサルトリリィ アームズコレクション』  1／12プラキット リリィズバトルアーマーセット",
     "series": "キャラクタードール",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 1100,
     "status": "closed",
     "img": "4582119995706"
@@ -2274,7 +2274,7 @@
     "name": "1／12 『アサルトリリィ』 竹久央 プラアーマー仕様",
     "series": "キャラクタードール",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 14300,
     "status": "stock",
     "img": "4582119994204"
@@ -2284,7 +2284,7 @@
     "name": "1／12 アサルトリリィ Last Bullet「アラウンドザウィロー／郭神琳」衣装セット",
     "series": "キャラクタードール",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 7500,
     "status": "pre",
     "img": "4582119992316"
@@ -2294,7 +2294,7 @@
     "name": "1／12 アサルトリリィ「私立ルドビコ女学院制服セット」 version2.0 Sサイズ",
     "series": "キャラクタードール",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 4950,
     "status": "stock",
     "img": "4582119991753"
@@ -2304,7 +2304,7 @@
     "name": "1／12 アサルトリリィ「私立ルドビコ女学院制服セット」 version2.0 Mサイズ",
     "series": "キャラクタードール",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 4950,
     "status": "stock",
     "img": "4582119991760"
@@ -2324,7 +2324,7 @@
     "name": "1／12 アサルトリリィ Last Bullet「アラウンドザウィロー／白井夢結」衣装セット",
     "series": "キャラクタードール",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 7500,
     "status": "pre",
     "img": "4573199928760"
@@ -2334,7 +2334,7 @@
     "name": "1／12 アサルトリリィ Last Bullet「アラウンドザウィロー／一柳梨璃」衣装セット",
     "series": "キャラクタードール",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 7500,
     "status": "sold",
     "img": "4573199928753"
@@ -2344,7 +2344,7 @@
     "name": "1／12アサルトリリィシリーズNo.060 『アサルトリリィ』 六角汐里(ろっかく しおり)version2.0プラアーマー仕様",
     "series": "キャラクタードール",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 13200,
     "status": "pre",
     "img": "4573199926636"
@@ -2354,7 +2354,7 @@
     "name": "1／12アサルトリリィシリーズNo．008 『アサルトリリィ』 松永遊糸（まつながゆい） version1．5",
     "series": "キャラクタードール",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 12100,
     "status": "stock",
     "img": "4573199923055"
@@ -2364,7 +2364,7 @@
     "name": "1／12アサルトリリィシリーズNo.056 『アサルトリリィ』 吉村・Thi・梅（よしむら てぃ まい）",
     "series": "キャラクタードール",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 13200,
     "status": "pre",
     "img": "4573199920818"
@@ -2374,7 +2374,7 @@
     "name": "1／12アサルトリリィシリーズNo.055 『アサルトリリィ』 二川二水(ふたがわふみ）",
     "series": "キャラクタードール",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 13200,
     "status": "stock",
     "img": "4573199839837"
@@ -2394,7 +2394,7 @@
     "name": "1／12アサルトリリィシリーズNo.054 『アサルトリリィ外伝』 黒木・フランシスカ・百合亜（クロキフランシスカユリア）",
     "series": "キャラクタードール",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 13200,
     "status": "pre",
     "img": "4573199839523"
