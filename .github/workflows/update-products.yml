@@ -37,8 +37,6 @@ jobs:
         run: |
           git config user.name "azonews-bot"
           git config user.email "bot@azonews"
-          git fetch origin main
-          git rebase origin/main
           git add products.json
           git commit -m "Auto update products data $(date '+%Y-%m-%d')"
-          git push origin main
+          git push origin HEAD:main --force-with-lease
