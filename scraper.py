@@ -240,8 +240,9 @@ def scrape_category(cat_id, cat_key, cat_name):
             break
 
         # 检查是否存在下一页的路径链接
+        # 注意：HTML 中链接带 /azonet/ 前缀，所以不加 / 开头做宽松匹配
         has_next = (
-            f"/category/all/{cat_id}/{page+1}" in html or
+            f"category/all/{cat_id}/{page+1}" in html or   # /azonet/category/all/103/2
             f"page={page+1}" in html or
             f"page%3D{page+1}" in html
         )
