@@ -502,9 +502,9 @@ let P = [];
 
 
 const CATS = [
-  {id:'all',  lbl:'全部',              ic:'✦'},
-  {id:'doll', lbl:'アゾンオリジナルドール', ic:'🎎'},
-  {id:'body', lbl:'ピュアニーモボディ',     ic:'🪆'},
+  {id:'all',  lbl:'全部',     ic:'✦'},
+  {id:'doll', lbl:'原创娃娃',  ic:'🎎'},
+  {id:'body', lbl:'素体',     ic:'🪆'},
 ];
 
 const STMAP = {stock:'有货',prep:'准备中',pre:'预约受付',closed:'预约截止',sold:'售罄'};
@@ -817,9 +817,10 @@ setSt=v=>{_setSt(v);renderSBMobile();};
 setSc=v=>{_setSc(v);renderSBMobile();};
 
 // 旧分类 key → 新分类 key（兼容旧版 products.json）
+// clothing / 其余未知分类不映射，会被下方 filter 过滤掉
 const CAT_REMAP = {
   orig:'doll', dreamin:'doll', excute:'doll', alva:'doll',
-  sugar:'doll', iris:'doll',   kikipop:'doll', clothing:'doll',
+  sugar:'doll', iris:'doll',   kikipop:'doll',
   body:'body',
 };
 
@@ -859,8 +860,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   fetch('products.json?_=' + Date.now())
     .then(r => { if(!r.ok) throw new Error(r.status); return r.json(); })
     .then(data => {
-      P = data.map(mapProduct);
-      console.log('Loaded', P.length, 'products from products.json');
+      P = data.map(mapProduct).filter(x => x.cat === 'doll' || x.cat === 'body');
+      console.log('Loaded', P.length, 'products (doll+body) from products.json');
       initPage();
     })
     .catch(err => {

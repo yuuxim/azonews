@@ -77,17 +77,73 @@ def fetch(url):
         return None
 
 def parse_status(html):
-    """从产品页面 HTML 判断库存状态"""
+    """从产品页面 HTML 判断库存状态（多策略）"""
+
+    # ── 策略1：JSON-LD schema.org（最可靠，不依赖 JS 渲染）──
+    # 匹配 "availability": "http://schema.org/InStock" 等格式
+    schema_avail = re.search(
+        r'"availability"\s*:\s*"([^"]+)"', html, re.IGNORECASE
+    )
+    if schema_avail:
+        av = schema_avail.group(1).lower()
+        if 'instock' in av:
+            return 'stock'
+        if 'outofstock' in av or 'discontinued' in av or 'soldout' in av:
+            return 'sold'
+        if 'preorder' in av or 'presale' in av:
+            return 'pre'
+        if 'comingsoon' in av:
+            return 'prep'
+        if 'onlineonly' in av:
+            return 'stock'
+
+    # ── 策略2：关键词匹配（静态文字）──
     for jp, en in STATUS_MAP:
         if jp in html:
             return en
-    # 额外检查：购买表单
-    if re.search(r'<form[^>]+(?:cart|purchase|order|buy)', html, re.IGNORECASE):
-        return "stock"
-    # 提交按钮中包含购买相关词
-    if re.search(r'(?:value|>)\s*(?:購入|買う|注文|カゴ|cart)', html, re.IGNORECASE):
-        return "stock"
+
+    # ── 策略3：购买表单检测 ──
+    if re.search(r'<form[^>]+action[^>]*/(?:cart|order|purchase|buy)', html, re.IGNORECASE):
+        return 'stock'
+    if re.search(r'name=["\'](?:qty|quantity|CartItem|cart_qty)["\']', html, re.IGNORECASE):
+        return 'stock'
+    if re.search(r'(?:value|>)\s*(?:購入する|カゴに入れる|注文する)', html):
+        return 'stock'
+
+    # ── 策略4：Open Graph / meta ──
+    og_avail = re.search(
+        r'<meta[^>]+property=["\']product:availability["\'][^>]+content=["\']([^"\']+)["\']',
+        html, re.IGNORECASE
+    )
+    if og_avail:
+        av = og_avail.group(1).lower()
+        if 'instock' in av or 'in stock' in av:
+            return 'stock'
+        if 'outofstock' in av or 'out of stock' in av:
+            return 'sold'
+
     return "closed"
+
+
+def parse_price_from_page(html):
+    """从产品页提取价格（含税日元）"""
+    # JSON-LD schema 最可靠
+    m = re.search(r'"price"\s*:\s*"?(\d[\d,]*)"?', html)
+    if m:
+        try:
+            return int(m.group(1).replace(',', ''))
+        except Exception:
+            pass
+    # 含税表示：¥12,100（税込）
+    m = re.search(r'[¥￥]([\d,]+)(?:\s*[（(]税込[）)])?', html)
+    if m:
+        try:
+            price = int(m.group(1).replace(',', ''))
+            if 1000 <= price <= 200000:   # 合理范围
+                return price
+        except Exception:
+            pass
+    return 0
 
 def parse_name_from_page(html):
     """从产品详情页提取产品名称"""
@@ -183,13 +239,14 @@ def scrape_category(cat_id, cat_key, cat_name):
 
     return products
 
-def check_product_status(barcode, existing_status):
-    """访问单个产品页面获取最新库存状态；同时尝试获取名称"""
+def check_product_status(barcode, existing_status, existing_price=0):
+    """访问单个产品页面获取最新库存状态、名称、价格"""
     url = f"{BASE}/item/{barcode}"
     html = fetch(url)
     if not html:
-        return existing_status, ""
-    return parse_status(html), parse_name_from_page(html)
+        return existing_status, "", existing_price
+    price = parse_price_from_page(html) or existing_price
+    return parse_status(html), parse_name_from_page(html), price
 
 def run():
     print("=== AZONEWS Scraper v3 ===\n")
@@ -222,15 +279,17 @@ def run():
         updated = 0
         for p in existing:
             old_st = p.get("status", "closed")
-            new_st, new_name = check_product_status(p["img"], old_st)
+            new_st, new_name, new_price = check_product_status(p["img"], old_st, p.get("price", 0))
             changed = False
             if new_st != old_st:
                 print(f"  Status changed: {p['img']} {old_st} → {new_st}")
                 p["status"] = new_st
                 changed = True
             if new_name and not p.get("name"):
-                print(f"  Name found: {p['img']} → {new_name[:40]}")
                 p["name"] = new_name
+                changed = True
+            if new_price and not p.get("price"):
+                p["price"] = new_price
                 changed = True
             if changed:
                 updated += 1
@@ -274,14 +333,17 @@ def run():
     for i, p in enumerate(to_check, 1):
         old_st  = p.get("status", "closed")
         old_name = p.get("name", "")
-        new_st, new_name = check_product_status(p["img"], old_st)
+        new_st, new_name, new_price = check_product_status(p["img"], old_st, p.get("price", 0))
         changed = []
         if new_st != old_st:
             merged[p["img"]]["status"] = new_st
             changed.append(f"status {old_st}→{new_st}")
         if new_name and not old_name:
             merged[p["img"]]["name"] = new_name
-            changed.append(f"name found")
+            changed.append("name found")
+        if new_price and not merged[p["img"]].get("price"):
+            merged[p["img"]]["price"] = new_price
+            changed.append(f"price={new_price}")
         if changed:
             print(f"  [{i}/{len(to_check)}] {p['img']}: {', '.join(changed)}")
         time.sleep(0.8)
