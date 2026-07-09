@@ -519,7 +519,7 @@ const S = {cat:'all',series:'all',st:'all',sc:'all',q:'',sort:'newest',view:'gri
 
 // ── HELPERS ──
 const fmt = n => '¥' + n.toLocaleString('ja-JP');
-function timeAgo(d){const m=Math.floor((Date.now()-d)/60000);if(m<1)return'刚刚';if(m<60)return m+'分钟前';const h=Math.floor(m/60);if(h<24)return h+'小时前';return Math.floor(h/24)+'天前';}
+function timeAgo(d){if(!d)return'数据更新时';const m=Math.floor((Date.now()-d)/60000);if(m<1)return'刚刚';if(m<60)return m+'分钟前';const h=Math.floor(m/60);if(h<24)return h+'小时前';const days=Math.floor(h/24);if(days<30)return days+'天前';return new Date(d).toLocaleDateString('zh-CN',{month:'numeric',day:'numeric'});}
 function tagHtml(p){
   const ts=[];
   if(p.st==='prep')ts.push('<span class="t t-prep">准备中</span>');
@@ -821,7 +821,16 @@ function renderSBMobile(){
   const statusEl=document.getElementById('sb-status-m');
   const scalesEl=document.getElementById('sb-scales-m');
   if(!catsEl)return;
-  catsEl.innerHTML=CATS.map(c=>`<div class="ni ${S.cat===c.id?'on':''}" onclick="setCatM('${c.id}')"><span class="ni-ic">${c.ic}</span><span>${c.lbl}</span><span class="ni-ct">${cc[c.id]||0}</span></div>`).join('');
+  let mCatsHtml='';
+  for(const c of CATS){
+    mCatsHtml+=`<div class="ni ${S.cat===c.id&&S.series==='all'?'on':''}" onclick="setCatM('${c.id}')"><span class="ni-ic">${c.ic}</span><span>${c.lbl}</span><span class="ni-ct">${cc[c.id]||0}</span></div>`;
+    if(c.id==='doll'&&S.cat==='doll'){
+      const sl=[...new Set(P.filter(x=>x.cat==='doll'&&x.s).map(x=>x.s))].sort(seriesSort);
+      const sc2={};sl.forEach(s=>{sc2[s]=P.filter(x=>x.s===s).length;});
+      mCatsHtml+=sl.map(s=>`<div class="ni ni-sub ${S.series===s?'on':''}" onclick="S.series='${s.replace(/'/g,"\\'")}';setCatM('doll')"><span class="ni-ic" style="font-size:10px">└</span><span style="font-size:11.5px">${s}</span><span class="ni-ct">${sc2[s]||0}</span></div>`).join('');
+    }
+  }
+  catsEl.innerHTML=mCatsHtml;
   const stItems=[{k:'all',l:'全部状态',d:'all'},{k:'stock',l:'有货',d:'stock'},{k:'prep',l:'准备中',d:'prep'},{k:'pre',l:'预约受付',d:'pre'},{k:'closed',l:'预约截止',d:'closed'},{k:'sold',l:'售罄',d:'sold'}];
   const sc3={all:P.length};['stock','prep','pre','closed','sold'].forEach(k=>{sc3[k]=P.filter(x=>x.st===k).length;});
   statusEl.innerHTML=stItems.map(s=>`<div class="sb-btn ${S.st===s.k?'on':''}" onclick="setStM('${s.k}')"><span class="sdot ${s.d}"></span>${s.l}<span style="margin-left:auto;font-size:10px;color:var(--txt3)">${sc3[s.k]||0}</span></div>`).join('');
@@ -867,6 +876,7 @@ function mapProduct(raw, i) {
     p:   raw.price || 0,
     st:  raw.status || 'closed',
     img: raw.img || '',
+    at:  raw.status_at ? raw.status_at * 1000 : null,
   };
 }
 
@@ -907,26 +917,29 @@ function buildNotifs() {
   const now = Date.now();
   const list = [];
   let nid = 1;
-  const rnd = max => Math.floor(Math.random() * max);
+  // 使用 scraper 记录的实际状态变更时间；无记录则显示"数据更新时"
+  const ts = p => p.at ? new Date(p.at) : null;
 
+  // 有货（直接购买，非预约）
   P.filter(x => x.st === 'stock').slice(0, 3).forEach(p => {
     list.push({id:nid++, pid:p.id, type:'stock',
       msg:`${(p.n||'新品').substring(0,32)} 现已有货`,
-      ts:new Date(now - rnd(30)*60*1000), read:false});
+      ts:ts(p), read:false});
   });
-  P.filter(x => x.st === 'pre').slice(0, 2).forEach(p => {
+  // 预约受付中
+  P.filter(x => x.st === 'pre').slice(0, 3).forEach(p => {
     list.push({id:nid++, pid:p.id, type:'pre',
       msg:`${(p.n||'新品').substring(0,32)} 预约受付中`,
-      ts:new Date(now - (30+rnd(60))*60*1000), read:false});
+      ts:ts(p), read:false});
   });
+  // 即将开放预约
   P.filter(x => x.st === 'prep').slice(0, 2).forEach(p => {
     list.push({id:nid++, pid:p.id, type:'prep',
       msg:`${(p.n||'新品').substring(0,32)} 即将发售`,
-      ts:new Date(now - (2+rnd(4))*3600*1000), read:true});
+      ts:ts(p), read:true});
   });
-  // 若完全没有活跃产品也给一条占位
   if(!list.length) list.push({id:1, pid:null, type:'stock',
-    msg:'暂无最新动态，等待数据更新…', ts:new Date(now-3600*1000), read:true});
+    msg:'暂无最新动态，等待数据更新…', ts:null, read:true});
   return list;
 }
 

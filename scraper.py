@@ -96,9 +96,13 @@ def parse_status(html):
     """从产品页面 HTML 判断库存状态"""
 
     # ── 策略1：Azone 专用 CSS 类（最可靠）──
-    # <span class="stock_icon stock_maru"></span> = ○ = 有货
+    # <span class="stock_icon stock_maru"></span> = ○ = 有货 or 预约受付中
     # <span class="stock_icon stock_batu"></span> = × = 无货/售罄
     if 'stock_maru' in html:
+        # 预约受付中优先：即使有 ○，若有预约关键词则为 pre
+        for kw in ('受注受付中', '予約受付中', '受注受付', '予約受付'):
+            if kw in html:
+                return 'pre'
         return 'stock'
     if 'stock_batu' in html:
         # 还需区分 sold 和 closed：看页面是否有受注/预约截止文字
@@ -452,6 +456,7 @@ def run():
         changed = []
         if new_st != old_st:
             merged[p["img"]]["status"] = new_st
+            merged[p["img"]]["status_at"] = int(time.time())
             changed.append(f"status {old_st}→{new_st}")
         if new_name and not old_name:
             merged[p["img"]]["name"] = new_name
