@@ -96,48 +96,59 @@ input,select{font-family:inherit}
 /* ── MAIN ── */
 .main{padding:20px}
 
-/* ── CAROUSEL ── */
-#carousel-wrap{margin-bottom:20px;position:relative}
-.carousel{position:relative;width:100%;height:240px;border-radius:var(--r);overflow:hidden;background:var(--bg3);box-shadow:var(--sh2);cursor:pointer}
-.carousel-slide{position:absolute;inset:0;display:flex;opacity:0;transition:opacity .6s ease;pointer-events:none}
+/* ── HERO CAROUSEL (full-width) ── */
+#carousel-wrap{background:var(--bg3);border-bottom:1px solid var(--border)}
+.carousel{position:relative;width:100%;height:360px;overflow:hidden;cursor:pointer;display:flex}
+.carousel-slide{position:absolute;inset:0;display:flex;opacity:0;transition:opacity .7s ease;pointer-events:none}
 .carousel-slide.active{opacity:1;pointer-events:auto}
-.carousel-img{width:42%;height:100%;object-fit:cover;object-position:top center;flex-shrink:0}
-.carousel-img-ph{width:42%;height:100%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:48px;opacity:.3;flex-shrink:0}
-.carousel-overlay{position:absolute;top:0;left:38%;right:0;height:100%;background:linear-gradient(to right, transparent 0%, var(--card) 18%)}
-.carousel-info{position:absolute;top:0;right:0;width:62%;height:100%;display:flex;flex-direction:column;justify-content:center;padding:28px 28px 28px 32px;gap:10px}
-.carousel-series{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);background:var(--accent-g);display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;width:fit-content}
-.carousel-name{font-size:17px;font-weight:700;color:var(--txt);line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.carousel-price{font-size:20px;font-weight:800;color:var(--accent-dim);letter-spacing:-.3px}
-.carousel-tag{font-size:10px;font-weight:600;background:rgba(26,86,150,.12);color:var(--blue);padding:2px 8px;border-radius:20px;width:fit-content}
-.carousel-cta{margin-top:4px;font-size:12px;font-weight:600;color:var(--accent);display:flex;align-items:center;gap:4px}
+/* image: right-aligned portrait, fills ~45% */
+.carousel-img-wrap{position:absolute;right:0;top:0;width:45%;height:100%}
+.carousel-img{width:100%;height:100%;object-fit:cover;object-position:top center}
+.carousel-img-ph{width:100%;height:100%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:64px;opacity:.2}
+/* gradient overlay from left over image */
+.carousel-img-wrap::before{content:'';position:absolute;inset:0;background:linear-gradient(to right,var(--bg3) 0%,rgba(242,237,231,.7) 40%,transparent 100%);z-index:1}
+/* left info panel */
+.carousel-info{position:absolute;left:0;top:0;width:58%;height:100%;display:flex;flex-direction:column;justify-content:center;padding:48px 56px;gap:12px;z-index:2}
+.carousel-series{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);opacity:.85;margin-bottom:2px}
+.carousel-name{font-size:26px;font-weight:800;color:var(--txt);line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.carousel-meta{display:flex;align-items:center;gap:10px;margin-top:2px}
+.carousel-price{font-size:22px;font-weight:800;color:var(--accent-dim)}
+.carousel-tag{font-size:10px;font-weight:700;background:rgba(26,86,150,.1);color:var(--blue);padding:3px 10px;border-radius:20px;letter-spacing:.5px}
+.carousel-cta{margin-top:8px;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--accent-dim);background:var(--accent-g);padding:7px 16px;border-radius:20px;width:fit-content;border:1px solid rgba(196,77,90,.2);transition:var(--t)}
+.carousel-slide.active .carousel-cta:hover{background:var(--accent);color:#fff}
 /* arrows */
-.carousel-btn{position:absolute;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.85);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--txt2);transition:var(--t);z-index:2;backdrop-filter:blur(4px)}
-.carousel-btn:hover{background:#fff;box-shadow:var(--sh)}
-.carousel-prev{left:10px}
-.carousel-next{right:10px}
+.carousel-btn{position:absolute;bottom:24px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.9);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--txt2);transition:var(--t);z-index:3;backdrop-filter:blur(4px)}
+.carousel-btn:hover{box-shadow:var(--sh);background:#fff}
+.carousel-prev{left:calc(58% - 84px)}
+.carousel-next{left:calc(58% - 44px)}
 /* dots */
-.carousel-dots{display:flex;gap:5px;justify-content:center;margin-top:10px}
+.carousel-dots{display:flex;gap:6px;padding:12px 0 14px;justify-content:center;background:var(--bg3);border-bottom:1px solid var(--border)}
 .carousel-dot{width:6px;height:6px;border-radius:3px;background:var(--border-d);transition:width .3s ease,background .3s ease;cursor:pointer}
-.carousel-dot.active{width:18px;background:var(--accent)}
-/* progress bar */
-.carousel-progress{position:absolute;bottom:0;left:0;height:2px;background:var(--accent);opacity:.6;transition:width linear}
-/* mobile */
+.carousel-dot.active{width:20px;background:var(--accent)}
+/* progress */
+.carousel-progress{position:absolute;bottom:0;left:0;height:2px;background:var(--accent);opacity:.5;transition:width linear;z-index:3}
+/* counter */
+.carousel-count{position:absolute;right:20px;bottom:20px;font-size:11px;color:var(--txt3);z-index:3;background:rgba(255,255,255,.7);padding:2px 8px;border-radius:10px;backdrop-filter:blur(4px)}
 @media(max-width:860px){
-  .carousel{height:190px}
-  .carousel-img,.carousel-img-ph{width:48%}
-  .carousel-overlay{left:44%}
-  .carousel-info{width:56%;padding:16px 16px 16px 20px;gap:7px}
-  .carousel-name{font-size:14px;-webkit-line-clamp:3}
-  .carousel-price{font-size:16px}
+  .carousel{height:220px}
+  .carousel-img-wrap{width:50%}
+  .carousel-info{width:60%;padding:28px 28px}
+  .carousel-name{font-size:18px}
+  .carousel-price{font-size:17px}
+  .carousel-btn{bottom:16px}
+  .carousel-prev{left:calc(60% - 84px)}
+  .carousel-next{left:calc(60% - 44px)}
 }
 @media(max-width:580px){
-  .carousel{height:160px}
-  .carousel-img,.carousel-img-ph{width:45%}
-  .carousel-overlay{left:40%}
-  .carousel-info{width:58%;padding:12px 12px 12px 16px;gap:5px}
-  .carousel-name{font-size:12px}
+  .carousel{height:180px}
+  .carousel-img-wrap{width:52%}
+  .carousel-info{width:58%;padding:16px 16px;gap:7px}
+  .carousel-name{font-size:14px}
   .carousel-price{font-size:14px}
-  .carousel-series{font-size:9px}
+  .carousel-cta{display:none}
+  .carousel-btn{bottom:12px}
+  .carousel-prev{left:calc(58% - 80px)}
+  .carousel-next{left:calc(58% - 42px)}
 }
 
 /* ── STAT BARS ── */
@@ -394,6 +405,12 @@ input,select{font-family:inherit}
   <div class="ticker-track"><div class="ticker-content" id="tc"></div></div>
 </div>
 
+<!-- HERO CAROUSEL (full-width, between ticker and layout) -->
+<div id="carousel-wrap" style="display:none">
+  <div class="carousel" id="carousel"></div>
+  <div class="carousel-dots" id="carousel-dots"></div>
+</div>
+
 <!-- BODY -->
 <div class="wrap">
 <div class="layout">
@@ -425,11 +442,6 @@ input,select{font-family:inherit}
 <main class="main">
   <!-- Status quick-stats -->
   <div class="stat-row" id="stat-row"></div>
-  <!-- Pre-order carousel -->
-  <div id="carousel-wrap" style="display:none">
-    <div class="carousel" id="carousel"></div>
-    <div class="carousel-dots" id="carousel-dots"></div>
-  </div>
   <!-- Active filter chips -->
   <div class="chips" id="chips"></div>
   <!-- Toolbar -->
@@ -706,9 +718,16 @@ function renderSB(){
 let _carIdx=0, _carTimer=null, _carItems=[];
 const CAR_INTERVAL=4500;
 
+function isAccessory(name){
+  if(!name)return false;
+  const kw=['パーツ','ヘッドパーツ','衣装','ウィッグ','シューズ','ブーツ','ソックス','靴下',
+            'ストッキング','レッグウェア','アクセサリ','カスタムリリィ ヘッド'];
+  return kw.some(k=>name.includes(k));
+}
+
 function renderCarousel(){
-  // 筛选 1/6 预约受付中的娃娃
-  _carItems = P.filter(x=>x.st==='pre'&&x.sc==='1/6'&&x.cat==='doll');
+  // 筛选 1/6 预约受付中的纯娃娃（排除配件）
+  _carItems = P.filter(x=>x.st==='pre'&&x.sc==='1/6'&&x.cat==='doll'&&!isAccessory(x.n));
   const wrap=document.getElementById('carousel-wrap');
   const el=document.getElementById('carousel');
   const dots=document.getElementById('carousel-dots');
@@ -718,29 +737,34 @@ function renderCarousel(){
   wrap.style.display='block';
   if(_carIdx>=_carItems.length)_carIdx=0;
 
-  // build slides
+  // build slides — try _1.jpg (full-body promo shot) with fallback to _0.jpg
   el.innerHTML = _carItems.map((p,i)=>{
-    const imgUrl=BASE_IMG+p.img+'_0.jpg';
+    const img1=BASE_IMG+p.img+'_1.jpg';
+    const img0=BASE_IMG+p.img+'_0.jpg';
     const price=p.p?`<div class="carousel-price">¥${p.p.toLocaleString('ja-JP')}</div>`:'';
     return `<div class="carousel-slide${i===_carIdx?' active':''}" onclick="openModal(${p.id})">
-      <img class="carousel-img" src="${imgUrl}" alt="${p.n}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-      <div class="carousel-img-ph" style="display:none">🎎</div>
-      <div class="carousel-overlay"></div>
       <div class="carousel-info">
-        <div class="carousel-series">🎀 ${p.s||'アゾンオリジナルドール'}</div>
+        <div class="carousel-series">${p.s||'アゾンオリジナルドール'}</div>
         <div class="carousel-name">${p.n||'名称未取得'}</div>
-        ${price}
-        <div class="carousel-tag">● 预约受付中</div>
+        <div class="carousel-meta">
+          ${price}
+          <div class="carousel-tag">预约受付中</div>
+        </div>
         <div class="carousel-cta">在 Azone 查看 →</div>
+      </div>
+      <div class="carousel-img-wrap">
+        <img class="carousel-img" src="${img1}" alt="${p.n}"
+          onerror="this.src='${img0}'">
       </div>
       <div class="carousel-progress" id="cpr-${i}" style="width:0%"></div>
     </div>`;
   }).join('');
 
-  // arrows
+  // arrows + counter
   el.insertAdjacentHTML('beforeend',`
     <button class="carousel-btn carousel-prev" onclick="event.stopPropagation();carNav(-1)">‹</button>
     <button class="carousel-btn carousel-next" onclick="event.stopPropagation();carNav(1)">›</button>
+    <div class="carousel-count" id="car-count">${_carIdx+1} / ${_carItems.length}</div>
   `);
 
   // dots
@@ -753,6 +777,8 @@ function carGo(i){
   _carIdx=((i%_carItems.length)+_carItems.length)%_carItems.length;
   document.querySelectorAll('.carousel-slide').forEach((s,j)=>s.classList.toggle('active',j===_carIdx));
   document.querySelectorAll('.carousel-dot').forEach((d,j)=>d.classList.toggle('active',j===_carIdx));
+  const cnt=document.getElementById('car-count');
+  if(cnt)cnt.textContent=(_carIdx+1)+' / '+_carItems.length;
   carStartTimer();
 }
 function carNav(dir){carGo(_carIdx+dir);}
