@@ -97,58 +97,76 @@ input,select{font-family:inherit}
 .main{padding:20px}
 
 /* ── HERO CAROUSEL (full-width) ── */
-#carousel-wrap{background:var(--bg3);border-bottom:1px solid var(--border)}
-.carousel{position:relative;width:100%;height:360px;overflow:hidden;cursor:pointer;display:flex}
-.carousel-slide{position:absolute;inset:0;display:flex;opacity:0;transition:opacity .7s ease;pointer-events:none}
+#carousel-wrap{border-bottom:1px solid var(--border)}
+.carousel{position:relative;width:100%;height:340px;overflow:hidden;cursor:pointer}
+.carousel-slide{position:absolute;inset:0;opacity:0;transition:opacity .7s ease;pointer-events:none}
 .carousel-slide.active{opacity:1;pointer-events:auto}
-/* image: right-aligned portrait, fills ~45% */
-.carousel-img-wrap{position:absolute;right:0;top:0;width:45%;height:100%}
+/* right: image fills from center to right edge */
+.carousel-img-wrap{position:absolute;right:0;top:0;width:62%;height:100%}
 .carousel-img{width:100%;height:100%;object-fit:cover;object-position:top center}
-.carousel-img-ph{width:100%;height:100%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:64px;opacity:.2}
-/* gradient overlay from left over image */
-.carousel-img-wrap::before{content:'';position:absolute;inset:0;background:linear-gradient(to right,var(--bg3) 0%,rgba(242,237,231,.7) 40%,transparent 100%);z-index:1}
-/* left info panel */
-.carousel-info{position:absolute;left:0;top:0;width:58%;height:100%;display:flex;flex-direction:column;justify-content:center;padding:48px 56px;gap:12px;z-index:2}
-.carousel-series{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);opacity:.85;margin-bottom:2px}
-.carousel-name{font-size:26px;font-weight:800;color:var(--txt);line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.carousel-meta{display:flex;align-items:center;gap:10px;margin-top:2px}
-.carousel-price{font-size:22px;font-weight:800;color:var(--accent-dim)}
-.carousel-tag{font-size:10px;font-weight:700;background:rgba(26,86,150,.1);color:var(--blue);padding:3px 10px;border-radius:20px;letter-spacing:.5px}
-.carousel-cta{margin-top:8px;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--accent-dim);background:var(--accent-g);padding:7px 16px;border-radius:20px;width:fit-content;border:1px solid rgba(196,77,90,.2);transition:var(--t)}
+/* gradient: only blend left edge of image into info panel — thin & clean */
+.carousel-blend{position:absolute;left:0;top:0;bottom:0;width:28%;z-index:1;
+  /* default; JS may update to match image color */
+  background:linear-gradient(to right,var(--bg3) 0%,transparent 100%)}
+/* left: solid info panel */
+.carousel-info{position:absolute;left:0;top:0;width:42%;height:100%;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:40px 44px;gap:10px;background:var(--bg3);z-index:2}
+.carousel-series{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--accent);opacity:.8}
+.carousel-name{font-size:24px;font-weight:800;color:var(--txt);line-height:1.3;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.carousel-meta{display:flex;align-items:center;gap:8px;margin-top:2px}
+.carousel-price{font-size:20px;font-weight:800;color:var(--accent-dim)}
+.carousel-tag{font-size:10px;font-weight:700;background:rgba(26,86,150,.1);
+  color:var(--blue);padding:3px 10px;border-radius:20px}
+.carousel-cta{margin-top:6px;display:inline-flex;align-items:center;gap:6px;
+  font-size:12px;font-weight:600;color:var(--accent-dim);background:var(--accent-g);
+  padding:7px 16px;border-radius:20px;width:fit-content;
+  border:1px solid rgba(196,77,90,.2);transition:var(--t)}
 .carousel-slide.active .carousel-cta:hover{background:var(--accent);color:#fff}
 /* arrows */
-.carousel-btn{position:absolute;bottom:24px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.9);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--txt2);transition:var(--t);z-index:3;backdrop-filter:blur(4px)}
+.carousel-btn{position:absolute;bottom:20px;width:32px;height:32px;border-radius:50%;
+  background:rgba(255,255,255,.92);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+  color:var(--txt2);transition:var(--t);z-index:3;backdrop-filter:blur(4px)}
 .carousel-btn:hover{box-shadow:var(--sh);background:#fff}
-.carousel-prev{left:calc(58% - 84px)}
-.carousel-next{left:calc(58% - 44px)}
-/* dots */
-.carousel-dots{display:flex;gap:6px;padding:12px 0 14px;justify-content:center;background:var(--bg3);border-bottom:1px solid var(--border)}
-.carousel-dot{width:6px;height:6px;border-radius:3px;background:var(--border-d);transition:width .3s ease,background .3s ease;cursor:pointer}
+.carousel-prev{left:calc(42% - 80px)}
+.carousel-next{left:calc(42% - 40px)}
+/* dots + bar below */
+.carousel-dots{display:flex;gap:6px;padding:10px 0 12px;justify-content:center;
+  background:var(--bg3);border-bottom:1px solid var(--border)}
+.carousel-dot{width:6px;height:6px;border-radius:3px;background:var(--border-d);
+  transition:width .3s,background .3s;cursor:pointer}
 .carousel-dot.active{width:20px;background:var(--accent)}
 /* progress */
-.carousel-progress{position:absolute;bottom:0;left:0;height:2px;background:var(--accent);opacity:.5;transition:width linear;z-index:3}
+.carousel-progress{position:absolute;bottom:0;left:0;height:2px;background:var(--accent);
+  opacity:.5;transition:width linear;z-index:3}
 /* counter */
-.carousel-count{position:absolute;right:20px;bottom:20px;font-size:11px;color:var(--txt3);z-index:3;background:rgba(255,255,255,.7);padding:2px 8px;border-radius:10px;backdrop-filter:blur(4px)}
+.carousel-count{position:absolute;right:16px;bottom:16px;font-size:11px;color:var(--txt3);
+  z-index:3;background:rgba(255,255,255,.75);padding:2px 8px;border-radius:10px;
+  backdrop-filter:blur(4px)}
 @media(max-width:860px){
-  .carousel{height:220px}
-  .carousel-img-wrap{width:50%}
-  .carousel-info{width:60%;padding:28px 28px}
-  .carousel-name{font-size:18px}
-  .carousel-price{font-size:17px}
-  .carousel-btn{bottom:16px}
-  .carousel-prev{left:calc(60% - 84px)}
-  .carousel-next{left:calc(60% - 44px)}
+  .carousel{height:210px}
+  .carousel-img-wrap{width:58%}
+  .carousel-blend{width:24%}
+  .carousel-info{width:46%;padding:24px 24px;gap:7px}
+  .carousel-name{font-size:17px}
+  .carousel-price{font-size:16px}
+  .carousel-btn{bottom:14px}
+  .carousel-prev{left:calc(46% - 78px)}
+  .carousel-next{left:calc(46% - 38px)}
 }
 @media(max-width:580px){
-  .carousel{height:180px}
-  .carousel-img-wrap{width:52%}
-  .carousel-info{width:58%;padding:16px 16px;gap:7px}
-  .carousel-name{font-size:14px}
-  .carousel-price{font-size:14px}
+  .carousel{height:170px}
+  .carousel-img-wrap{width:56%}
+  .carousel-blend{width:20%}
+  .carousel-info{width:48%;padding:14px 14px;gap:5px}
+  .carousel-name{font-size:13px;-webkit-line-clamp:3}
+  .carousel-price{font-size:13px}
   .carousel-cta{display:none}
-  .carousel-btn{bottom:12px}
-  .carousel-prev{left:calc(58% - 80px)}
-  .carousel-next{left:calc(58% - 42px)}
+  .carousel-btn{bottom:10px}
+  .carousel-prev{left:calc(48% - 76px)}
+  .carousel-next{left:calc(48% - 36px)}
 }
 
 /* ── STAT BARS ── */
@@ -721,7 +739,7 @@ const CAR_INTERVAL=4500;
 function isAccessory(name){
   if(!name)return false;
   const kw=['パーツ','ヘッドパーツ','衣装','ウィッグ','シューズ','ブーツ','ソックス','靴下',
-            'ストッキング','レッグウェア','アクセサリ','カスタムリリィ ヘッド'];
+            'ストッキング','レッグウェア','アクセサリ','カスタムリリィ ヘッド','アームズ'];
   return kw.some(k=>name.includes(k));
 }
 
@@ -737,10 +755,16 @@ function renderCarousel(){
   wrap.style.display='block';
   if(_carIdx>=_carItems.length)_carIdx=0;
 
-  // build slides — try _1.jpg (full-body promo shot) with fallback to _0.jpg
+  // build slides — prefer hero_img (Azone homepage banner), then _1.jpg, then _0.jpg
   el.innerHTML = _carItems.map((p,i)=>{
-    const img1=BASE_IMG+p.img+'_1.jpg';
-    const img0=BASE_IMG+p.img+'_0.jpg';
+    const heroUrl = p.hero||'';
+    const img1    = BASE_IMG+p.img+'_1.jpg';
+    const img0    = BASE_IMG+p.img+'_0.jpg';
+    const srcAttr = heroUrl ? heroUrl : img1;
+    // fallback chain: hero → _1.jpg → _0.jpg
+    const onErr   = heroUrl
+      ? `this.src='${img1}';this.onerror=function(){this.src='${img0}'}`
+      : `this.src='${img0}'`;
     const price=p.p?`<div class="carousel-price">¥${p.p.toLocaleString('ja-JP')}</div>`:'';
     return `<div class="carousel-slide${i===_carIdx?' active':''}" onclick="openModal(${p.id})">
       <div class="carousel-info">
@@ -753,8 +777,9 @@ function renderCarousel(){
         <div class="carousel-cta">在 Azone 查看 →</div>
       </div>
       <div class="carousel-img-wrap">
-        <img class="carousel-img" src="${img1}" alt="${p.n}"
-          onerror="this.src='${img0}'">
+        <div class="carousel-blend" id="cblend-${i}"></div>
+        <img class="carousel-img" id="cimg-${i}" src="${srcAttr}" alt="${p.n||''}"
+          onerror="${onErr}" onload="carColorMatch(${i})">
       </div>
       <div class="carousel-progress" id="cpr-${i}" style="width:0%"></div>
     </div>`;
@@ -771,6 +796,28 @@ function renderCarousel(){
   dots.innerHTML=_carItems.map((_,i)=>`<div class="carousel-dot${i===_carIdx?' active':''}" onclick="carGo(${i})"></div>`).join('');
 
   carStartTimer();
+}
+
+// Try to sample left-edge color of image and apply to the blend gradient
+function carColorMatch(i){
+  const img=document.getElementById('cimg-'+i);
+  const blend=document.getElementById('cblend-'+i);
+  if(!img||!blend)return;
+  try{
+    const c=document.createElement('canvas');
+    c.width=4; c.height=Math.min(img.naturalHeight||40,40);
+    const ctx=c.getContext('2d');
+    // sample left 4px of the top portion of the image
+    ctx.drawImage(img,0,0,4,c.height,0,0,4,c.height);
+    const d=ctx.getImageData(0,0,4,c.height).data;
+    let r=0,g=0,b=0,n=4*c.height;
+    for(let j=0;j<d.length;j+=4){r+=d[j];g+=d[j+1];b+=d[j+2];}
+    const col=`rgb(${Math.round(r/n)},${Math.round(g/n)},${Math.round(b/n)})`;
+    blend.style.background=`linear-gradient(to right,${col} 0%,transparent 100%)`;
+    // also update left panel bg to match
+    const info=blend.closest('.carousel-slide')?.querySelector('.carousel-info');
+    if(info) info.style.background=col;
+  }catch(e){/* CORS blocked — keep default */}
 }
 
 function carGo(i){
@@ -1006,15 +1053,16 @@ const CAT_REMAP = {
 function mapProduct(raw, i) {
   const rawCat = raw.category || 'doll';
   return {
-    id:  raw.id || i + 1,
-    n:   raw.name || '',
-    s:   raw.series || '',
-    cat: CAT_REMAP[rawCat] || rawCat,
-    sc:  raw.scale || '1/6',
-    p:   raw.price || 0,
-    st:  raw.status || 'closed',
-    img: raw.img || '',
-    at:  raw.status_at ? raw.status_at * 1000 : null,
+    id:   raw.id || i + 1,
+    n:    raw.name || '',
+    s:    raw.series || '',
+    cat:  CAT_REMAP[rawCat] || rawCat,
+    sc:   raw.scale || '1/6',
+    p:    raw.price || 0,
+    st:   raw.status || 'closed',
+    img:  raw.img || '',
+    at:   raw.status_at ? raw.status_at * 1000 : null,
+    hero: raw.hero_img || '',
   };
 }
 

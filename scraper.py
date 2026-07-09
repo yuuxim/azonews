@@ -353,6 +353,37 @@ def check_product_status(barcode, existing_status, existing_price=0):
 
     return status, name, price
 
+def scrape_homepage_banners():
+    """从 Azone 首页提取轮播 banner 图 → {barcode: img_url}"""
+    html = fetch("https://www.azone-int.co.jp/")
+    if not html:
+        return {}
+    banners = {}
+    # 方法1：<a href="...item/BARCODE"> 内紧跟的 img src
+    for m in re.finditer(
+        r'<a[^>]+href="[^"]*?/item/(\d{10,13})[^"]*?"[^>]*>\s*(?:<[^/][^>]*>\s*)*'
+        r'<img[^>]+src="([^"]+)"',
+        html, re.DOTALL
+    ):
+        bc, img_url = m.group(1), m.group(2)
+        if not img_url.startswith('http'):
+            img_url = 'https://www.azone-int.co.jp' + img_url
+        if bc not in banners:
+            banners[bc] = img_url
+    # 方法2：img src 文件名中含 barcode（跳过 _0.jpg 缩略图）
+    for m in re.finditer(
+        r'<img[^>]+src="([^"]*?(\d{10,13})[^"]*?\.jpe?g)"', html
+    ):
+        img_url, bc = m.group(1), m.group(2)
+        if '_0.jpg' in img_url:
+            continue
+        if not img_url.startswith('http'):
+            img_url = 'https://www.azone-int.co.jp' + img_url
+        if bc not in banners:
+            banners[bc] = img_url
+    print(f"  Homepage banners found: {len(banners)}")
+    return banners
+
 def run():
     print("=== AZONEWS Scraper v3 ===\n")
 
@@ -473,6 +504,13 @@ def run():
         if changed:
             print(f"  [{i}/{len(to_check)}] {p['img']}: {', '.join(changed)}")
         time.sleep(0.8)
+
+    # 第四步：抓取首页 banner 图
+    print("\nFetching homepage banners...")
+    banners = scrape_homepage_banners()
+    for bc, img_url in banners.items():
+        if bc in merged:
+            merged[bc]['hero_img'] = img_url
 
     # 重新编号、排序
     final = sorted(merged.values(), key=lambda x: x.get("id") or 9999)
