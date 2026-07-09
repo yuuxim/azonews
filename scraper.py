@@ -176,6 +176,8 @@ def detect_scale(name, series=""):
         return '7cm'
     if 'ピコニーモ' in name or series == 'ピコニーモボディ':
         return '1/12'
+    if 'カスタムリリィ' in name:
+        return '1/12'
     return '1/6'
 
 def parse_price_from_page(html):

@@ -226,7 +226,7 @@
     "category": "doll",
     "scale": "1/6",
     "price": 20900,
-    "status": "stock",
+    "status": "pre",
     "img": "4573199853659"
   },
   {
@@ -2154,7 +2154,7 @@
     "name": "『カスタムリリィ』ヘッドパーツセット TYPE-C",
     "series": "キャラクタードール",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 3300,
     "status": "stock",
     "img": "4573199843834"
@@ -2164,7 +2164,7 @@
     "name": "『カスタムリリィ』ヘッドパーツセット TYPE-C",
     "series": "キャラクタードール",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 3300,
     "status": "stock",
     "img": "4573199843841"
@@ -2174,7 +2174,7 @@
     "name": "『カスタムリリィ』ヘッドパーツセット TYPE-C",
     "series": "キャラクタードール",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 3300,
     "status": "stock",
     "img": "4573199843858"
@@ -2194,7 +2194,7 @@
     "name": "『カスタムリリィ』ヘッドパーツセット TYPE-B",
     "series": "キャラクタードール",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 3300,
     "status": "stock",
     "img": "4573199843506"
@@ -2204,7 +2204,7 @@
     "name": "『カスタムリリィ』ヘッドパーツセット TYPE-B",
     "series": "キャラクタードール",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 3300,
     "status": "stock",
     "img": "4573199843513"
@@ -2214,7 +2214,7 @@
     "name": "『カスタムリリィ』ヘッドパーツセット TYPE-B",
     "series": "キャラクタードール",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 3300,
     "status": "pre",
     "img": "4573199843490"
@@ -2224,7 +2224,7 @@
     "name": "『カスタムリリィ』ヘッドパーツセット TYPE-A",
     "series": "キャラクタードール",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 3300,
     "status": "stock",
     "img": "4573199842424"
@@ -2234,7 +2234,7 @@
     "name": "『カスタムリリィ』ヘッドパーツセット TYPE-A",
     "series": "キャラクタードール",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 3300,
     "status": "pre",
     "img": "4573199842417"
@@ -2244,7 +2244,7 @@
     "name": "『カスタムリリィ』ヘッドパーツセット TYPE-A",
     "series": "キャラクタードール",
     "category": "doll",
-    "scale": "1/6",
+    "scale": "1/12",
     "price": 3300,
     "status": "pre",
     "img": "4573199842431"
