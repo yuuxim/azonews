@@ -594,7 +594,9 @@ const STMAP = {stock:'有货',prep:'准备中',pre:'预约受付',closed:'预约
 const NOTIFS = [];
 
 // ── STATE ──
-const S = {cat:'all',series:'all',st:'all',sc:'all',q:'',sort:'newest',view:'grid',notifOpen:false,wlOpen:false,notifs:[...NOTIFS],wl:new Set(),sel:null,toasts:[],tid:0};
+const _savedWL = (() => { try { return new Set(JSON.parse(localStorage.getItem('azonews_wl')||'[]')); } catch(e){ return new Set(); } })();
+const S = {cat:'all',series:'all',st:'all',sc:'all',q:'',sort:'newest',view:'grid',notifOpen:false,wlOpen:false,notifs:[...NOTIFS],wl:_savedWL,sel:null,toasts:[],tid:0};
+function saveWL(){ try { localStorage.setItem('azonews_wl', JSON.stringify([...S.wl])); } catch(e){} }
 
 // ── HELPERS ──
 const fmt = n => '¥' + n.toLocaleString('ja-JP');
@@ -964,9 +966,10 @@ function toggleWL(e,id){
   e.stopPropagation();
   if(S.wl.has(id)){S.wl.delete(id);}
   else{S.wl.add(id);const p=P.find(x=>x.id===id);toast(`已收藏：${(p.n||'产品').substring(0,24)}`,'pre');}
+  saveWL();
   renderAll();
 }
-function toggleWLModal(id){if(S.wl.has(id)){S.wl.delete(id);}else{S.wl.add(id);toast('已加入收藏夹','pre');}renderModal();renderAll();}
+function toggleWLModal(id){if(S.wl.has(id)){S.wl.delete(id);}else{S.wl.add(id);toast('已加入收藏夹','pre');}saveWL();renderModal();renderAll();}
 
 // ── MOBILE DRAWER ──
 function openDrawer(){
