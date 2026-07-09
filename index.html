@@ -96,6 +96,50 @@ input,select{font-family:inherit}
 /* ── MAIN ── */
 .main{padding:20px}
 
+/* ── CAROUSEL ── */
+#carousel-wrap{margin-bottom:20px;position:relative}
+.carousel{position:relative;width:100%;height:240px;border-radius:var(--r);overflow:hidden;background:var(--bg3);box-shadow:var(--sh2);cursor:pointer}
+.carousel-slide{position:absolute;inset:0;display:flex;opacity:0;transition:opacity .6s ease;pointer-events:none}
+.carousel-slide.active{opacity:1;pointer-events:auto}
+.carousel-img{width:42%;height:100%;object-fit:cover;object-position:top center;flex-shrink:0}
+.carousel-img-ph{width:42%;height:100%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:48px;opacity:.3;flex-shrink:0}
+.carousel-overlay{position:absolute;top:0;left:38%;right:0;height:100%;background:linear-gradient(to right, transparent 0%, var(--card) 18%)}
+.carousel-info{position:absolute;top:0;right:0;width:62%;height:100%;display:flex;flex-direction:column;justify-content:center;padding:28px 28px 28px 32px;gap:10px}
+.carousel-series{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);background:var(--accent-g);display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;width:fit-content}
+.carousel-name{font-size:17px;font-weight:700;color:var(--txt);line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.carousel-price{font-size:20px;font-weight:800;color:var(--accent-dim);letter-spacing:-.3px}
+.carousel-tag{font-size:10px;font-weight:600;background:rgba(26,86,150,.12);color:var(--blue);padding:2px 8px;border-radius:20px;width:fit-content}
+.carousel-cta{margin-top:4px;font-size:12px;font-weight:600;color:var(--accent);display:flex;align-items:center;gap:4px}
+/* arrows */
+.carousel-btn{position:absolute;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.85);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--txt2);transition:var(--t);z-index:2;backdrop-filter:blur(4px)}
+.carousel-btn:hover{background:#fff;box-shadow:var(--sh)}
+.carousel-prev{left:10px}
+.carousel-next{right:10px}
+/* dots */
+.carousel-dots{display:flex;gap:5px;justify-content:center;margin-top:10px}
+.carousel-dot{width:6px;height:6px;border-radius:3px;background:var(--border-d);transition:width .3s ease,background .3s ease;cursor:pointer}
+.carousel-dot.active{width:18px;background:var(--accent)}
+/* progress bar */
+.carousel-progress{position:absolute;bottom:0;left:0;height:2px;background:var(--accent);opacity:.6;transition:width linear}
+/* mobile */
+@media(max-width:860px){
+  .carousel{height:190px}
+  .carousel-img,.carousel-img-ph{width:48%}
+  .carousel-overlay{left:44%}
+  .carousel-info{width:56%;padding:16px 16px 16px 20px;gap:7px}
+  .carousel-name{font-size:14px;-webkit-line-clamp:3}
+  .carousel-price{font-size:16px}
+}
+@media(max-width:580px){
+  .carousel{height:160px}
+  .carousel-img,.carousel-img-ph{width:45%}
+  .carousel-overlay{left:40%}
+  .carousel-info{width:58%;padding:12px 12px 12px 16px;gap:5px}
+  .carousel-name{font-size:12px}
+  .carousel-price{font-size:14px}
+  .carousel-series{font-size:9px}
+}
+
 /* ── STAT BARS ── */
 .stat-row{display:flex;gap:10px;margin-bottom:18px}
 .stat-card{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;display:flex;align-items:center;gap:10px;transition:var(--t);cursor:pointer}
@@ -381,6 +425,11 @@ input,select{font-family:inherit}
 <main class="main">
   <!-- Status quick-stats -->
   <div class="stat-row" id="stat-row"></div>
+  <!-- Pre-order carousel -->
+  <div id="carousel-wrap" style="display:none">
+    <div class="carousel" id="carousel"></div>
+    <div class="carousel-dots" id="carousel-dots"></div>
+  </div>
   <!-- Active filter chips -->
   <div class="chips" id="chips"></div>
   <!-- Toolbar -->
@@ -653,6 +702,69 @@ function renderSB(){
   document.getElementById('sb-scales').innerHTML=[`<div class="sb-btn ${S.sc==='all'?'on':''}" onclick="setSc('all')"><span>▪</span>全部尺寸<span style="margin-left:auto;font-size:10px;color:var(--txt3)">${P.length}</span></div>`,...scales.map(sc=>`<div class="sb-btn ${S.sc===sc?'on':''}" onclick="setSc('${sc}')"><span>▫</span>${sc}<span style="margin-left:auto;font-size:10px;color:var(--txt3)">${P.filter(x=>x.sc===sc).length}</span></div>`)].join('');
 }
 
+// ── CAROUSEL ──
+let _carIdx=0, _carTimer=null, _carItems=[];
+const CAR_INTERVAL=4500;
+
+function renderCarousel(){
+  // 筛选 1/6 预约受付中的娃娃
+  _carItems = P.filter(x=>x.st==='pre'&&x.sc==='1/6'&&x.cat==='doll');
+  const wrap=document.getElementById('carousel-wrap');
+  const el=document.getElementById('carousel');
+  const dots=document.getElementById('carousel-dots');
+  if(!wrap||!el||!dots)return;
+
+  if(!_carItems.length){wrap.style.display='none';return;}
+  wrap.style.display='block';
+  if(_carIdx>=_carItems.length)_carIdx=0;
+
+  // build slides
+  el.innerHTML = _carItems.map((p,i)=>{
+    const imgUrl=BASE_IMG+p.img+'_0.jpg';
+    const price=p.p?`<div class="carousel-price">¥${p.p.toLocaleString('ja-JP')}</div>`:'';
+    return `<div class="carousel-slide${i===_carIdx?' active':''}" onclick="openModal(${p.id})">
+      <img class="carousel-img" src="${imgUrl}" alt="${p.n}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="carousel-img-ph" style="display:none">🎎</div>
+      <div class="carousel-overlay"></div>
+      <div class="carousel-info">
+        <div class="carousel-series">🎀 ${p.s||'アゾンオリジナルドール'}</div>
+        <div class="carousel-name">${p.n||'名称未取得'}</div>
+        ${price}
+        <div class="carousel-tag">● 预约受付中</div>
+        <div class="carousel-cta">在 Azone 查看 →</div>
+      </div>
+      <div class="carousel-progress" id="cpr-${i}" style="width:0%"></div>
+    </div>`;
+  }).join('');
+
+  // arrows
+  el.insertAdjacentHTML('beforeend',`
+    <button class="carousel-btn carousel-prev" onclick="event.stopPropagation();carNav(-1)">‹</button>
+    <button class="carousel-btn carousel-next" onclick="event.stopPropagation();carNav(1)">›</button>
+  `);
+
+  // dots
+  dots.innerHTML=_carItems.map((_,i)=>`<div class="carousel-dot${i===_carIdx?' active':''}" onclick="carGo(${i})"></div>`).join('');
+
+  carStartTimer();
+}
+
+function carGo(i){
+  _carIdx=((i%_carItems.length)+_carItems.length)%_carItems.length;
+  document.querySelectorAll('.carousel-slide').forEach((s,j)=>s.classList.toggle('active',j===_carIdx));
+  document.querySelectorAll('.carousel-dot').forEach((d,j)=>d.classList.toggle('active',j===_carIdx));
+  carStartTimer();
+}
+function carNav(dir){carGo(_carIdx+dir);}
+function carStartTimer(){
+  if(_carTimer)clearInterval(_carTimer);
+  if(_carItems.length<2)return;
+  // progress bar
+  const pr=document.getElementById('cpr-'+_carIdx);
+  if(pr){pr.style.transition='none';pr.style.width='0%';requestAnimationFrame(()=>{pr.style.transition=`width ${CAR_INTERVAL}ms linear`;pr.style.width='100%';});}
+  _carTimer=setInterval(()=>carGo(_carIdx+1),CAR_INTERVAL);
+}
+
 // ── TICKER ──
 function renderTicker(){
   const prepItems=P.filter(x=>x.st==='prep').map(x=>`<span class="ticker-item"><span class="tdot prep"></span>准备中 · ${x.n}</span>`);
@@ -920,32 +1032,30 @@ function buildNotifs() {
   // 使用 scraper 记录的实际状态变更时间；无记录则显示"数据更新时"
   const ts = p => p.at ? new Date(p.at) : null;
 
-  // 有货（直接购买，非预约）
-  P.filter(x => x.st === 'stock').slice(0, 3).forEach(p => {
+  // 只显示有真实时间戳的通知（status_at 由 scraper 记录状态变更时写入）
+  P.filter(x => x.st === 'stock' && x.at).slice(0, 3).forEach(p => {
     list.push({id:nid++, pid:p.id, type:'stock',
       msg:`${(p.n||'新品').substring(0,32)} 现已有货`,
       ts:ts(p), read:false});
   });
-  // 预约受付中
-  P.filter(x => x.st === 'pre').slice(0, 3).forEach(p => {
+  P.filter(x => x.st === 'pre' && x.at).slice(0, 3).forEach(p => {
     list.push({id:nid++, pid:p.id, type:'pre',
       msg:`${(p.n||'新品').substring(0,32)} 预约受付中`,
       ts:ts(p), read:false});
   });
-  // 即将开放预约
-  P.filter(x => x.st === 'prep').slice(0, 2).forEach(p => {
+  P.filter(x => x.st === 'prep' && x.at).slice(0, 2).forEach(p => {
     list.push({id:nid++, pid:p.id, type:'prep',
       msg:`${(p.n||'新品').substring(0,32)} 即将发售`,
       ts:ts(p), read:true});
   });
   if(!list.length) list.push({id:1, pid:null, type:'stock',
-    msg:'暂无最新动态，等待数据更新…', ts:null, read:true});
+    msg:'暂无动态，下次数据更新后将显示实时变化', ts:null, read:true});
   return list;
 }
 
 function initPage() {
   S.notifs = buildNotifs();
-  renderTicker();renderSB();renderAll();renderNotif();renderSBMobile();
+  renderTicker();renderCarousel();renderSB();renderAll();renderNotif();renderSBMobile();
   // toast 也用真实产品
   const stockP = P.find(x=>x.st==='stock');
   const preP   = P.find(x=>x.st==='pre');
