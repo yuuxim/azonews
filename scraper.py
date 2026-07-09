@@ -353,35 +353,103 @@ def check_product_status(barcode, existing_status, existing_price=0):
 
     return status, name, price
 
-def scrape_homepage_banners():
-    """从 Azone 首页提取轮播 banner 图 → {barcode: img_url}"""
-    html = fetch("https://www.azone-int.co.jp/")
-    if not html:
-        return {}
-    banners = {}
-    # 方法1：<a href="...item/BARCODE"> 内紧跟的 img src
+def _extract_banner_imgs(html, banners, label=""):
+    """从 HTML 中多种模式提取 barcode→img_url，结果写入 banners dict"""
+    base = "https://www.azone-int.co.jp"
+
+    def abs_url(u):
+        return u if u.startswith('http') else base + u
+
+    # P1: data-src / data-bg / data-image（懒加载）含 barcode
     for m in re.finditer(
-        r'<a[^>]+href="[^"]*?/item/(\d{10,13})[^"]*?"[^>]*>\s*(?:<[^/][^>]*>\s*)*'
-        r'<img[^>]+src="([^"]+)"',
+        r'data-(?:src|bg|image|background)=["\']([^"\']*?(\d{10,13})[^"\']*?\.jpe?g)["\']', html
+    ):
+        img_url, bc = abs_url(m.group(1)), m.group(2)
+        if bc not in banners:
+            banners[bc] = img_url
+            print(f"  [{label}] data-attr: {bc} → {img_url}")
+
+    # P2: background-image: url(...)
+    for m in re.finditer(
+        r'background(?:-image)?\s*:\s*url\(["\']?([^"\')\s]*?(\d{10,13})[^"\')\s]*?\.jpe?g)["\']?\)', html
+    ):
+        img_url, bc = abs_url(m.group(1)), m.group(2)
+        if bc not in banners:
+            banners[bc] = img_url
+            print(f"  [{label}] bg-image: {bc} → {img_url}")
+
+    # P3: <a href=".../item/BARCODE..."> ... img src (任意属性名)
+    for m in re.finditer(
+        r'<a[^>]+href="[^"]*?/item/(\d{10,13})[^"]*?"[^>]*>(.*?)</a>',
         html, re.DOTALL
     ):
-        bc, img_url = m.group(1), m.group(2)
-        if not img_url.startswith('http'):
-            img_url = 'https://www.azone-int.co.jp' + img_url
-        if bc not in banners:
-            banners[bc] = img_url
-    # 方法2：img src 文件名中含 barcode（跳过 _0.jpg 缩略图）
+        bc, inner = m.group(1), m.group(2)
+        if bc in banners:
+            continue
+        img_m = re.search(r'(?:src|data-src|data-bg|data-image)=["\']([^"\']+\.jpe?g)["\']', inner)
+        if img_m:
+            img_url = abs_url(img_m.group(1))
+            if '_0.jpg' not in img_url:
+                banners[bc] = img_url
+                print(f"  [{label}] a>img: {bc} → {img_url}")
+
+    # P4: JS/JSON 字段 "image","src","url" 含 barcode
     for m in re.finditer(
-        r'<img[^>]+src="([^"]*?(\d{10,13})[^"]*?\.jpe?g)"', html
+        r'"(?:image|img|src|url|photo|banner)"\s*:\s*"([^"]*?(\d{10,13})[^"]*?\.jpe?g)"', html
     ):
-        img_url, bc = m.group(1), m.group(2)
+        img_url, bc = abs_url(m.group(1)), m.group(2)
+        if '_0.jpg' not in img_url and bc not in banners:
+            banners[bc] = img_url
+            print(f"  [{label}] json-field: {bc} → {img_url}")
+
+    # P5: 普通 <img src> 含 barcode（跳过 _0.jpg 缩略图）
+    for m in re.finditer(r'<img[^>]+src="([^"]*?(\d{10,13})[^"]*?\.jpe?g)"', html):
+        img_url, bc = abs_url(m.group(1)), m.group(2)
         if '_0.jpg' in img_url:
             continue
-        if not img_url.startswith('http'):
-            img_url = 'https://www.azone-int.co.jp' + img_url
         if bc not in banners:
             banners[bc] = img_url
-    print(f"  Homepage banners found: {len(banners)}")
+            print(f"  [{label}] img-src: {bc} → {img_url}")
+
+
+def scrape_homepage_banners():
+    """从首页 + topics 页提取宣传大图 → {barcode: img_url}"""
+    banners = {}
+
+    # ── 1. 首页 ──
+    html = fetch("https://www.azone-int.co.jp/")
+    if html:
+        print(f"  [homepage] HTML length={len(html)}")
+        # 快速 debug：找 slider/carousel 相关片段
+        for kw in ['slider','slide','swiper','carousel','mainvis','mv','banner']:
+            idx = html.lower().find(kw)
+            if idx >= 0:
+                print(f"  [homepage] found '{kw}' at {idx}: {html[max(0,idx-20):idx+80]!r}")
+        _extract_banner_imgs(html, banners, "homepage")
+    else:
+        print("  [homepage] fetch failed")
+
+    # ── 2. Topics 一覧（公告列表，静态 HTML，含产品宣传大图）──
+    for page in range(1, 4):   # 抓前3页
+        topics_url = f"https://www.azone-int.co.jp/azonet/topics/{page}"
+        t_html = fetch(topics_url)
+        if not t_html:
+            break
+        _extract_banner_imgs(t_html, banners, f"topics-p{page}")
+        # 找每篇 topic 的 href，抓前 6 篇详情页
+        topic_links = re.findall(r'/azonet/topics/(\d+)', t_html)
+        topic_links = list(dict.fromkeys(topic_links))[:6]
+        for tid in topic_links:
+            td_html = fetch(f"https://www.azone-int.co.jp/azonet/topics/{tid}")
+            if td_html:
+                _extract_banner_imgs(td_html, banners, f"topic-{tid}")
+            time.sleep(0.6)
+        time.sleep(1.0)
+        # 如果第一页就找到了足够的 banner 就停止
+        if len(banners) >= 10:
+            break
+
+    print(f"  Total banners collected: {len(banners)}")
     return banners
 
 def run():
