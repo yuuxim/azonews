@@ -326,8 +326,9 @@
     "category": "doll",
     "scale": "1/6",
     "price": 33000,
-    "status": "stock",
-    "img": "4573199852515"
+    "status": "pre",
+    "img": "4573199852515",
+    "status_at": 1783577714
   },
   {
     "id": 34,
@@ -556,8 +557,9 @@
     "category": "doll",
     "scale": "1/6",
     "price": 22000,
-    "status": "stock",
-    "img": "4573199849058"
+    "status": "pre",
+    "img": "4573199849058",
+    "status_at": 1783577731
   },
   {
     "id": 57,
@@ -566,8 +568,9 @@
     "category": "doll",
     "scale": "1/6",
     "price": 22000,
-    "status": "stock",
-    "img": "4573199849065"
+    "status": "pre",
+    "img": "4573199849065",
+    "status_at": 1783577732
   },
   {
     "id": 58,
@@ -896,8 +899,9 @@
     "category": "doll",
     "scale": "1/12",
     "price": 8800,
-    "status": "stock",
-    "img": "4573199843124"
+    "status": "pre",
+    "img": "4573199843124",
+    "status_at": 1783577743
   },
   {
     "id": 91,
@@ -906,8 +910,9 @@
     "category": "doll",
     "scale": "1/12",
     "price": 8800,
-    "status": "stock",
-    "img": "4573199843148"
+    "status": "pre",
+    "img": "4573199843148",
+    "status_at": 1783577744
   },
   {
     "id": 92,
@@ -916,8 +921,9 @@
     "category": "doll",
     "scale": "1/12",
     "price": 8800,
-    "status": "stock",
-    "img": "4573199843131"
+    "status": "pre",
+    "img": "4573199843131",
+    "status_at": 1783577746
   },
   {
     "id": 93,
@@ -1196,8 +1202,9 @@
     "category": "doll",
     "scale": "1/6",
     "price": 27500,
-    "status": "stock",
-    "img": "4573199922218"
+    "status": "pre",
+    "img": "4573199922218",
+    "status_at": 1783577752
   },
   {
     "id": 121,
@@ -1206,8 +1213,9 @@
     "category": "doll",
     "scale": "1/6",
     "price": 27500,
-    "status": "stock",
-    "img": "4573199920252"
+    "status": "pre",
+    "img": "4573199920252",
+    "status_at": 1783577753
   },
   {
     "id": 122,
@@ -1216,8 +1224,9 @@
     "category": "doll",
     "scale": "1/6",
     "price": 12100,
-    "status": "stock",
-    "img": "4573199834979"
+    "status": "pre",
+    "img": "4573199834979",
+    "status_at": 1783577755
   },
   {
     "id": 123,
@@ -2086,8 +2095,9 @@
     "category": "doll",
     "scale": "1/6",
     "price": 24200,
-    "status": "stock",
-    "img": "4573199851525"
+    "status": "pre",
+    "img": "4573199851525",
+    "status_at": 1783577812
   },
   {
     "id": 210,
@@ -2126,8 +2136,9 @@
     "category": "doll",
     "scale": "1/6",
     "price": 19800,
-    "status": "stock",
-    "img": "4573199847641"
+    "status": "pre",
+    "img": "4573199847641",
+    "status_at": 1783577818
   },
   {
     "id": 214,
@@ -2156,8 +2167,9 @@
     "category": "doll",
     "scale": "1/12",
     "price": 3300,
-    "status": "stock",
-    "img": "4573199843834"
+    "status": "pre",
+    "img": "4573199843834",
+    "status_at": 1783577822
   },
   {
     "id": 217,
@@ -2166,8 +2178,9 @@
     "category": "doll",
     "scale": "1/12",
     "price": 3300,
-    "status": "stock",
-    "img": "4573199843841"
+    "status": "pre",
+    "img": "4573199843841",
+    "status_at": 1783577823
   },
   {
     "id": 218,
@@ -2176,8 +2189,9 @@
     "category": "doll",
     "scale": "1/12",
     "price": 3300,
-    "status": "stock",
-    "img": "4573199843858"
+    "status": "pre",
+    "img": "4573199843858",
+    "status_at": 1783577825
   },
   {
     "id": 219,
@@ -2196,8 +2210,9 @@
     "category": "doll",
     "scale": "1/12",
     "price": 3300,
-    "status": "stock",
-    "img": "4573199843506"
+    "status": "pre",
+    "img": "4573199843506",
+    "status_at": 1783577827
   },
   {
     "id": 221,
@@ -2206,8 +2221,9 @@
     "category": "doll",
     "scale": "1/12",
     "price": 3300,
-    "status": "stock",
-    "img": "4573199843513"
+    "status": "pre",
+    "img": "4573199843513",
+    "status_at": 1783577829
   },
   {
     "id": 222,
@@ -2226,8 +2242,9 @@
     "category": "doll",
     "scale": "1/12",
     "price": 3300,
-    "status": "stock",
-    "img": "4573199842424"
+    "status": "pre",
+    "img": "4573199842424",
+    "status_at": 1783577832
   },
   {
     "id": 224,
@@ -2276,8 +2293,9 @@
     "category": "doll",
     "scale": "1/12",
     "price": 14300,
-    "status": "stock",
-    "img": "4582119994204"
+    "status": "pre",
+    "img": "4582119994204",
+    "status_at": 1783577839
   },
   {
     "id": 229,
@@ -2296,8 +2314,9 @@
     "category": "doll",
     "scale": "1/12",
     "price": 4950,
-    "status": "stock",
-    "img": "4582119991753"
+    "status": "pre",
+    "img": "4582119991753",
+    "status_at": 1783577842
   },
   {
     "id": 231,
@@ -2306,8 +2325,9 @@
     "category": "doll",
     "scale": "1/12",
     "price": 4950,
-    "status": "stock",
-    "img": "4582119991760"
+    "status": "pre",
+    "img": "4582119991760",
+    "status_at": 1783577843
   },
   {
     "id": 232,
@@ -2316,8 +2336,9 @@
     "category": "doll",
     "scale": "1/6",
     "price": 2750,
-    "status": "stock",
-    "img": "4582119991173"
+    "status": "pre",
+    "img": "4582119991173",
+    "status_at": 1783577845
   },
   {
     "id": 233,
@@ -2356,8 +2377,9 @@
     "category": "doll",
     "scale": "1/12",
     "price": 12100,
-    "status": "stock",
-    "img": "4573199923055"
+    "status": "pre",
+    "img": "4573199923055",
+    "status_at": 1783577849
   },
   {
     "id": 237,
@@ -2376,8 +2398,9 @@
     "category": "doll",
     "scale": "1/12",
     "price": 13200,
-    "status": "stock",
-    "img": "4573199839837"
+    "status": "pre",
+    "img": "4573199839837",
+    "status_at": 1783577852
   },
   {
     "id": 239,
@@ -2386,8 +2409,9 @@
     "category": "doll",
     "scale": "1/6",
     "price": 2750,
-    "status": "stock",
-    "img": "4573199839820"
+    "status": "pre",
+    "img": "4573199839820",
+    "status_at": 1783577853
   },
   {
     "id": 240,
@@ -2416,7 +2440,8 @@
     "category": "doll",
     "scale": "1/6",
     "price": 1000,
-    "status": "stock",
-    "img": "4573199830551"
+    "status": "pre",
+    "img": "4573199830551",
+    "status_at": 1783577857
   }
 ]
