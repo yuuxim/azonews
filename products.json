@@ -1486,8 +1486,9 @@
     "category": "body",
     "scale": "1/6",
     "price": 0,
-    "status": "stock",
-    "img": "4582119992941"
+    "status": "sold",
+    "img": "4582119992941",
+    "status_at": 1783842848
   },
   {
     "id": 149,
