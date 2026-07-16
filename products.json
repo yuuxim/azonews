@@ -46,9 +46,9 @@
     "category": "body",
     "scale": "1/6",
     "price": 3300,
-    "status": "closed",
+    "status": "pre",
     "img": "4573199846163",
-    "status_at": 1783943105
+    "status_at": 1784187539
   },
   {
     "id": 6,
@@ -87,8 +87,9 @@
     "category": "body",
     "scale": "1/6",
     "price": 550,
-    "status": "stock",
-    "img": "4573199844312"
+    "status": "prep",
+    "img": "4573199844312",
+    "status_at": 1784187541
   },
   {
     "id": 10,
@@ -2446,5 +2447,27 @@
     "status": "pre",
     "img": "4573199830551",
     "status_at": 1783577857
+  },
+  {
+    "id": 243,
+    "name": "サアラズ ア・ラ・モード SAHRA（サアラ）／Sweet Days YUKATA Collection～ブラックヘア～",
+    "series": "サアラズ ア・ラ・モード",
+    "category": "doll",
+    "scale": "1/6",
+    "price": 16500,
+    "status": "pre",
+    "img": "4573199853956",
+    "status_at": 1784187710
+  },
+  {
+    "id": 244,
+    "name": "サアラズ ア・ラ・モード SAHRA（サアラ）／Sweet Days YUKATA Collection～ゴールドヘア～レーベルショップ秋葉原ラジオ会館オープン12周年記念モデル（アゾンダイレクトストア限定販売ver.）",
+    "series": "サアラズ ア・ラ・モード",
+    "category": "doll",
+    "scale": "1/6",
+    "price": 16500,
+    "status": "pre",
+    "img": "4573199853949",
+    "status_at": 1784187711
   }
 ]
