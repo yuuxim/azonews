@@ -2436,8 +2436,9 @@
     "category": "doll",
     "scale": "1/6",
     "price": 800,
-    "status": "pre",
-    "img": "4573199831596"
+    "status": "sold",
+    "img": "4573199831596",
+    "status_at": 1784358926
   },
   {
     "id": 242,
