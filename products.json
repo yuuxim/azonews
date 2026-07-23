@@ -389,8 +389,9 @@
     "category": "doll",
     "scale": "1/6",
     "price": 18700,
-    "status": "closed",
-    "img": "4573199852201"
+    "status": "sold",
+    "img": "4573199852201",
+    "status_at": 1784798200
   },
   {
     "id": 40,
@@ -2214,9 +2215,9 @@
     "category": "doll",
     "scale": "1/12",
     "price": 3300,
-    "status": "pre",
+    "status": "sold",
     "img": "4573199843506",
-    "status_at": 1783577827
+    "status_at": 1784798307
   },
   {
     "id": 221,
@@ -2236,8 +2237,9 @@
     "category": "doll",
     "scale": "1/12",
     "price": 3300,
-    "status": "pre",
-    "img": "4573199843490"
+    "status": "sold",
+    "img": "4573199843490",
+    "status_at": 1784798309
   },
   {
     "id": 223,
@@ -2246,9 +2248,9 @@
     "category": "doll",
     "scale": "1/12",
     "price": 3300,
-    "status": "pre",
+    "status": "sold",
     "img": "4573199842424",
-    "status_at": 1783577832
+    "status_at": 1784798311
   },
   {
     "id": 224,
@@ -2268,8 +2270,9 @@
     "category": "doll",
     "scale": "1/12",
     "price": 3300,
-    "status": "pre",
-    "img": "4573199842431"
+    "status": "sold",
+    "img": "4573199842431",
+    "status_at": 1784798312
   },
   {
     "id": 226,
@@ -2373,8 +2376,9 @@
     "category": "doll",
     "scale": "1/12",
     "price": 13200,
-    "status": "pre",
-    "img": "4573199926636"
+    "status": "sold",
+    "img": "4573199926636",
+    "status_at": 1784798324
   },
   {
     "id": 236,
